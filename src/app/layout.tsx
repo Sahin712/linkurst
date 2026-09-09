@@ -32,15 +32,15 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://linkurst.com"),
   title: {
-    default: "Linkurst — Organic visibility for SaaS & B2B",
+    default: "Best SEO Agency for SaaS and B2B Growth | Linkurst",
     template: "%s · Linkurst",
   },
   description:
-    "We help SaaS and B2B companies build organic visibility across Google, AI search, and Reddit.",
+    "A top SEO agency for SaaS and B2B teams. Linkurst helps you win search, AI answers, and Reddit to own your market. Book a call to get started.",
   openGraph: {
-    title: "Linkurst — Organic visibility for SaaS & B2B",
+    title: "Best SEO Agency for SaaS and B2B Growth | Linkurst",
     description:
-      "We help SaaS and B2B companies build organic visibility across Google, AI search, and Reddit.",
+      "A top SEO agency for SaaS and B2B teams. Linkurst helps you win search, AI answers, and Reddit to own your market. Book a call to get started.",
     siteName: "Linkurst",
     type: "website",
   },
