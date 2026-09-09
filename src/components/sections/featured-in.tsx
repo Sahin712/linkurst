@@ -29,7 +29,7 @@ export function FeaturedIn() {
     <section aria-label="Publications our clients have been featured in">
       <Container size="wide" className="py-16">
         <div className="grid items-center gap-y-10 lg:grid-cols-[minmax(0,300px)_1fr] lg:gap-x-16">
-          <h2 className="font-serif text-[2.5rem] font-normal leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+          <h2 className="font-serif text-[1.75rem] font-normal leading-[1.1] tracking-tight text-foreground sm:text-5xl">
             Our <span className="text-coral">clients</span> have been featured in
           </h2>
 

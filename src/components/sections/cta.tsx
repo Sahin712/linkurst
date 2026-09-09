@@ -45,12 +45,13 @@ export function Cta() {
               working, and the fastest wins to fix first.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
               <Button
                 href={siteConfig.bookingUrl}
                 size="lg"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-full sm:w-auto"
               >
                 Book a strategy call
                 <ArrowRight size={18} />
@@ -59,7 +60,7 @@ export function Cta() {
                 href="#methodology"
                 variant="ghost"
                 size="lg"
-                className="border-white/20 text-ivory hover:bg-white/5"
+                className="w-full border-white/20 text-ivory hover:bg-white/5 sm:w-auto"
               >
                 See how it works
               </Button>

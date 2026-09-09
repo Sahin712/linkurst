@@ -75,17 +75,23 @@ export function Hero() {
               drives qualified demand.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button
                 href={siteConfig.bookingUrl}
                 size="lg"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-full sm:w-auto"
               >
                 Book your strategy call
                 <ArrowRight size={18} />
               </Button>
-              <Button href="#methodology" variant="ghost" size="lg">
+              <Button
+                href="#methodology"
+                variant="ghost"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
                 See How It Works
                 <ArrowRight size={18} />
               </Button>

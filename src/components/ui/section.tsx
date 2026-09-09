@@ -10,9 +10,9 @@ type SectionProps = React.ComponentProps<"section"> & {
 };
 
 const spacings = {
-  sm: "py-12 sm:py-16",
-  md: "py-16 sm:py-24",
-  lg: "py-24 sm:py-32",
+  sm: "py-10 sm:py-16",
+  md: "py-14 sm:py-24",
+  lg: "py-20 sm:py-32",
 } as const;
 
 /** Semantic page section with consistent vertical rhythm. */
