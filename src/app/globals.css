@@ -1,0 +1,326 @@
+@import "tailwindcss";
+
+/*
+  Linkurst design system
+  Premium · editorial · SaaS-inspired · data-driven
+  ------------------------------------------------------------------
+  Approved brand palette — do not introduce blue/purple hues.
+*/
+
+@theme {
+  /* Brand palette */
+  --color-charcoal: #1c1c1e;
+  --color-slate: #3a3a3d;
+  --color-coral: #e8553a;
+  --color-ivory: #f7f4ef;
+  --color-gray: #8a8a8e;
+
+  /* Coral tints/shades for interactive states */
+  --color-coral-600: #d0442c;
+  --color-coral-100: #fbe4de;
+  --color-coral-wash: rgba(232, 85, 58, 0.14);
+
+  /* Body text on light ground */
+  --color-fog: #3a3a3d;
+
+  /* Semantic roles (light theme) */
+  --color-background: #f7f4ef;
+  --color-surface: #ffffff;
+  --color-foreground: #1c1c1e;
+  --color-muted: var(--color-gray);
+  --color-accent: var(--color-coral);
+  --color-border: #e6e1d8;
+
+  /* Typography */
+  --font-sans: var(--font-inter), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Editorial rhythm */
+  --tracking-tight: -0.02em;
+  --tracking-tighter: -0.03em;
+
+  /* Radii */
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(28, 28, 30, 0.04), 0 8px 24px rgba(28, 28, 30, 0.06);
+  --shadow-panel: 0 2px 4px rgba(28, 28, 30, 0.05), 0 24px 48px -12px rgba(28, 28, 30, 0.12);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  /* Keep in-page anchor targets clear of the sticky floating header. */
+  section[id] {
+    scroll-margin-top: 96px;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Editorial caption / label style — Inter Light Italic */
+  .caption {
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-muted);
+  }
+
+  ::selection {
+    background-color: var(--color-coral);
+    color: var(--color-ivory);
+  }
+}
+
+@layer components {
+  /* Monospace eyebrow — uppercase, tracked technical label. */
+  .eyebrow-mono {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-coral-600);
+  }
+
+  /* Editorial accent — Fraunces italic for emphasized words in headings. */
+  .accent-serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Coral highlight marker — the ThreadsLab move, on-brand. */
+  .mark {
+    background-color: var(--color-coral-wash);
+    box-shadow: 0 0 0 3px var(--color-coral-wash);
+    border-radius: 3px;
+    padding: 0 0.06em;
+  }
+}
+
+/* Looping "work in progress" bar. */
+@keyframes work-progress {
+  0% {
+    width: 0;
+  }
+  70%,
+  100% {
+    width: 100%;
+  }
+}
+.animate-work {
+  animation: work-progress 3s ease-in-out infinite;
+}
+
+/* Soft looping pulse for live dots/markers. */
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+
+/* Glow pulse that never touches transform (safe on centered elements). */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px 0 rgba(232, 85, 58, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 14px 3px rgba(232, 85, 58, 0.85);
+  }
+}
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Rotating radar sweep. */
+@keyframes radar-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-sweep {
+  animation: radar-sweep 6s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Pulses that travel down the channel-convergence connectors. */
+@keyframes flow-dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+/* Breathing glow for the central brand node. */
+@keyframes core-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+}
+.animate-core-glow {
+  animation: core-glow 3s ease-in-out infinite;
+}
+
+/* Traveling glow that runs down the split-panel seam. */
+@keyframes seam-travel {
+  0% {
+    transform: translateY(-140%);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(360%);
+    opacity: 0;
+  }
+}
+.seam-dot {
+  animation: seam-travel 3.4s ease-in-out infinite;
+}
+
+/* Slow drift for the ambient background arrow motif. */
+@keyframes arrow-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-4deg);
+  }
+}
+.animate-arrow-drift {
+  animation: arrow-drift 7s ease-in-out infinite;
+}
+
+/* Gentle vertical bob — for the BEFORE→NOW connector arrows. */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+.animate-bob {
+  animation: bob 1.9s ease-in-out infinite;
+}
+
+/* "Burning" ember dot — a glowing coral core with an expanding pulse ring. */
+@keyframes ember-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@keyframes ember-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 3px 0 rgba(232, 85, 58, 0.9),
+      0 0 6px 1px rgba(232, 85, 58, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 6px 1px rgba(232, 85, 58, 1),
+      0 0 13px 3px rgba(232, 85, 58, 0.7);
+  }
+}
+.ember {
+  position: relative;
+  display: inline-flex;
+  height: 0.5rem;
+  width: 0.5rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+.ember::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--color-coral);
+  animation: ember-ping 1.5s ease-out infinite;
+}
+.ember::after {
+  content: "";
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-coral);
+  animation: ember-glow 1.5s ease-in-out infinite;
+}
+
+/* Infinite horizontal marquee — track holds the list twice; -50% loops seamlessly. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 26s linear infinite;
+  will-change: transform;
+}
+.marquee-group:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* Static, readable fallback: no motion, no clipped loop. */
+  .animate-marquee {
+    animation: none !important;
+    transform: none !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
