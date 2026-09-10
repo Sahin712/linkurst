@@ -3,6 +3,8 @@ import { Inter, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { siteConfig } from "@/lib/site";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -44,6 +46,9 @@ export const metadata: Metadata = {
     siteName: "Linkurst",
     type: "website",
   },
+  ...(siteConfig.googleSiteVerification
+    ? { verification: { google: siteConfig.googleSiteVerification } }
+    : {}),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -56,6 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <GoogleAnalytics gaId={siteConfig.gaId} />
       </body>
     </html>
   );
