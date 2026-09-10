@@ -11,6 +11,12 @@ export const siteConfig = {
   url: "https://linkurst.com",
   bookingUrl: "https://calendly.com/sahin-linkurst/introduction",
   email: "Sahin@linkurst.com",
+  logo: "https://linkurst.com/brand/logo.png",
+  // Public profiles — used for Organization schema `sameAs`.
+  socials: {
+    linkedin: "https://www.linkedin.com/company/linkurst/",
+    twitter: "https://x.com/sksahin03",
+  },
   // Analytics & verification (public values — safe to commit).
   // GA4 Measurement ID, e.g. "G-XXXXXXXXXX". Leave empty to disable.
   gaId: "G-381ZHE0ER3",
