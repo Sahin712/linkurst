@@ -10,6 +10,7 @@ export const siteConfig = {
     "We help SaaS and B2B companies build organic visibility across Google, AI search, and Reddit.",
   url: "https://linkurst.com",
   bookingUrl: "https://calendly.com/sahin-linkurst/introduction",
+  email: "Sahin@linkurst.com",
 } as const;
 
 export const mainNav = [

@@ -83,10 +83,10 @@ export function SiteFooter() {
             © {year} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <Link href="/privacy" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Privacy Policy
             </Link>
-            <Link href="#" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <Link href="/terms" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Terms &amp; Conditions
             </Link>
           </div>
