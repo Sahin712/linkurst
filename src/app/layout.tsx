@@ -39,6 +39,17 @@ export const metadata: Metadata = {
   },
   description:
     "A top SEO agency for SaaS and B2B teams. Linkurst helps you win search, AI answers, and Reddit to own your market. Book a call to get started.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     title: "Linkurst | Top SEO Agency for SaaS and B2B Growth",
     description:

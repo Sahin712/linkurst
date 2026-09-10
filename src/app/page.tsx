@@ -7,6 +7,11 @@ import { Plan } from "@/components/sections/plan";
 import { Services } from "@/components/sections/services";
 import { Faq } from "@/components/sections/faq";
 import { Cta } from "@/components/sections/cta";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (
