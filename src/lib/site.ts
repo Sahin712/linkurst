@@ -30,5 +30,13 @@ export const mainNav = [
   { label: "How it works", href: "#methodology" },
   { label: "Services", href: "#services" },
   { label: "90-Day Plan", href: "#plan" },
-  { label: "FAQ", href: "#faq" },
+] as const;
+
+/** Free tools — surfaced in the nav "Tools" dropdown and the footer. */
+export const tools = [
+  {
+    label: "AEO Content Grader",
+    href: "/tools/aeo-content-grader",
+    desc: "Score any page for AI-search readiness",
+  },
 ] as const;

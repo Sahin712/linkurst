@@ -16,6 +16,12 @@ const columns = [
     ],
   },
   {
+    heading: "Tools",
+    links: [
+      { label: "AEO Content Grader", href: "/tools/aeo-content-grader" },
+    ],
+  },
+  {
     heading: "Contact",
     links: [
       { label: "Book a call", href: siteConfig.bookingUrl, external: true },
@@ -36,7 +42,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-surface">
       <Container size="wide" className="py-16">
-        <div className="grid gap-12 md:grid-cols-[1.6fr_1fr_1fr]">
+        <div className="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
           {/* brand */}
           <div className="max-w-sm">
             <Link href="/" aria-label={`${siteConfig.name} — home`}>
