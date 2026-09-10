@@ -59,12 +59,12 @@ export function SiteFooter() {
               <h3 className="font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
                 {col.heading}
               </h3>
-              <ul className="mt-5 space-y-3.5">
+              <ul className="mt-4 space-y-1">
                 {col.links.map((link) => (
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="rounded-sm text-[15px] text-foreground/75 transition-colors hover:text-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                      className="inline-flex min-h-11 items-center rounded-sm text-[15px] text-foreground/75 transition-colors hover:text-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                       {...("external" in link && link.external
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
@@ -83,10 +83,10 @@ export function SiteFooter() {
             © {year} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <Link href="/privacy" className="inline-flex items-center rounded-sm py-2 text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
+            <Link href="/terms" className="inline-flex items-center rounded-sm py-2 text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Terms &amp; Conditions
             </Link>
           </div>
