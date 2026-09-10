@@ -97,7 +97,7 @@ function Widget({
           <Icon size={13} />
         </span>
         <span className="text-[13px] font-semibold text-foreground">{name}</span>
-        <span className="ml-auto flex items-center gap-1 font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-gray">
+        <span className="ml-auto flex items-center gap-1 font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
           <span className="ember scale-[0.5]" aria-hidden="true" />
           {status}
         </span>
@@ -123,7 +123,7 @@ function Ring({ value }: { value: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <CountUp value={value} className="text-lg font-bold text-foreground tabular-nums" />
-        <span className="font-[family-name:var(--font-mono)] text-[7px] uppercase tracking-wider text-gray">
+        <span className="font-[family-name:var(--font-mono)] text-[7px] uppercase tracking-wider text-muted">
           Health
         </span>
       </div>
@@ -165,7 +165,7 @@ export function Work() {
               <span className="h-2.5 w-2.5 rounded-full bg-border" />
               <span className="h-2.5 w-2.5 rounded-full bg-border" />
             </span>
-            <span className="ml-1 font-[family-name:var(--font-mono)] text-[11px] tracking-tight text-gray">
+            <span className="ml-1 font-[family-name:var(--font-mono)] text-[11px] tracking-tight text-muted">
               linkurst · organic OS
             </span>
             <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-[10px] text-fog">
@@ -190,8 +190,8 @@ export function Work() {
                   <p className="text-fog">
                     <span className="font-bold text-coral-600">3</span> critical
                   </p>
-                  <p className="text-gray">8 warnings · 12 notices</p>
-                  <p className="font-[family-name:var(--font-mono)] text-[10px] text-gray">
+                  <p className="text-muted">8 warnings · 12 notices</p>
+                  <p className="font-[family-name:var(--font-mono)] text-[10px] text-muted">
                     4,280 URLs crawled
                   </p>
                 </div>
@@ -203,7 +203,7 @@ export function Work() {
               <div className="flex items-end justify-between">
                 <div>
                   <CountUp value={48} className="block text-2xl font-bold text-foreground tabular-nums" />
-                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-gray">
+                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
                     briefs live
                   </p>
                 </div>
@@ -231,7 +231,7 @@ export function Work() {
             <Widget icon={Sparkles} name="AI Search" status="Citations">
               <p className="text-2xl font-bold text-foreground tabular-nums">
                 <CountUp value={64} suffix="%" />
-                <span className="ml-1 text-[10px] font-normal text-gray">share of answer</span>
+                <span className="ml-1 text-[10px] font-normal text-muted">share of answer</span>
               </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {[["ChatGPT", true], ["Perplexity", true], ["Gemini", true], ["Copilot", false]].map(
@@ -240,7 +240,7 @@ export function Work() {
                       key={n as string}
                       className={cn(
                         "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px]",
-                        cited ? "bg-coral-wash text-coral-600" : "border border-border text-gray",
+                        cited ? "bg-coral-wash text-coral-600" : "border border-border text-muted",
                       )}
                     >
                       {cited && <Check size={9} />}
@@ -254,7 +254,7 @@ export function Work() {
             {/* Reddit */}
             <Widget icon={MessageSquare} name="Reddit" status="Threads">
               <div className="rounded-lg border border-border bg-background/60 p-2.5">
-                <div className="flex items-center gap-2 text-[10px] text-gray">
+                <div className="flex items-center gap-2 text-[10px] text-muted">
                   <span className="font-semibold text-coral-600">r/SaaS</span>
                   <span className="inline-flex items-center gap-0.5">
                     <ArrowUp size={10} className="text-coral" /> 1.4k
@@ -274,7 +274,7 @@ export function Work() {
               <div className="flex items-end justify-between">
                 <div>
                   <CountUp value={310} className="block text-2xl font-bold text-foreground tabular-nums" />
-                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-gray">
+                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
                     referring domains
                   </p>
                 </div>
@@ -303,13 +303,13 @@ export function Work() {
               <div className="flex gap-4">
                 <div>
                   <CountUp value={24} className="block text-2xl font-bold text-foreground tabular-nums" />
-                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-gray">
+                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
                     placements
                   </p>
                 </div>
                 <div className="border-l border-border pl-4">
                   <CountUp value={80} suffix="+" className="block text-2xl font-bold text-foreground tabular-nums" />
-                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-gray">
+                  <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
                     DR80+ links
                   </p>
                 </div>

@@ -49,7 +49,7 @@ function DiscoverMap() {
     `M ${n.x} ${n.y} Q ${(n.x + C.x) / 2} ${n.y} ${C.x} ${C.y}`;
   return (
     <Panel>
-      <p className="mb-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-gray">
+      <p className="mb-3 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
         Living knowledge base
       </p>
       <div className="relative h-52">
@@ -98,7 +98,7 @@ function PlanMatrix() {
   return (
     <Panel>
       <div className="mb-3 flex items-center justify-between">
-        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-gray">
+        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
           Unified plan · channel mix
         </p>
         <span className="inline-flex items-center gap-1 rounded-md bg-coral-wash px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] font-semibold text-coral-600">
@@ -144,7 +144,7 @@ function ExecuteBoard() {
   return (
     <Panel>
       <div className="mb-3 flex items-center justify-between">
-        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-gray">
+        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
           Deploying across surfaces
         </p>
         <div className="flex gap-1">
@@ -153,7 +153,7 @@ function ExecuteBoard() {
               key={s}
               className={cn(
                 "grid h-5 min-w-5 place-items-center rounded px-1 font-[family-name:var(--font-mono)] text-[8.5px] font-semibold",
-                i < 3 ? "bg-coral-wash text-coral-600" : "border border-border text-gray",
+                i < 3 ? "bg-coral-wash text-coral-600" : "border border-border text-muted",
               )}
             >
               {s}
@@ -185,7 +185,7 @@ function ExecuteBoard() {
                   ? "bg-coral-wash text-coral-600"
                   : r.status === "publishing"
                     ? "text-coral-600"
-                    : "text-gray",
+                    : "text-muted",
               )}
             >
               {r.status}
@@ -205,7 +205,7 @@ function TrackTrends() {
   return (
     <Panel>
       <div className="mb-3 flex items-center justify-between">
-        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-gray">
+        <p className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
           Compounding visibility
         </p>
         <span className="font-[family-name:var(--font-mono)] text-[10px] font-semibold text-coral-600">
@@ -319,7 +319,7 @@ export function HowWeWork() {
                   {s.tags.map((t) => (
                     <span
                       key={t}
-                      className="rounded-md border border-border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-tight text-gray"
+                      className="rounded-md border border-border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10px] tracking-tight text-muted"
                     >
                       {t}
                     </span>

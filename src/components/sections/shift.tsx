@@ -71,7 +71,7 @@ export function Shift() {
             search bar.
           </span>
           <br />
-          <span className="text-gray">
+          <span className="text-muted">
             Most agencies are still optimizing for one box.
           </span>
         </h2>
@@ -100,8 +100,8 @@ export function Shift() {
           {/* column headers */}
           <div className="hidden grid-cols-[1fr_auto_1fr] border-b border-border md:grid">
             <div className="flex items-center gap-2 px-6 py-4">
-              <span className="eyebrow-mono text-gray">The old playbook</span>
-              <span className="rounded border border-border px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[10px] text-gray">
+              <span className="eyebrow-mono text-muted">The old playbook</span>
+              <span className="rounded border border-border px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
                 2015
               </span>
             </div>
@@ -131,14 +131,14 @@ export function Shift() {
                 <div className="flex items-start gap-3 px-6 py-6">
                   <s.icon
                     size={16}
-                    className="mt-0.5 shrink-0 text-gray/70"
+                    className="mt-0.5 shrink-0 text-muted/70"
                     aria-hidden="true"
                   />
                   <div>
-                    <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-gray/70">
+                    <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-muted/70">
                       {s.category}
                     </span>
-                    <p className="mt-1 text-[15px] leading-snug text-gray line-through decoration-gray/40">
+                    <p className="mt-1 text-[15px] leading-snug text-muted line-through decoration-gray/40">
                       {s.before}
                     </p>
                   </div>
@@ -176,7 +176,7 @@ export function Shift() {
             <span className="text-foreground">
               You&rsquo;re not short on dashboards.
             </span>{" "}
-            <span className="text-gray">
+            <span className="text-muted">
               You&rsquo;re short on someone who turns them into moves.
             </span>
           </h3>

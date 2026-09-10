@@ -41,7 +41,7 @@ export function SiteHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-white/5 hover:text-foreground"
+              className="rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               {item.label}
             </a>
@@ -52,7 +52,7 @@ export function SiteHeader() {
           href={siteConfig.bookingUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="animate-glow-pulse ml-1 hidden items-center gap-2 rounded-full bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-600 motion-reduce:animate-none md:inline-flex"
+          className="animate-glow-pulse ml-1 hidden items-center gap-2 rounded-full bg-coral px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-coral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:animate-none md:inline-flex"
         >
           <span className="animate-pulse-soft h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_8px_1px_rgba(255,255,255,0.9)] motion-reduce:animate-none" />
           Book a call
@@ -61,7 +61,7 @@ export function SiteHeader() {
         {/* mobile toggle */}
         <button
           type="button"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground md:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full text-foreground hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -83,7 +83,7 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-fog hover:bg-white/5 hover:text-foreground"
+              className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-sm font-medium text-fog hover:bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               {item.label}
             </a>
@@ -93,7 +93,7 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
-            className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-coral px-4 py-2.5 text-sm font-medium text-white hover:bg-coral-600"
+            className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-coral px-4 py-2.5 text-sm font-medium text-white hover:bg-coral-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           >
             Book a call
             <ArrowRight size={16} />

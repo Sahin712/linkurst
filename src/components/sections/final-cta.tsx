@@ -11,7 +11,7 @@ export function FinalCta() {
         <Heading size="xl" className="text-ivory">
           Ready to build your organic visibility?
         </Heading>
-        <p className="mt-5 text-lg leading-relaxed text-gray">
+        <p className="mt-5 text-lg leading-relaxed text-muted">
           Find the gaps. Build the authority. Turn organic discovery into
           qualified demand.
         </p>
@@ -31,7 +31,7 @@ export function FinalCta() {
           </Button>
         </div>
 
-        <p className="caption mt-8 max-w-md text-sm text-gray">
+        <p className="caption mt-8 max-w-md text-sm text-muted">
           No generic SEO packages. No vanity metrics. A strategy built around
           your growth goals.
         </p>

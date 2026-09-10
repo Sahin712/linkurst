@@ -83,7 +83,7 @@ export function VisibilityDashboard({ className }: { className?: string }) {
             <p className="text-sm font-semibold tracking-tight text-foreground">
               Organic Visibility
             </p>
-            <p className="caption text-xs not-italic text-gray">
+            <p className="caption text-xs not-italic text-muted">
               Cross-channel discovery score
             </p>
           </div>
@@ -91,7 +91,7 @@ export function VisibilityDashboard({ className }: { className?: string }) {
         <div className="flex items-center gap-3">
           <div className="text-right">
             <p className="text-2xl font-bold leading-none tracking-tight text-foreground">
-              78<span className="text-base font-medium text-gray"> / 100</span>
+              78<span className="text-base font-medium text-muted"> / 100</span>
             </p>
           </div>
           <span className="inline-flex items-center gap-1 rounded-full bg-coral-100 px-2.5 py-1 text-xs font-semibold text-coral-600">
@@ -108,7 +108,7 @@ export function VisibilityDashboard({ className }: { className?: string }) {
             key={label}
             className="rounded-xl border border-border bg-background/60 p-3"
           >
-            <div className="flex items-center gap-1.5 text-gray">
+            <div className="flex items-center gap-1.5 text-muted">
               <Icon size={13} />
               <span className="text-[0.7rem] font-medium tracking-tight">
                 {label}
@@ -117,7 +117,7 @@ export function VisibilityDashboard({ className }: { className?: string }) {
             <p className="mt-1.5 text-lg font-bold tracking-tight text-foreground">
               {value}
             </p>
-            <p className="caption text-[0.7rem] not-italic text-gray">{unit}</p>
+            <p className="caption text-[0.7rem] not-italic text-muted">{unit}</p>
           </div>
         ))}
       </div>

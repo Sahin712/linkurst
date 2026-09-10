@@ -49,7 +49,7 @@ export function Hero() {
                 <span className="ember" aria-hidden="true" />
                 Organic-growth studio for SaaS &amp; B2B
               </span>
-              <span className="eyebrow-mono flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-[11px] text-gray">
+              <span className="eyebrow-mono flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-[11px] text-muted">
                 SEO
                 <span className="h-1 w-1 rounded-full bg-coral" />
                 AEO

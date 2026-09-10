@@ -48,7 +48,7 @@ export function SiteFooter() {
                 className="h-9 w-9 object-contain"
               />
             </Link>
-            <p className="mt-5 text-sm leading-relaxed text-gray">
+            <p className="mt-5 text-sm leading-relaxed text-muted">
               The organic-visibility studio for SaaS &amp; B2B. We help founders
               get found across Google, AI answers, and Reddit, not just ranked.
             </p>
@@ -56,7 +56,7 @@ export function SiteFooter() {
 
           {columns.map((col) => (
             <nav key={col.heading} aria-label={col.heading}>
-              <h3 className="font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.16em] text-gray">
+              <h3 className="font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
                 {col.heading}
               </h3>
               <ul className="mt-5 space-y-3.5">
@@ -64,7 +64,7 @@ export function SiteFooter() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-[15px] text-foreground/75 transition-colors hover:text-coral"
+                      className="rounded-sm text-[15px] text-foreground/75 transition-colors hover:text-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                       {...("external" in link && link.external
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
@@ -79,14 +79,14 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-border pt-7 sm:flex-row sm:items-center">
-          <p className="font-[family-name:var(--font-mono)] text-xs text-gray">
+          <p className="font-[family-name:var(--font-mono)] text-xs text-muted">
             © {year} {siteConfig.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-xs text-gray transition-colors hover:text-fog">
+            <Link href="#" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-xs text-gray transition-colors hover:text-fog">
+            <Link href="#" className="rounded-sm text-xs text-muted transition-colors hover:text-fog focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface">
               Terms &amp; Conditions
             </Link>
           </div>

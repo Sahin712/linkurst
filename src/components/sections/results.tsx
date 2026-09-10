@@ -39,7 +39,7 @@ export function Results() {
               <p className="text-4xl font-bold tracking-tight text-coral sm:text-5xl">
                 {s.value}
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-gray">
+              <p className="mt-3 text-sm leading-relaxed text-muted">
                 {s.label}
               </p>
             </dd>

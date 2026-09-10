@@ -16,7 +16,7 @@
   --color-gray: #8a8a8e;
 
   /* Coral tints/shades for interactive states */
-  --color-coral-600: #d0442c;
+  --color-coral-600: #c83e27;
   --color-coral-100: #fbe4de;
   --color-coral-wash: rgba(232, 85, 58, 0.14);
 
@@ -27,7 +27,9 @@
   --color-background: #f7f4ef;
   --color-surface: #ffffff;
   --color-foreground: #1c1c1e;
-  --color-muted: var(--color-gray);
+  /* Muted TEXT token — a slate tint that clears WCAG AA (5:1 on ivory).
+     The raw `gray` palette color (#8a8a8e) stays for borders/fills/decoration. */
+  --color-muted: #69686a;
   --color-accent: var(--color-coral);
   --color-border: #e6e1d8;
 

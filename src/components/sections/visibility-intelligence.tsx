@@ -70,7 +70,7 @@ export function VisibilityIntelligence() {
               </caption>
               <thead>
                 <tr className="text-left">
-                  <th className="pb-3 font-semibold text-gray">
+                  <th className="pb-3 font-semibold text-muted">
                     Visibility Signal
                   </th>
                   <th className="pb-3 text-right font-semibold text-foreground">

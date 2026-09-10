@@ -84,7 +84,7 @@ function SerpVisual() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5">
-        <Search size={12} className="text-gray" />
+        <Search size={12} className="text-muted" />
         <MockBar className="w-24" />
       </div>
       {[0, 1].map((i) => (
@@ -123,7 +123,7 @@ function RedditVisual() {
     <div className="space-y-2.5">
       {[0, 1].map((i) => (
         <div key={i} className="flex gap-2 rounded-lg bg-surface p-2.5">
-          <div className="flex flex-col items-center gap-0.5 text-gray">
+          <div className="flex flex-col items-center gap-0.5 text-muted">
             <ArrowUp size={11} className={i === 0 ? "text-coral-600" : ""} />
             <span className="text-[0.6rem] font-semibold">
               {i === 0 ? "128" : "54"}

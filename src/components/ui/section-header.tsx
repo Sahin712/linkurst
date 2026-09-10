@@ -56,7 +56,7 @@ export function SectionHeader({
           className={cn(
             "max-w-2xl text-base leading-relaxed sm:text-lg",
             align === "center" && "mx-auto",
-            tone === "dark" ? "text-gray" : "text-fog",
+            tone === "dark" ? "text-muted" : "text-fog",
           )}
         >
           {description}

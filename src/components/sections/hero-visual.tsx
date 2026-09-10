@@ -16,7 +16,7 @@ export function HeroVisual() {
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
-          <span className="ml-2 flex-1 truncate rounded-md bg-background px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10.5px] text-gray">
+          <span className="ml-2 flex-1 truncate rounded-md bg-background px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
             google.com/search
           </span>
           <span className="rounded-md border border-coral-100 bg-coral-wash px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] font-medium tracking-wider text-coral-600">
@@ -25,7 +25,7 @@ export function HeroVisual() {
         </div>
 
         <div className="mt-3 flex items-center gap-2 rounded-full border border-border bg-background px-3 py-2">
-          <Search size={13} className="text-gray" />
+          <Search size={13} className="text-muted" />
           <span className="text-[12px] text-fog">
             best onboarding tool for B2B SaaS
           </span>
@@ -34,7 +34,7 @@ export function HeroVisual() {
         <div className="mt-3 rounded-xl border border-border bg-background/60 p-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate font-[family-name:var(--font-mono)] text-[10px] text-gray">
+              <p className="truncate font-[family-name:var(--font-mono)] text-[10px] text-muted">
                 yourbrand.com › platform › onboarding
               </p>
               <p className="mt-0.5 text-[13.5px] font-semibold tracking-tight text-coral-600">
@@ -58,7 +58,7 @@ export function HeroVisual() {
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
           <span className="h-2.5 w-2.5 rounded-full bg-border" />
-          <span className="ml-2 flex-1 truncate rounded-md bg-background px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10.5px] text-gray">
+          <span className="ml-2 flex-1 truncate rounded-md bg-background px-2.5 py-1 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
             chatgpt.com
           </span>
           <span className="rounded-md border border-coral-100 bg-coral-wash px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9px] font-medium tracking-wider text-coral-600">
@@ -97,7 +97,7 @@ export function HeroVisual() {
 
       {/* Floating citation metric callout */}
       <div className="absolute -right-3 top-16 z-30 w-[168px] rounded-2xl border border-border bg-surface p-3.5 shadow-[var(--shadow-panel)] transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.06] group-hover:shadow-[0_20px_40px_-16px_rgba(232,85,58,0.5)] sm:-right-6">
-        <p className="font-[family-name:var(--font-mono)] text-[9.5px] font-medium uppercase tracking-[0.14em] text-gray">
+        <p className="font-[family-name:var(--font-mono)] text-[9.5px] font-medium uppercase tracking-[0.14em] text-muted">
           AI citations · search
         </p>
         <p className="mt-1 text-[28px] font-bold leading-none tracking-[var(--tracking-tighter)] text-coral-600 tabular-nums">
