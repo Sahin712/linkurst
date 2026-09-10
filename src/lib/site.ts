@@ -8,10 +8,10 @@ export const siteConfig = {
   tagline: "Organic visibility for SaaS & B2B",
   statement:
     "We help SaaS and B2B companies build organic visibility across Google, AI search, and Reddit.",
-  url: "https://linkurst.com",
+  url: "https://www.linkurst.com",
   bookingUrl: "https://calendly.com/sahin-linkurst/introduction",
   email: "Sahin@linkurst.com",
-  logo: "https://linkurst.com/brand/logo.png",
+  logo: "https://www.linkurst.com/brand/logo.png",
   // Public profiles — used for Organization schema `sameAs`.
   socials: {
     linkedin: "https://www.linkedin.com/company/linkurst/",

@@ -32,7 +32,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://linkurst.com"),
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: "Linkurst | Top SEO Agency for SaaS and B2B Growth",
     template: "%s · Linkurst",
