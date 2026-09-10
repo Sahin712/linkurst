@@ -54,8 +54,18 @@ export const metadata: Metadata = {
     title: "Linkurst | Top SEO Agency for SaaS and B2B Growth",
     description:
       "A top SEO agency for SaaS and B2B teams. Linkurst helps you win search, AI answers, and Reddit to own your market. Book a call to get started.",
+    url: siteConfig.url,
     siteName: "Linkurst",
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Linkurst | Top SEO Agency for SaaS and B2B Growth",
+    description:
+      "A top SEO agency for SaaS and B2B teams. Linkurst helps you win search, AI answers, and Reddit to own your market. Book a call to get started.",
+    site: "@sksahin03",
+    creator: "@sksahin03",
   },
   ...(siteConfig.googleSiteVerification
     ? { verification: { google: siteConfig.googleSiteVerification } }
