@@ -5,7 +5,6 @@ import {
   Download,
   Loader2,
   ArrowUpRight,
-  Target,
   Check,
   X,
   ArrowRight,
@@ -14,6 +13,13 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
+import {
+  freshness,
+  opportunityScore,
+  tierOf,
+  drStyle,
+  paStyle,
+} from "@/lib/listicle/score";
 import { cn } from "@/lib/utils";
 
 function isGap(l: Listicle) {
@@ -46,14 +52,17 @@ export function ListicleReport({ result }: { result: FindResult }) {
     };
   }, [result]);
 
-  // Gap-first, then by authority.
+  // Best pitch targets first (highest opportunity score).
   const rows = useMemo(() => {
-    return [...filtered.listicles].sort((a, b) => {
-      const g = Number(isGap(b)) - Number(isGap(a));
-      if (g !== 0) return g;
-      return (b.da ?? 0) - (a.da ?? 0);
-    });
+    return [...filtered.listicles].sort(
+      (a, b) => opportunityScore(b) - opportunityScore(a),
+    );
   }, [filtered]);
+
+  const primeTargets = useMemo(
+    () => filtered.listicles.filter((l) => opportunityScore(l) >= 72).length,
+    [filtered],
+  );
 
   const drLabel = filtered.daSource === "ahrefs" ? "DR" : "DA";
   const allSelected = selected.size === rows.length && rows.length > 0;
@@ -80,15 +89,15 @@ export function ListicleReport({ result }: { result: FindResult }) {
   }
 
   const stats = [
-    { n: filtered.totals.listicles, l: "Listicles" },
-    { n: filtered.totals.gaps, l: "Placement gaps", coral: true },
+    { n: filtered.totals.listicles, l: "Opportunities" },
+    { n: primeTargets, l: "Prime targets", coral: true },
     { n: filtered.totals.avgDa ?? "—", l: `Avg ${drLabel}` },
   ];
 
   return (
     <div className="space-y-4 pb-24">
       {/* header */}
-      <div className="rounded-[var(--radius-xl)] border border-border bg-surface shadow-[var(--shadow-panel)]">
+      <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-gradient-to-br from-coral-wash/70 via-surface to-surface shadow-[var(--shadow-panel)]">
         <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="eyebrow-mono text-coral">Analysis complete</p>
@@ -150,9 +159,9 @@ export function ListicleReport({ result }: { result: FindResult }) {
       {/* table */}
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-[13px]">
+          <table className="w-full min-w-[860px] text-left text-[13px]">
             <thead>
-              <tr className="border-b border-border font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
+              <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3">
                   <input
                     type="checkbox"
@@ -163,23 +172,26 @@ export function ListicleReport({ result }: { result: FindResult }) {
                   />
                 </th>
                 <th className="px-3 py-3 font-medium">Listicle</th>
-                <th className="px-3 py-3 font-medium">{drLabel}</th>
-                <th className="px-3 py-3 font-medium">PA</th>
-                <th className="px-3 py-3 font-medium">Updated</th>
-                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-3 py-3 text-center font-medium">{drLabel}</th>
+                <th className="px-3 py-3 text-center font-medium">PA</th>
+                <th className="px-3 py-3 text-center font-medium">Rank</th>
+                <th className="px-3 py-3 font-medium">Freshness</th>
+                <th className="px-4 py-3 font-medium">Opportunity</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((l) => {
                 const gap = isGap(l);
                 const on = selected.has(l.url);
+                const fresh = freshness(l.updated);
+                const score = opportunityScore(l);
+                const tier = tierOf(score);
                 return (
                   <tr
                     key={l.url}
                     className={cn(
                       "border-b border-border last:border-b-0 transition-colors",
-                      gap && "bg-coral-wash/25",
-                      on && "bg-coral-wash/50",
+                      on ? "bg-coral-wash/50" : "hover:bg-foreground/[0.015]",
                     )}
                   >
                     <td className="px-4 py-3 align-top">
@@ -205,11 +217,14 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         {l.domain}
                       </p>
                       {l.competitorsMentioned.length > 0 && (
-                        <div className="mt-1.5 flex flex-wrap gap-1">
+                        <div className="mt-1.5 flex flex-wrap items-center gap-1">
+                          <span className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wide text-coral-600">
+                            Competitors:
+                          </span>
                           {l.competitorsMentioned.map((c) => (
                             <span
                               key={c}
-                              className="rounded border border-border px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9.5px] text-fog"
+                              className="rounded border border-coral/30 bg-coral-wash/40 px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9.5px] text-coral-600"
                             >
                               {c}
                             </span>
@@ -217,22 +232,81 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         </div>
                       )}
                     </td>
-                    <td className="px-3 py-3 align-top tabular-nums text-fog">{l.da ?? "—"}</td>
-                    <td className="px-3 py-3 align-top tabular-nums text-fog">{l.pa ?? "—"}</td>
-                    <td className="px-3 py-3 align-top font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                      {l.updated ?? "—"}
+                    <td className="px-3 py-3 align-middle text-center">
+                      <span
+                        style={drStyle(l.da)}
+                        className="inline-block min-w-9 rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
+                      >
+                        {l.da ?? "—"}
+                      </span>
                     </td>
-                    <td className="px-4 py-3 align-top">
-                      {gap ? (
-                        <span className="inline-flex items-center gap-1 rounded-full border border-coral/40 bg-surface px-2 py-0.5 text-[11px] font-semibold text-coral-600">
-                          <Target size={11} />
-                          Gap
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[11px] font-medium text-muted">
-                          Not on it
-                        </span>
+                    <td className="px-3 py-3 align-middle text-center">
+                      <span
+                        style={paStyle(l.pa)}
+                        className="inline-block min-w-9 rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
+                      >
+                        {l.pa ?? "—"}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
+                      {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
+                    </td>
+                    <td className="px-3 py-3 align-middle">
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1.5 text-[12px] font-medium",
+                          fresh.tone === "fresh"
+                            ? "text-coral-600"
+                            : fresh.tone === "aging"
+                              ? "text-foreground"
+                              : "text-muted",
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "h-1.5 w-1.5 rounded-full",
+                            fresh.tone === "fresh"
+                              ? "bg-coral"
+                              : fresh.tone === "aging"
+                                ? "bg-slate"
+                                : "bg-border",
+                          )}
+                        />
+                        {fresh.label}
+                      </span>
+                      {l.updated && (
+                        <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                          {l.updated}
+                        </p>
                       )}
+                    </td>
+                    <td className="px-4 py-3 align-middle">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[13px] font-bold tabular-nums",
+                            tier === "High"
+                              ? "bg-coral text-white"
+                              : tier === "Medium"
+                                ? "bg-coral-wash text-coral-600"
+                                : "border border-border text-muted",
+                          )}
+                        >
+                          {score}
+                        </span>
+                        <span
+                          className={cn(
+                            "text-[12px] font-semibold",
+                            tier === "High"
+                              ? "text-coral-600"
+                              : tier === "Medium"
+                                ? "text-foreground"
+                                : "text-muted",
+                          )}
+                        >
+                          {tier}
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -244,7 +318,10 @@ export function ListicleReport({ result }: { result: FindResult }) {
 
       {/* attribution */}
       <p className="px-1 text-[12px] leading-relaxed text-muted">
-        {drLabel} ={" "}
+        <strong className="font-semibold text-fog">Opportunity</strong> blends authority, freshness,
+        and Google rank to show which listicles to pitch first. <strong className="font-semibold text-fog">Rank</strong>{" "}
+        is the listicle&rsquo;s best Google position; <strong className="font-semibold text-fog">Freshness</strong>{" "}
+        is how recently it was updated. {drLabel} ={" "}
         <a
           href="https://ahrefs.com/"
           target="_blank"
@@ -253,7 +330,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
         >
           Domain Rating by Ahrefs
         </a>
-        . PA is a page-authority estimate. Gaps are listicles that rank your competitors but not you.
+        ; PA is a page-authority estimate.
       </p>
 
       {/* sticky action bar */}
