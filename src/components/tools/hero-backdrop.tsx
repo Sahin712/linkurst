@@ -37,12 +37,12 @@ export function HeroBackdrop() {
     >
       {/* soft warm glow behind the radar */}
       <div
-        className="absolute left-1/2 top-[40%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
-        style={{ background: "var(--color-coral)", opacity: 0.08 }}
+        className="absolute right-[2%] top-[34%] h-[520px] w-[520px] -translate-y-1/2 rounded-full blur-[120px]"
+        style={{ background: "var(--color-coral)", opacity: 0.1 }}
       />
 
-      {/* radar — concentric rings + expanding pulses */}
-      <div className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2">
+      {/* radar — concentric rings + expanding pulses (right side) */}
+      <div className="absolute right-[6%] top-[34%] -translate-y-1/2">
         {GUIDES.map((d, i) => (
           <span
             key={`g${i}`}
