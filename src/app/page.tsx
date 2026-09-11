@@ -5,6 +5,7 @@ import { Work } from "@/components/sections/work";
 import { HowWeWork } from "@/components/sections/how-we-work";
 import { Plan } from "@/components/sections/plan";
 import { Services } from "@/components/sections/services";
+import { FreeTool } from "@/components/sections/free-tool";
 import { Faq } from "@/components/sections/faq";
 import { Cta } from "@/components/sections/cta";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -25,6 +26,7 @@ export default function Home() {
       <HowWeWork />
       <Plan />
       <Services />
+      <FreeTool />
       <Faq />
       <Cta />
     </>
