@@ -263,10 +263,12 @@ export default function ListicleFinderPage() {
                     <div className="inline-block rounded-md border border-border bg-surface px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] text-muted shadow-[var(--shadow-card)]">
                       Updated: Jun 2026
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {[
-                        ["DA", "72"],
+                        ["DR", "72"],
                         ["PA", "55"],
+                        ["Traffic", "184K"],
+                        ["Rank", "#2"],
                       ].map(([k, v]) => (
                         <div
                           key={k}
@@ -287,8 +289,9 @@ export default function ListicleFinderPage() {
                   </h3>
                   <p className="mt-2 text-[14px] leading-relaxed text-fog">
                     We scan the web for the &ldquo;best of&rdquo; and
-                    &ldquo;top&rdquo; articles, then enrich each with DA, PA, last
-                    update dates, and who&rsquo;s mentioned.
+                    &ldquo;top&rdquo; articles, then enrich each with DR, PA,
+                    traffic, Google rank, freshness dates, and who&rsquo;s
+                    mentioned.
                   </p>
                   <p className="mt-3 text-[13px] italic leading-relaxed text-muted">
                     Takes a few minutes, depending on your query.
