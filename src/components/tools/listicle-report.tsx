@@ -360,7 +360,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
       <MetricsLegend drLabel={drLabel} />
 
       {/* service CTA — same panel as the homepage */}
-      <div className="pt-6">
+      <div className="pt-16 sm:pt-20">
         <CtaPanel />
       </div>
 
