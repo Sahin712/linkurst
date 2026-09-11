@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { sendPlacementEmail } from "@/lib/listicle/email";
+import {
+  sendPlacementEmail,
+  sendPlacementConfirmationEmail,
+} from "@/lib/listicle/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +18,10 @@ export async function POST(request: Request) {
     company?: string;
     message?: string;
     keyword?: string;
+    website?: string;
+    industry?: string;
+    location?: string;
+    reportUrl?: string;
     listicles?: { title?: string; url?: string }[];
   };
   try {
@@ -35,15 +42,33 @@ export async function POST(request: Request) {
         .map((l) => ({ title: l.title as string, url: l.url as string }))
     : [];
 
+  const str = (v: unknown) => (typeof v === "string" && v.trim() ? v : undefined);
+
   try {
-    await sendPlacementEmail({
-      name: body.name,
-      email: body.email,
-      company: typeof body.company === "string" ? body.company : undefined,
-      message: typeof body.message === "string" ? body.message : undefined,
-      keyword: typeof body.keyword === "string" ? body.keyword : undefined,
-      listicles,
-    });
+    // Notify Linkurst, and send the visitor a confirmation. Run both; a failure
+    // of one shouldn't block the other.
+    const results = await Promise.allSettled([
+      sendPlacementEmail({
+        name: body.name,
+        email: body.email,
+        company: str(body.company),
+        message: str(body.message),
+        keyword: str(body.keyword),
+        listicles,
+      }),
+      sendPlacementConfirmationEmail({
+        to: body.email,
+        name: body.name,
+        website: str(body.website),
+        keyword: str(body.keyword),
+        industry: str(body.industry),
+        location: str(body.location),
+        reportUrl: str(body.reportUrl),
+        listicles,
+      }),
+    ]);
+    // Only fail the request if the internal notification (index 0) failed.
+    if (results[0].status === "rejected") throw results[0].reason;
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(

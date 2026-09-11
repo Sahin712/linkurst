@@ -135,3 +135,98 @@ export async function sendPlacementEmail(m: PlacementRequest): Promise<void> {
     html,
   });
 }
+
+type PlacementConfirmation = {
+  to: string;
+  name: string;
+  website?: string;
+  keyword?: string;
+  industry?: string;
+  location?: string;
+  reportUrl?: string;
+  listicles: { title: string; url: string }[];
+};
+
+/** Confirmation sent to the visitor who submitted a placement request. */
+export async function sendPlacementConfirmationEmail(
+  m: PlacementConfirmation,
+): Promise<void> {
+  const subject = "Your placement request has been received";
+
+  const summaryRow = (label: string, value: string) =>
+    `<tr>
+      <td style="padding:4px 0;color:${COLORS.gray};font-size:13px;width:120px;vertical-align:top;">${label}</td>
+      <td style="padding:4px 0;color:${COLORS.charcoal};font-size:13px;font-weight:600;">${value}</td>
+    </tr>`;
+
+  const summary = [
+    m.website ? summaryRow("Website", esc(m.website)) : "",
+    m.keyword ? summaryRow("Keyword", esc(m.keyword)) : "",
+    m.industry ? summaryRow("Industry", esc(m.industry)) : "",
+    m.location ? summaryRow("Location", esc(m.location)) : "",
+  ].join("");
+
+  const list = m.listicles.length
+    ? m.listicles
+        .map(
+          (l) =>
+            `<li style="margin:6px 0;"><a href="${esc(l.url)}" style="color:${COLORS.coral};text-decoration:none;">${esc(l.title)}</a></li>`,
+        )
+        .join("")
+    : `<li style="color:${COLORS.gray};">You didn't select specific listicles — we'll recommend the best targets.</li>`;
+
+  const firstName = esc(m.name.split(" ")[0] || m.name);
+
+  const html = `
+  <div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:${COLORS.ivory};padding:32px 0;">
+    <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #ECE7DF;border-radius:16px;overflow:hidden;">
+      <div style="padding:28px 32px 4px;">
+        <p style="margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:${COLORS.coral};font-weight:600;">Linkurst · Listicle Finder</p>
+        <h1 style="margin:10px 0 0;font-size:22px;line-height:1.3;color:${COLORS.charcoal};">Your placement request has been received</h1>
+      </div>
+      <div style="padding:12px 32px 4px;color:${COLORS.charcoal};font-size:15px;line-height:1.6;">
+        <p style="margin:8px 0;">Hi ${firstName},</p>
+        <p style="margin:8px 0;">Thanks for your submission. We've received your placement request and our team is reviewing the listicles you selected. We'll be in touch about getting your brand featured.</p>
+      </div>
+      ${
+        summary
+          ? `<div style="padding:12px 32px;">
+        <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:${COLORS.charcoal};text-transform:uppercase;letter-spacing:.06em;">Request summary</p>
+        <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;">${summary}</table>
+      </div>`
+          : ""
+      }
+      <div style="padding:8px 32px;">
+        <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:${COLORS.charcoal};text-transform:uppercase;letter-spacing:.06em;">Selected listicles</p>
+        <ul style="padding-left:18px;margin:0;font-size:14px;">${list}</ul>
+      </div>
+      ${
+        m.reportUrl
+          ? `<div style="padding:12px 32px 4px;">
+        <p style="margin:0 0 8px;font-size:14px;color:${COLORS.charcoal};">You can view your full research report here:</p>
+        <a href="${esc(m.reportUrl)}" style="display:inline-block;background:${COLORS.coral};color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 18px;border-radius:9px;">View your report &rarr;</a>
+      </div>`
+          : ""
+      }
+      <div style="padding:16px 32px 28px;color:${COLORS.gray};font-size:13px;line-height:1.6;">
+        <p style="margin:8px 0;">Need to update something? Just reply to this email.</p>
+        <p style="margin:14px 0 0;color:${COLORS.charcoal};">Best regards,<br>The Linkurst Team</p>
+        <p style="margin:4px 0 0;"><a href="${siteUrl()}" style="color:${COLORS.coral};text-decoration:none;">linkurst.com</a></p>
+      </div>
+    </div>
+  </div>`;
+
+  if (!hasResend()) {
+    console.info(
+      `[email:dev] placement confirmation → ${m.to}\n  name: ${m.name}\n  keyword: ${m.keyword ?? "—"} | website: ${m.website ?? "—"}\n  report: ${m.reportUrl ?? "—"}\n  listicles: ${m.listicles.map((l) => l.title).join("; ") || "none"}`,
+    );
+    return;
+  }
+  await resend().emails.send({
+    from: FROM,
+    to: m.to,
+    replyTo: TO_LINKURST,
+    subject,
+    html,
+  });
+}

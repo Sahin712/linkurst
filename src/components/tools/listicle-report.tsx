@@ -330,6 +330,10 @@ function PlacementModal({
           company: form.get("company"),
           message: form.get("message"),
           keyword: result.keyword,
+          website: result.brandDomain ?? undefined,
+          industry: result.industry ?? undefined,
+          location: result.location,
+          reportUrl: typeof window !== "undefined" ? window.location.href : undefined,
           listicles: chosen.map((l) => ({ title: l.title, url: l.url })),
         }),
       });
