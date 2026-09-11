@@ -58,42 +58,77 @@ export default async function OrderPage({
     { label: "Location", value: order.meta.location },
   ].filter((r) => r.value);
 
+  const daVals = order.listicles.map((l) => l.da).filter((d): d is number => d != null);
+  const avgDa = daVals.length
+    ? Math.round(daVals.reduce((s, d) => s + d, 0) / daVals.length)
+    : null;
+  const primeTargets = order.listicles.filter((l) => opportunityScore(l) >= 72).length;
+  const stats = [
+    { n: order.listicles.length, l: "Selected" },
+    { n: primeTargets, l: "Prime targets", coral: true },
+    { n: avgDa ?? "—", l: `Avg ${drLabel}` },
+  ];
+
   return (
     <section className="py-12 sm:py-16">
       <Container size="default">
         <div className="mx-auto max-w-5xl space-y-4">
           {/* header */}
-          <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-6 shadow-[var(--shadow-panel)] sm:p-8">
-            <p className="eyebrow-mono text-coral">Placement request received</p>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Selected listicles
-            </h1>
-            <p className="mt-2 text-[15px] leading-relaxed text-fog">
-              {order.contact.name.split(" ")[0]}, here are the{" "}
-              <span className="font-semibold text-foreground">{order.listicles.length}</span>{" "}
-              listicle{order.listicles.length === 1 ? "" : "s"} you selected for placement. Our team
-              is reviewing them.
-            </p>
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-gradient-to-br from-coral-wash/70 via-surface to-surface shadow-[var(--shadow-panel)]">
+            <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p className="eyebrow-mono text-coral">Placement request received</p>
+                <h1 className="mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Selected listicles
+                </h1>
+                <p className="mt-2 text-[15px] leading-relaxed text-fog">
+                  {order.contact.name.split(" ")[0]}, here are the{" "}
+                  <span className="font-semibold text-foreground">{order.listicles.length}</span>{" "}
+                  listicle{order.listicles.length === 1 ? "" : "s"} you selected for placement. Our
+                  team is reviewing them.
+                </p>
 
-            {meta.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2 font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                {meta.map((r) => (
-                  <span key={r.label} className="rounded-full border border-border px-2.5 py-1">
-                    {r.label}: {r.value}
-                  </span>
-                ))}
+                {meta.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2 font-[family-name:var(--font-mono)] text-[11px] text-muted">
+                    {meta.map((r) => (
+                      <span key={r.label} className="rounded-full border border-border px-2.5 py-1">
+                        {r.label}: {r.value}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
 
-            {order.reportUrl && (
-              <a
-                href={order.reportUrl}
-                className="mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-coral-600 hover:text-coral"
-              >
-                <ExternalLink size={14} />
-                View full research report
-              </a>
-            )}
+              {order.reportUrl && (
+                <a
+                  href={order.reportUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-coral/40 px-4 text-[13px] font-semibold text-coral-600 transition-colors hover:bg-coral-wash focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                >
+                  <ExternalLink size={15} />
+                  View full report
+                </a>
+              )}
+            </div>
+
+            <div className="grid grid-cols-3 divide-x divide-border border-t border-border text-center">
+              {stats.map((s) => (
+                <div key={s.l} className="px-3 py-4">
+                  <p
+                    className={
+                      "text-2xl font-bold tabular-nums " +
+                      (s.coral ? "text-coral-600" : "text-foreground")
+                    }
+                  >
+                    {s.n}
+                  </p>
+                  <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-wider text-muted">
+                    {s.l}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* table (dashboard window) */}
