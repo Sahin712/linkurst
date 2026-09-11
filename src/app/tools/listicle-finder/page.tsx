@@ -7,6 +7,7 @@ import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
 import { ReportPreview } from "@/components/tools/report-preview";
 import { ScoreRing } from "@/components/tools/metric-cells";
+import { FaqAccordion } from "@/components/tools/faq-accordion";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -557,22 +558,37 @@ export default function ListicleFinderPage() {
             </div>
           </Reveal>
 
-          <div className="mx-auto max-w-3xl">
-            {/* faq */}
-            <Reveal className="mt-16 border-t border-border pt-12">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Frequently asked
-              </h2>
-              <div className="mt-8 flex flex-col divide-y divide-border">
-                {faqs.map((item) => (
-                  <div key={item.q} className="py-5 first:pt-0">
-                    <h3 className="text-[16px] font-semibold text-foreground">{item.q}</h3>
-                    <p className="mt-2 text-[14.5px] leading-relaxed text-fog">{item.a}</p>
-                  </div>
-                ))}
+          {/* faq */}
+          <Reveal className="mt-24 border-t border-border pt-14">
+            <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+              <div className="lg:sticky lg:top-24 lg:self-start">
+                <p className="eyebrow-mono flex items-center gap-2 text-coral">
+                  <span className="inline-block h-px w-6 bg-coral" />
+                  FAQ
+                </p>
+                <h2 className="mt-5 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Frequently asked
+                </h2>
+                <p className="mt-4 text-[15px] leading-relaxed text-fog">
+                  Everything worth knowing before you run your first report.
+                </p>
+                <div className="mt-6 rounded-[var(--radius-xl)] border border-coral/25 bg-coral-wash/40 p-5">
+                  <p className="text-[14px] font-bold tracking-tight text-foreground">
+                    Still have a question?
+                  </p>
+                  <p className="mt-1 text-[13px] leading-relaxed text-fog">
+                    Run the tool free, or book a quick call and we&rsquo;ll walk you through it.
+                  </p>
+                  <Button href="#finder" size="lg" className="mt-4 w-full sm:w-auto">
+                    Find my listicles
+                    <ArrowRight size={18} />
+                  </Button>
+                </div>
               </div>
-            </Reveal>
-          </div>
+
+              <FaqAccordion items={faqs} />
+            </div>
+          </Reveal>
         </Container>
       </section>
 
