@@ -549,6 +549,12 @@ export default function ListicleFinderPage() {
               ChatGPT cited: the single most common source. Recently updated
               &ldquo;best of&rdquo; lists ranked highest of all.
             </p>
+            <div className="mt-8 flex justify-center">
+              <Button href="#finder" size="lg">
+                Find my listicles
+                <ArrowRight size={18} />
+              </Button>
+            </div>
           </Reveal>
 
           <div className="mx-auto max-w-3xl">
