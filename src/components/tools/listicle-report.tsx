@@ -25,7 +25,6 @@ import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
 import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
-import { CtaPanel } from "@/components/sections/cta";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
 
@@ -378,10 +377,28 @@ export function ListicleReport({ result }: { result: FindResult }) {
           </p>
         </div>
         <ServicesGrid className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" />
-      </div>
 
-      <div className="pt-16 sm:pt-20">
-        <CtaPanel />
+        {/* small CTA */}
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[var(--radius-xl)] border border-coral/25 bg-coral-wash/40 p-5 text-center sm:flex-row sm:p-6 sm:text-left">
+          <div>
+            <p className="text-[15px] font-bold tracking-tight text-foreground">
+              Want Linkurst to run this for you?
+            </p>
+            <p className="mt-1 text-[13.5px] leading-relaxed text-fog">
+              Book a free 30-minute call and we&rsquo;ll map your fastest organic wins.
+            </p>
+          </div>
+          <Button
+            href={siteConfig.bookingUrl}
+            size="lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full shrink-0 sm:w-auto"
+          >
+            Book a call
+            <ArrowRight size={18} />
+          </Button>
+        </div>
       </div>
 
       {/* sticky action bar */}
