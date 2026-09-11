@@ -31,7 +31,10 @@ const PULSES = [0, 1, 2, 3];
 export function HeroBackdrop() {
   const reduce = useReducedMotion();
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 top-0 h-[900px] overflow-hidden"
+    >
       {/* soft warm glow behind the radar */}
       <div
         className="absolute left-1/2 top-[40%] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
