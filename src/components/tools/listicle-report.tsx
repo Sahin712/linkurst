@@ -8,7 +8,13 @@ import {
   Check,
   X,
   ArrowRight,
+  Sparkles,
+  Gauge,
+  FileText,
+  Search,
+  Clock,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
@@ -148,12 +154,29 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
       </div>
 
-      {/* search results heading */}
-      <div className="pt-2">
-        <h2 className="text-lg font-bold tracking-tight text-foreground">Search results</h2>
-        <p className="mt-1 text-[14px] leading-relaxed text-fog">
-          Want your brand featured in these listicles? Select and request placement.
-        </p>
+      {/* CTA banner */}
+      <div className="mt-2 overflow-hidden rounded-[var(--radius-xl)] border border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/40 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3.5">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-coral text-white shadow-[var(--shadow-card)]">
+              <Sparkles size={19} />
+            </span>
+            <div>
+              <h2 className="text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                We&rsquo;ll get your brand featured on these listicles
+              </h2>
+              <p className="mt-1 max-w-xl text-[14px] leading-relaxed text-fog">
+                Pick the listicles you want to be on, then hit{" "}
+                <span className="font-semibold text-coral-600">Request placement</span>. Our team
+                pitches the editors and does the outreach for you.
+              </p>
+            </div>
+          </div>
+          <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-coral/30 bg-surface/70 px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-coral-600 sm:inline-flex">
+            <Check size={13} />
+            {rows.length} ready to pitch
+          </div>
+        </div>
       </div>
 
       {/* table */}
@@ -316,22 +339,8 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
       </div>
 
-      {/* attribution */}
-      <p className="px-1 text-[12px] leading-relaxed text-muted">
-        <strong className="font-semibold text-fog">Opportunity</strong> blends authority, freshness,
-        and Google rank to show which listicles to pitch first. <strong className="font-semibold text-fog">Rank</strong>{" "}
-        is the listicle&rsquo;s best Google position; <strong className="font-semibold text-fog">Freshness</strong>{" "}
-        is how recently it was updated. {drLabel} ={" "}
-        <a
-          href="https://ahrefs.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-coral-600 underline decoration-coral/30 underline-offset-2 hover:decoration-coral"
-        >
-          Domain Rating by Ahrefs
-        </a>
-        ; PA is a page-authority estimate.
-      </p>
+      {/* metrics legend */}
+      <MetricsLegend drLabel={drLabel} />
 
       {/* sticky action bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md">
@@ -375,6 +384,106 @@ export function ListicleReport({ result }: { result: FindResult }) {
           onClose={() => setPlaceOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+const METRICS: {
+  icon: typeof Sparkles;
+  title: string;
+  body: React.ReactNode;
+  highlight?: boolean;
+}[] = [
+  {
+    icon: Sparkles,
+    title: "Opportunity",
+    highlight: true,
+    body: (
+      <>
+        Our <strong className="font-semibold text-foreground">pitch-priority score</strong> (0–100).
+        Blends authority, freshness, and Google rank so you know which listicles to chase first.
+      </>
+    ),
+  },
+  {
+    icon: Gauge,
+    title: "DR",
+    body: (
+      <>
+        <a
+          href="https://ahrefs.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-coral-600 underline decoration-coral/30 underline-offset-2 hover:decoration-coral"
+        >
+          Domain Rating by Ahrefs
+        </a>{" "}
+        — the whole site&rsquo;s authority, 0–100. Higher means a more valuable backlink.
+      </>
+    ),
+  },
+  {
+    icon: FileText,
+    title: "PA",
+    body: <>Page authority for that specific article, 0–100 — how strong the individual page is.</>,
+  },
+  {
+    icon: Search,
+    title: "Rank",
+    body: <>Where the listicle sits in Google for your keyword. Higher rank drives more traffic to you once you&rsquo;re on it.</>,
+  },
+  {
+    icon: Clock,
+    title: "Freshness",
+    body: <>How recently the list was updated. <strong className="font-semibold text-foreground">Fresh</strong> lists are far likelier to add a new tool.</>,
+  },
+];
+
+function MetricsLegend({ drLabel }: { drLabel: string }) {
+  return (
+    <div className="mt-4">
+      <h3 className="mb-3 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-fog">
+        <span className="h-px w-6 bg-coral/40" />
+        How to read this report
+      </h3>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.25 }}
+        variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
+        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        {METRICS.map((m) => (
+          <motion.div
+            key={m.title}
+            variants={{
+              hidden: { opacity: 0, y: 12 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+            }}
+            className={cn(
+              "rounded-[var(--radius-lg)] border p-4 transition-colors",
+              m.highlight
+                ? "border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/30"
+                : "border-border bg-surface hover:border-coral/25",
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  "grid h-7 w-7 shrink-0 place-items-center rounded-lg",
+                  m.highlight ? "bg-coral text-white" : "bg-coral-wash text-coral-600",
+                )}
+              >
+                <m.icon size={15} />
+              </span>
+              <span className="text-[14px] font-bold text-foreground">
+                {m.title === "DR" ? drLabel : m.title}
+              </span>
+            </div>
+            <p className="mt-2 text-[12.5px] leading-relaxed text-fog">{m.body}</p>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }
