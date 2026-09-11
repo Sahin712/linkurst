@@ -92,6 +92,12 @@ export default function ListicleFinderPage() {
           className="pointer-events-none absolute -left-32 top-40 h-[320px] w-[420px] rounded-full opacity-[0.08] blur-[120px]"
           style={{ background: "var(--color-coral)" }}
         />
+        {/* glow behind the form so the frosted glass reads */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[64%] h-[420px] w-[680px] -translate-x-1/2 rounded-full opacity-[0.18] blur-[130px]"
+          style={{ background: "var(--color-coral)" }}
+        />
         <Container size="default" className="relative">
           <div className="mx-auto max-w-3xl">
             {/* hero */}
