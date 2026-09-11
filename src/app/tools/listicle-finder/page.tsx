@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Target, Download, Check, Search, MapPin, ArrowRight } from "lucide-react";
+import { Target, Download, Check, Search, MapPin, ArrowRight, ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
 import { ReportPreview } from "@/components/tools/report-preview";
+import { ScoreRing } from "@/components/tools/metric-cells";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -447,41 +448,72 @@ export default function ListicleFinderPage() {
                 </ul>
               </div>
 
-              {/* single listicle card mock */}
-              <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-[var(--shadow-panel)]">
+              {/* real listicle card — Apollo's outreach-alternatives roundup */}
+              <a
+                href="https://www.apollo.io/insights/outreach-alternatives"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-[var(--shadow-panel)] transition-all duration-300 hover:-translate-y-1 hover:border-coral/40"
+              >
                 <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-md bg-coral-wash px-2 py-0.5 font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-wider text-coral-600">
-                    Listicle
-                  </span>
-                  <span className="font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
-                    saasreview.io
+                  <div className="flex items-center gap-2">
+                    <Image
+                      src="/tools/apollo.png"
+                      alt="Apollo"
+                      width={22}
+                      height={22}
+                      className="h-[22px] w-[22px] rounded-md"
+                    />
+                    <span className="font-[family-name:var(--font-mono)] text-[11px] text-fog">
+                      apollo.io
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-coral-wash px-2 py-0.5 font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-wider text-coral-600">
+                    Live example
                   </span>
                 </div>
-                <p className="mt-3 text-[15px] font-bold leading-snug text-foreground">
-                  Top 10 Outreach Alternatives, Ranked (2026)
+
+                <p className="mt-3 inline-flex items-start gap-1 text-[15px] font-bold leading-snug text-foreground transition-colors group-hover:text-coral-600">
+                  Top 8 Outreach Alternatives for Sales Teams in 2026
+                  <ArrowUpRight size={14} className="mt-0.5 shrink-0 text-muted" />
                 </p>
-                <div className="mt-4 grid grid-cols-3 divide-x divide-border rounded-xl border border-border text-center">
-                  {[
-                    { n: "#3", l: "Google rank" },
-                    { n: "71", l: "Domain auth" },
-                    { n: "55", l: "Page auth" },
-                  ].map((s) => (
-                    <div key={s.l} className="px-2 py-3">
-                      <p className="text-lg font-bold text-foreground">{s.n}</p>
-                      <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
-                        {s.l}
+
+                {/* metric strip */}
+                <div className="mt-4 flex items-center gap-3 rounded-xl border border-border bg-background/50 p-3">
+                  <ScoreRing value={84} tone="coral" />
+                  <div>
+                    <p className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wider text-muted">
+                      Domain rating
+                    </p>
+                    <p className="text-[13px] font-bold text-foreground">Ahrefs DR 84</p>
+                  </div>
+                  <div className="ml-auto flex gap-2">
+                    <div className="rounded-lg border border-coral/30 bg-coral-wash/40 px-2.5 py-1.5 text-center">
+                      <p className="text-[14px] font-bold tabular-nums text-coral-600">#4</p>
+                      <p className="font-[family-name:var(--font-mono)] text-[8px] uppercase tracking-wider text-muted">
+                        Google
                       </p>
                     </div>
-                  ))}
+                    <div className="rounded-lg border border-border bg-surface px-2.5 py-1.5 text-center">
+                      <p className="inline-flex items-center gap-1 text-[12px] font-semibold text-coral-600">
+                        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+                        Fresh
+                      </p>
+                      <p className="font-[family-name:var(--font-mono)] text-[8px] uppercase tracking-wider text-muted">
+                        2026
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="mt-3 flex items-center gap-2 rounded-lg border border-coral/30 bg-coral-wash/40 px-3 py-2.5 text-[13px]">
                   <Target size={15} className="shrink-0 text-coral-600" />
                   <span className="text-fog">
-                    <span className="font-semibold text-foreground">YourBrand</span> isn&rsquo;t
-                    on this list, 3 competitors are.
+                    <span className="font-semibold text-foreground">Your brand</span> isn&rsquo;t on
+                    this list, its competitors are.
                   </span>
                 </div>
-              </div>
+              </a>
             </div>
           </Reveal>
 
