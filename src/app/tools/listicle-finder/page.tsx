@@ -16,7 +16,6 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
-import { HeroBackdrop } from "@/components/tools/hero-backdrop";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -81,7 +80,6 @@ export default function ListicleFinderPage() {
   return (
     <>
       <section className="relative overflow-hidden py-16 sm:py-24">
-        <HeroBackdrop />
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-24 -top-28 h-[360px] w-[520px] rounded-full opacity-[0.12] blur-[120px]"

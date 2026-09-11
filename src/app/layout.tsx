@@ -3,6 +3,7 @@ import { Inter, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteBackdrop } from "@/components/layout/site-backdrop";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { siteConfig } from "@/lib/site";
 
@@ -79,9 +80,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${fraunces.variable} ${plexMono.variable} h-full`}
     >
       <body className="flex min-h-full flex-col antialiased">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <SiteBackdrop />
+        <div className="relative z-10 flex min-h-full flex-1 flex-col">
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </div>
         <GoogleAnalytics gaId={siteConfig.gaId} />
       </body>
     </html>
