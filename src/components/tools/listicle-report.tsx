@@ -166,9 +166,10 @@ export function ListicleReport({ result }: { result: FindResult }) {
                 We&rsquo;ll get your brand featured on these listicles
               </h2>
               <p className="mt-1 max-w-xl text-[14px] leading-relaxed text-fog">
-                Pick the listicles you want to be on, then hit{" "}
-                <span className="font-semibold text-coral-600">Request placement</span>. Our team
-                pitches the editors and does the outreach for you.
+                These are the lists AI answers cite and buyers shortlist from. Pick the ones you want
+                to be on, hit{" "}
+                <span className="font-semibold text-coral-600">Request placement</span>, and we build
+                the case to earn your spot.
               </p>
             </div>
           </div>
