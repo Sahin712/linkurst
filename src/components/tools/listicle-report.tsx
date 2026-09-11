@@ -25,6 +25,7 @@ import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
 import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
+import { CtaPanel } from "@/components/sections/cta";
 import { cn } from "@/lib/utils";
 
 function isGap(l: Listicle) {
@@ -358,26 +359,9 @@ export function ListicleReport({ result }: { result: FindResult }) {
       {/* metrics legend */}
       <MetricsLegend drLabel={drLabel} />
 
-      {/* service CTA */}
-      <div className="overflow-hidden rounded-[var(--radius-xl)] bg-charcoal p-7 text-center sm:p-9">
-        <p className="eyebrow-mono text-coral">Beyond listicles</p>
-        <h3 className="mx-auto mt-2 max-w-xl text-xl font-bold tracking-tight text-white sm:text-2xl">
-          Finding the lists is step one. We get you on them, and everywhere else buyers look.
-        </h3>
-        <p className="mx-auto mt-3 max-w-lg text-[14px] leading-relaxed text-gray">
-          Linkurst builds organic visibility across Google, AI search, and Reddit, so your brand is
-          the answer whether a person or an AI is asking.
-        </p>
-        <Button
-          href={siteConfig.bookingUrl}
-          size="lg"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6"
-        >
-          Book a strategy call
-          <ArrowRight size={18} />
-        </Button>
+      {/* service CTA — same panel as the homepage */}
+      <div className="pt-6">
+        <CtaPanel />
       </div>
 
       {/* sticky action bar */}
@@ -504,17 +488,17 @@ const METRICS: {
 
 function MetricsLegend({ drLabel }: { drLabel: string }) {
   return (
-    <div>
-      <h3 className="mb-3 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-fog">
+    <div className="pt-8">
+      <h3 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-fog">
         <span className="h-px w-6 bg-coral/40" />
         How to read this report
       </h3>
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
-        variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
-        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {METRICS.map((m) => (
           <motion.div
@@ -524,22 +508,29 @@ function MetricsLegend({ drLabel }: { drLabel: string }) {
               visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
             }}
             className={cn(
-              "flex items-center gap-4 rounded-[var(--radius-lg)] border p-4 transition-colors",
+              "rounded-[var(--radius-lg)] border p-5 transition-colors",
               m.highlight
                 ? "border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/30"
-                : "border-border bg-surface hover:border-coral/25",
+                : "border-border bg-surface hover:border-coral/30",
             )}
           >
-            <div className="grid h-14 w-14 shrink-0 place-items-center">{m.visual}</div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <m.icon size={13} className="text-coral-600" />
+            <div className="flex min-h-11 items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span
+                  className={cn(
+                    "grid h-7 w-7 shrink-0 place-items-center rounded-lg",
+                    m.highlight ? "bg-coral text-white" : "bg-coral-wash text-coral-600",
+                  )}
+                >
+                  <m.icon size={15} />
+                </span>
                 <span className="text-[14px] font-bold text-foreground">
                   {m.title === "DR" ? drLabel : m.title}
                 </span>
               </div>
-              <p className="mt-1 text-[12.5px] leading-relaxed text-fog">{m.body}</p>
+              <div className="shrink-0">{m.visual}</div>
             </div>
+            <p className="mt-3 text-[12.5px] leading-relaxed text-fog">{m.body}</p>
           </motion.div>
         ))}
       </motion.div>
