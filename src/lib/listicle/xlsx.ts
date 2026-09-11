@@ -1,4 +1,5 @@
 import type { FindResult } from "./find";
+import { opportunityScore, tierOf } from "./score";
 
 /**
  * Client-side .xlsx export of a listicle report. Dynamically imports exceljs so
@@ -17,15 +18,18 @@ export async function downloadListiclesXlsx(
   const ws = wb.addWorksheet("Listicles");
   const drLabel = result.daSource === "ahrefs" ? "DR (Ahrefs)" : "Authority";
   ws.columns = [
+    { header: "Opportunity", key: "opp", width: 12 },
+    { header: "Tier", key: "tier", width: 10 },
     { header: "Listicle", key: "title", width: 50 },
     { header: "URL", key: "url", width: 52 },
     { header: "Domain", key: "domain", width: 24 },
     { header: drLabel, key: "da", width: 12 },
     { header: "PA", key: "pa", width: 8 },
+    { header: "Est. traffic/mo", key: "traffic", width: 16 },
+    { header: "Google rank", key: "pos", width: 12 },
     { header: "Updated", key: "updated", width: 14 },
     { header: "You featured?", key: "mentions", width: 14 },
     { header: "Competitors featured", key: "comps", width: 34 },
-    { header: "Best position", key: "pos", width: 14 },
   ];
 
   const header = ws.getRow(1);
@@ -35,21 +39,27 @@ export async function downloadListiclesXlsx(
     c.alignment = { vertical: "middle" };
   });
 
-  const rows = result.listicles.filter((l) => !onlyUrls || onlyUrls.has(l.url));
+  const rows = result.listicles
+    .filter((l) => !onlyUrls || onlyUrls.has(l.url))
+    .sort((a, b) => opportunityScore(b) - opportunityScore(a));
   for (const l of rows) {
+    const score = opportunityScore(l);
     ws.addRow({
+      opp: score,
+      tier: tierOf(score),
       title: l.title,
       url: l.url,
       domain: l.domain,
       da: l.da ?? "",
       pa: l.pa ?? "",
+      traffic: l.traffic ?? "",
+      pos: l.bestPosition,
       updated: l.updated ?? "",
       mentions: l.mentionsBrand == null ? "" : l.mentionsBrand ? "Yes" : "No",
       comps: l.competitorsMentioned.join(", "),
-      pos: l.bestPosition,
     });
   }
-  ws.autoFilter = { from: "A1", to: "I1" };
+  ws.autoFilter = { from: "A1", to: "L1" };
   ws.views = [{ state: "frozen", ySplit: 1 }];
 
   // Meta sheet with the query + attribution.

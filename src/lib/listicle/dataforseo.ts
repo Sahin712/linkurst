@@ -146,3 +146,52 @@ export async function bulkRanks(targets: string[]): Promise<Map<string, number>>
   }
   return map;
 }
+
+type TrafficResponse = {
+  tasks?: Array<{
+    result?: Array<{
+      items?: Array<{
+        target?: string;
+        metrics?: { organic?: { etv?: number } | null } | null;
+      }>;
+    } | null> | null;
+  }>;
+};
+
+// DataForSEO location codes for the locations the form offers (defaults to US).
+const LOCATION_CODES: Record<string, number> = {
+  "united states": 2840,
+  "united kingdom": 2826,
+  canada: 2124,
+  australia: 2036,
+  india: 2356,
+  germany: 2276,
+  france: 2250,
+};
+
+/**
+ * Estimated monthly organic traffic per domain (DataForSEO Labs). Returns a Map
+ * keyed by normalized domain → estimated visits. One flat-priced call.
+ */
+export async function bulkTrafficEstimation(
+  domains: string[],
+  locationName = "United States",
+): Promise<Map<string, number>> {
+  const map = new Map<string, number>();
+  if (!domains.length) return map;
+  const location_code = LOCATION_CODES[locationName.trim().toLowerCase()] ?? 2840;
+  const data = await dfsPost<TrafficResponse>(
+    "/dataforseo_labs/google/bulk_traffic_estimation/live",
+    [{ targets: domains, location_code, language_code: "en" }],
+  );
+  const items = data.tasks?.[0]?.result?.[0]?.items ?? [];
+  for (const it of items) {
+    if (!it.target) continue;
+    const etv = it.metrics?.organic?.etv;
+    map.set(
+      it.target.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, ""),
+      Math.round(typeof etv === "number" ? etv : 0),
+    );
+  }
+  return map;
+}

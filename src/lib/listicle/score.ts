@@ -36,6 +36,15 @@ export function tierOf(score: number): "High" | "Medium" | "Low" {
   return score >= 72 ? "High" : score >= 50 ? "Medium" : "Low";
 }
 
+/** Compact traffic label, e.g. 1_565_477 → "1.6M", 184_000 → "184K". */
+export function formatTraffic(v: number | null): string {
+  if (v == null) return "—";
+  if (v <= 0) return "<100";
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+  if (v >= 1_000) return Math.round(v / 1000) + "K";
+  return String(v);
+}
+
 // Heatmap backgrounds (brand palette: coral for DR, slate for PA).
 export function drStyle(v: number | null): CSSProperties {
   if (v == null) return {};

@@ -1,4 +1,4 @@
-import { serpOrganic, bulkRanks } from "./dataforseo";
+import { serpOrganic, bulkRanks, bulkTrafficEstimation } from "./dataforseo";
 import { hasAhrefsCredentials, domainRatings } from "./ahrefs";
 
 /**
@@ -14,6 +14,7 @@ export type Listicle = {
   domain: string;
   da: number | null; // domain authority-style rank (0–100)
   pa: number | null; // page authority-style rank (0–100)
+  traffic: number | null; // estimated monthly organic visits to the domain
   updated: string | null; // ISO date (YYYY-MM-DD) the page was last modified
   bestPosition: number;
   appearances: number;
@@ -276,6 +277,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
           domain: dom,
           da: null,
           pa: null,
+          traffic: null,
           updated: null,
           bestPosition: it.rank_absolute,
           appearances: 1,
@@ -295,6 +297,9 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
   //    both when Ahrefs isn't set up.
   const domains = [...new Set(listicles.map((l) => l.domain))];
   const urls = listicles.map((l) => l.url);
+  const trafficMap = await bulkTrafficEstimation(domains, location).catch(
+    () => new Map<string, number>(),
+  );
   if (hasAhrefsCredentials()) {
     const [drMap, paMap] = await Promise.all([
       domainRatings(domains).catch(() => new Map<string, number>()),
@@ -303,6 +308,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
     for (const l of listicles) {
       l.da = drMap.get(l.domain) ?? null;
       l.pa = paMap.get(normTarget(l.url)) ?? null;
+      l.traffic = trafficMap.get(l.domain) ?? null;
     }
   } else {
     const ranks = await bulkRanks([...new Set([...domains, ...urls])]).catch(
@@ -311,6 +317,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
     for (const l of listicles) {
       l.da = ranks.get(l.domain) ?? null;
       l.pa = ranks.get(normTarget(l.url)) ?? null;
+      l.traffic = trafficMap.get(l.domain) ?? null;
     }
   }
 

@@ -13,6 +13,7 @@ import {
   FileText,
   Search,
   Clock,
+  Users,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
   tierOf,
   drStyle,
   paStyle,
+  formatTraffic,
 } from "@/lib/listicle/score";
 import { cn } from "@/lib/utils";
 
@@ -183,7 +185,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
       {/* table */}
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-left text-[13px]">
+          <table className="w-full min-w-[960px] text-left text-[13px]">
             <thead>
               <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3">
@@ -198,6 +200,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
                 <th className="px-3 py-3 font-medium">Listicle</th>
                 <th className="px-3 py-3 text-center font-medium">{drLabel}</th>
                 <th className="px-3 py-3 text-center font-medium">PA</th>
+                <th className="px-3 py-3 text-center font-medium">Traffic</th>
                 <th className="px-3 py-3 text-center font-medium">Rank</th>
                 <th className="px-3 py-3 font-medium">Freshness</th>
                 <th className="px-4 py-3 font-medium">Opportunity</th>
@@ -271,6 +274,10 @@ export function ListicleReport({ result }: { result: FindResult }) {
                       >
                         {l.pa ?? "—"}
                       </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] font-medium text-foreground">
+                      {formatTraffic(l.traffic)}
+                      <span className="ml-0.5 text-[9px] text-muted">/mo</span>
                     </td>
                     <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
                       {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
@@ -427,6 +434,11 @@ const METRICS: {
     icon: FileText,
     title: "PA",
     body: <>Page authority for that specific article, 0–100 — how strong the individual page is.</>,
+  },
+  {
+    icon: Users,
+    title: "Traffic",
+    body: <>Estimated monthly organic visits to the site — how many buyers actually see the list.</>,
   },
   {
     icon: Search,

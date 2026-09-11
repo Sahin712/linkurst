@@ -54,6 +54,7 @@ export async function POST(request: Request) {
           domain: typeof l.domain === "string" ? l.domain : "",
           da: typeof l.da === "number" ? l.da : null,
           pa: typeof l.pa === "number" ? l.pa : null,
+          traffic: typeof l.traffic === "number" ? l.traffic : null,
           updated: typeof l.updated === "string" ? l.updated : null,
           bestPosition: typeof l.bestPosition === "number" ? l.bestPosition : 0,
           appearances: typeof l.appearances === "number" ? l.appearances : 1,
