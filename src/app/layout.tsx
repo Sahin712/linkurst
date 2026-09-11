@@ -79,7 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${inter.variable} ${fraunces.variable} ${plexMono.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col antialiased">
+      <body className="relative flex min-h-full flex-col antialiased">
         <SiteBackdrop />
         <div className="relative z-10 flex min-h-full flex-1 flex-col">
           <SiteHeader />

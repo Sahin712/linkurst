@@ -4,10 +4,10 @@ import { motion, useReducedMotion } from "motion/react";
 import { Sparkles, Star } from "lucide-react";
 
 /**
- * Global ambient backdrop rendered once in the root layout: drifting coral
- * dots, twinkling stars, and a subtle radar in the top-right corner. Fixed
- * behind all content (opaque sections cover it; it shows through the ivory
- * page background). Purely decorative and reduced-motion aware.
+ * Ambient backdrop rendered once in the root layout, pinned to the top ~hero
+ * band of every page (absolute, scrolls away below the fold): drifting coral
+ * dots, twinkling stars, and a subtle radar in the top-right corner. Sits
+ * behind content (z-0); opaque sections cover it. Reduced-motion aware.
  */
 const DOTS = [
   { top: "14%", left: "8%", size: 6, dur: 4.2, delay: 0 },
@@ -36,7 +36,7 @@ export function SiteBackdrop() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[820px] overflow-hidden"
     >
       {/* subtle warm glow, top-right */}
       <div
