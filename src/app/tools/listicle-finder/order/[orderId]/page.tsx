@@ -1,18 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  ExternalLink,
-  ListChecks,
-} from "lucide-react";
+import { AlertCircle, ArrowLeft, ArrowUpRight, ExternalLink, ListChecks } from "lucide-react";
 import brandMark from "../../../../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/lib/site";
+import { ServicesGrid } from "@/components/sections/services";
 import { getOrder } from "@/lib/listicle/store";
 import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
@@ -281,42 +274,27 @@ export default async function OrderPage({
             Need to change your selection? Reply to your confirmation email and we&rsquo;ll update it.
           </p>
 
-          {/* CTA — homepage dark styling, compact */}
-          <div
-            className="relative mt-6 overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-5 shadow-[0_20px_60px_-30px_rgba(232,85,58,0.35)] sm:p-6"
-            style={{
-              background:
-                "radial-gradient(130% 130% at 50% 0%, rgba(232,85,58,0.16) 0%, #17171b 45%, #0e0e11 100%)",
-            }}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full opacity-25 blur-[80px]"
-              style={{ background: "var(--color-coral)" }}
-            />
-            <div className="relative flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-              <div>
-                <p className="text-[15px] font-bold tracking-tight text-ivory">
-                  Want Linkurst to land these placements for you?
-                </p>
-                <p className="mt-1 text-[13.5px] leading-relaxed text-ivory/70">
-                  Book a free 30-minute call and we&rsquo;ll map your fastest organic wins.
-                </p>
-              </div>
-              <Button
-                href={siteConfig.bookingUrl}
-                size="lg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full shrink-0 sm:w-auto"
-              >
-                Book a call
-                <ArrowRight size={18} />
-              </Button>
+          {/* services grid — what else Linkurst runs */}
+          <div className="pt-12 sm:pt-16">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="eyebrow-mono flex items-center justify-center gap-2 text-coral">
+                <span className="inline-block h-px w-6 bg-coral" />
+                While we get to work
+                <span className="inline-block h-px w-6 bg-coral" />
+              </p>
+              <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                The full system that gets you{" "}
+                <span className="accent-serif font-normal text-coral">discovered</span>
+              </h2>
+              <p className="mt-3 text-[15px] leading-relaxed text-fog">
+                Listicle placements are one surface. Here&rsquo;s everything else Linkurst runs to
+                make your brand the answer buyers and AI find.
+              </p>
             </div>
+            <ServicesGrid className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" />
           </div>
 
-          <div className="pt-2">
+          <div className="pt-6">
             <Link
               href="/tools/listicle-finder"
               className="inline-flex items-center gap-1.5 text-[13px] text-fog hover:text-foreground"
