@@ -14,8 +14,11 @@ import {
   Search,
   Clock,
   Users,
+  ListChecks,
 } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
+import brandMark from "../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
@@ -101,7 +104,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
   ];
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-6 pb-28">
       {/* header */}
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-gradient-to-br from-coral-wash/70 via-surface to-surface shadow-[var(--shadow-panel)]">
         <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between">
@@ -155,7 +158,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
       </div>
 
       {/* CTA banner */}
-      <div className="mt-2 overflow-hidden rounded-[var(--radius-xl)] border border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/40 p-5 sm:p-6">
+      <div className="overflow-hidden rounded-[var(--radius-xl)] border border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/40 p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3.5">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-coral text-white shadow-[var(--shadow-card)]">
@@ -187,12 +190,18 @@ export function ListicleReport({ result }: { result: FindResult }) {
           <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
           <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
           <div className="mx-auto flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1">
-            <Search size={12} className="text-muted" />
+            <ListChecks size={12} className="text-coral-600" />
             <span className="font-[family-name:var(--font-mono)] text-[11px] text-fog">
-              {result.keyword}
+              {result.location} · {filtered.totals.listicles} listicles
             </span>
           </div>
-          <span className="text-[12px] font-bold tracking-tight text-coral">Linkurst</span>
+          <Image
+            src={brandMark}
+            alt="Linkurst"
+            width={22}
+            height={22}
+            className="h-5 w-auto opacity-70"
+          />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[980px] text-left text-[13px]">
@@ -349,6 +358,28 @@ export function ListicleReport({ result }: { result: FindResult }) {
       {/* metrics legend */}
       <MetricsLegend drLabel={drLabel} />
 
+      {/* service CTA */}
+      <div className="overflow-hidden rounded-[var(--radius-xl)] bg-charcoal p-7 text-center sm:p-9">
+        <p className="eyebrow-mono text-coral">Beyond listicles</p>
+        <h3 className="mx-auto mt-2 max-w-xl text-xl font-bold tracking-tight text-white sm:text-2xl">
+          Finding the lists is step one. We get you on them, and everywhere else buyers look.
+        </h3>
+        <p className="mx-auto mt-3 max-w-lg text-[14px] leading-relaxed text-gray">
+          Linkurst builds organic visibility across Google, AI search, and Reddit, so your brand is
+          the answer whether a person or an AI is asking.
+        </p>
+        <Button
+          href={siteConfig.bookingUrl}
+          size="lg"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6"
+        >
+          Book a strategy call
+          <ArrowRight size={18} />
+        </Button>
+      </div>
+
       {/* sticky action bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
@@ -399,12 +430,18 @@ const METRICS: {
   icon: typeof Sparkles;
   title: string;
   body: React.ReactNode;
+  visual: React.ReactNode;
   highlight?: boolean;
 }[] = [
   {
     icon: Sparkles,
     title: "Opportunity",
     highlight: true,
+    visual: (
+      <span className="grid h-9 w-9 place-items-center rounded-lg bg-coral text-[13px] font-bold tabular-nums text-white">
+        87
+      </span>
+    ),
     body: (
       <>
         Our <strong className="font-semibold text-foreground">pitch-priority score</strong> (0–100).
@@ -415,6 +452,7 @@ const METRICS: {
   {
     icon: Gauge,
     title: "DR",
+    visual: <ScoreRing value={82} tone="coral" />,
     body: (
       <>
         <a
@@ -432,28 +470,41 @@ const METRICS: {
   {
     icon: FileText,
     title: "PA",
+    visual: <ScoreRing value={46} tone="slate" />,
     body: <>Page authority for that specific article, 0–100 — how strong the individual page is.</>,
   },
   {
     icon: Users,
     title: "Traffic",
+    visual: <TrafficMeter value={140000} max={160000} />,
     body: <>Estimated monthly organic visits to the site — how many buyers actually see the list.</>,
   },
   {
     icon: Search,
     title: "Rank",
+    visual: (
+      <span className="rounded-md bg-foreground/[0.05] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[13px] font-bold text-foreground">
+        #3
+      </span>
+    ),
     body: <>Where the listicle sits in Google for your keyword. Higher rank drives more traffic to you once you&rsquo;re on it.</>,
   },
   {
     icon: Clock,
     title: "Freshness",
+    visual: (
+      <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-coral-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+        Fresh
+      </span>
+    ),
     body: <>How recently the list was updated. <strong className="font-semibold text-foreground">Fresh</strong> lists are far likelier to add a new tool.</>,
   },
 ];
 
 function MetricsLegend({ drLabel }: { drLabel: string }) {
   return (
-    <div className="mt-4">
+    <div>
       <h3 className="mb-3 flex items-center gap-2 text-[13px] font-bold uppercase tracking-wide text-fog">
         <span className="h-px w-6 bg-coral/40" />
         How to read this report
@@ -473,26 +524,22 @@ function MetricsLegend({ drLabel }: { drLabel: string }) {
               visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
             }}
             className={cn(
-              "rounded-[var(--radius-lg)] border p-4 transition-colors",
+              "flex items-center gap-4 rounded-[var(--radius-lg)] border p-4 transition-colors",
               m.highlight
                 ? "border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/30"
                 : "border-border bg-surface hover:border-coral/25",
             )}
           >
-            <div className="flex items-center gap-2">
-              <span
-                className={cn(
-                  "grid h-7 w-7 shrink-0 place-items-center rounded-lg",
-                  m.highlight ? "bg-coral text-white" : "bg-coral-wash text-coral-600",
-                )}
-              >
-                <m.icon size={15} />
-              </span>
-              <span className="text-[14px] font-bold text-foreground">
-                {m.title === "DR" ? drLabel : m.title}
-              </span>
+            <div className="grid h-14 w-14 shrink-0 place-items-center">{m.visual}</div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <m.icon size={13} className="text-coral-600" />
+                <span className="text-[14px] font-bold text-foreground">
+                  {m.title === "DR" ? drLabel : m.title}
+                </span>
+              </div>
+              <p className="mt-1 text-[12.5px] leading-relaxed text-fog">{m.body}</p>
             </div>
-            <p className="mt-2 text-[12.5px] leading-relaxed text-fog">{m.body}</p>
           </motion.div>
         ))}
       </motion.div>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertCircle, ArrowLeft, ArrowUpRight, ExternalLink } from "lucide-react";
+import Image from "next/image";
+import { AlertCircle, ArrowLeft, ArrowUpRight, ExternalLink, ListChecks } from "lucide-react";
+import brandMark from "../../../../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { getOrder } from "@/lib/listicle/store";
@@ -100,15 +102,19 @@ export default async function OrderPage({
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
-              {order.meta.keyword && (
-                <div className="mx-auto flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1">
-                  <ExternalLink size={11} className="text-muted" />
-                  <span className="font-[family-name:var(--font-mono)] text-[11px] text-fog">
-                    {order.meta.keyword}
-                  </span>
-                </div>
-              )}
-              <span className="ml-auto text-[12px] font-bold tracking-tight text-coral">Linkurst</span>
+              <div className="mx-auto flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1">
+                <ListChecks size={12} className="text-coral-600" />
+                <span className="font-[family-name:var(--font-mono)] text-[11px] text-fog">
+                  {order.listicles.length} selected
+                </span>
+              </div>
+              <Image
+                src={brandMark}
+                alt="Linkurst"
+                width={22}
+                height={22}
+                className="h-5 w-auto opacity-70"
+              />
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-[13px]">
