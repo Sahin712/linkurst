@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { AlertCircle, ArrowLeft, ArrowUpRight, ExternalLink, ListChecks } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  ExternalLink,
+  ListChecks,
+} from "lucide-react";
 import brandMark from "../../../../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/lib/site";
 import { getOrder } from "@/lib/listicle/store";
 import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
@@ -272,6 +280,41 @@ export default async function OrderPage({
           <p className="px-1 text-[12px] leading-relaxed text-muted">
             Need to change your selection? Reply to your confirmation email and we&rsquo;ll update it.
           </p>
+
+          {/* CTA — homepage dark styling, compact */}
+          <div
+            className="relative mt-6 overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-5 shadow-[0_20px_60px_-30px_rgba(232,85,58,0.35)] sm:p-6"
+            style={{
+              background:
+                "radial-gradient(130% 130% at 50% 0%, rgba(232,85,58,0.16) 0%, #17171b 45%, #0e0e11 100%)",
+            }}
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full opacity-25 blur-[80px]"
+              style={{ background: "var(--color-coral)" }}
+            />
+            <div className="relative flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+              <div>
+                <p className="text-[15px] font-bold tracking-tight text-ivory">
+                  Want Linkurst to land these placements for you?
+                </p>
+                <p className="mt-1 text-[13.5px] leading-relaxed text-ivory/70">
+                  Book a free 30-minute call and we&rsquo;ll map your fastest organic wins.
+                </p>
+              </div>
+              <Button
+                href={siteConfig.bookingUrl}
+                size="lg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full shrink-0 sm:w-auto"
+              >
+                Book a call
+                <ArrowRight size={18} />
+              </Button>
+            </div>
+          </div>
 
           <div className="pt-2">
             <Link
