@@ -19,7 +19,6 @@ import { EngineChips } from "@/components/tools/engine-chips";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Free Listicle Finder | Get Featured on Listicles AI Cites",
@@ -42,22 +41,6 @@ const toolLogos = [
   { name: "Spreadsheet", file: "spreadsheet" },
   { name: "Gmail", file: "gmail" },
 ] as const;
-
-const dashRows: {
-  title: string;
-  domain: string;
-  da: number;
-  pa: number;
-  updated: string;
-  status: "featured" | "gap";
-  comps?: number;
-}[] = [
-  { title: "12 Best Sales Engagement Tools in 2026", domain: "softwareblog.com", da: 78, pa: 61, updated: "Aug 2026", status: "featured" },
-  { title: "Top 10 Outreach Alternatives, Ranked", domain: "saasreview.io", da: 71, pa: 55, updated: "Jul 2026", status: "gap", comps: 3 },
-  { title: "The 8 Best Cold Email Platforms (2026)", domain: "toptools.co", da: 66, pa: 58, updated: "Aug 2026", status: "gap", comps: 2 },
-  { title: "Best Sales Engagement Software Compared", domain: "b2bpicks.com", da: 59, pa: 47, updated: "Jun 2026", status: "featured" },
-  { title: "15 Sales Engagement Platforms for SDRs", domain: "revopsdigest.com", da: 52, pa: 44, updated: "May 2026", status: "gap", comps: 4 },
-];
 
 const features = [
   { icon: Target, t: "Gap analysis, not just a list", d: "We flag every listicle that ranks your competitors but not you, your highest-intent placement targets, sorted to the top." },
@@ -336,103 +319,6 @@ export default function ListicleFinderPage() {
                 Find listicles
                 <ArrowRight size={18} />
               </Button>
-            </div>
-          </Reveal>
-
-          {/* ---- dashboard mockup ---- */}
-          <Reveal className="mt-24">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                See every placement at a glance
-              </h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-fog">
-                Every listicle ranking for your topic, scored by authority and
-                freshness, with the gaps flagged and sorted to the top.
-              </p>
-            </div>
-
-            <div className="mx-auto mt-10 max-w-4xl overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-[var(--shadow-panel)]">
-              {/* browser chrome */}
-              <div className="flex items-center gap-3 border-b border-border px-5 py-3.5">
-                <span className="flex gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                </span>
-                <span className="ml-1 flex-1 truncate rounded-md bg-background px-3 py-1 text-center font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                  linkurst.com/listicles/report
-                </span>
-              </div>
-              {/* summary bar */}
-              <div className="grid grid-cols-3 divide-x divide-border border-b border-border text-center">
-                {[
-                  { n: "24", l: "Listicles found" },
-                  { n: "9", l: "Placement gaps", coral: true },
-                  { n: "71", l: "Avg. authority" },
-                ].map((s) => (
-                  <div key={s.l} className="px-3 py-4">
-                    <p className={cn("text-2xl font-bold tabular-nums", s.coral ? "text-coral-600" : "text-foreground")}>
-                      {s.n}
-                    </p>
-                    <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-wider text-muted">
-                      {s.l}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              {/* table */}
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[620px] text-left text-[13px]">
-                  <thead>
-                    <tr className="border-b border-border font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
-                      <th className="px-5 py-2.5 font-medium">Listicle</th>
-                      <th className="px-3 py-2.5 font-medium">DA</th>
-                      <th className="px-3 py-2.5 font-medium">PA</th>
-                      <th className="px-3 py-2.5 font-medium">Updated</th>
-                      <th className="px-5 py-2.5 font-medium">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashRows.map((r) => (
-                      <tr
-                        key={r.title}
-                        className={cn(
-                          "border-b border-border last:border-b-0",
-                          r.status === "gap" && "bg-coral-wash/25",
-                        )}
-                      >
-                        <td className="px-5 py-3">
-                          <p className="font-semibold text-foreground">{r.title}</p>
-                          <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
-                            {r.domain}
-                          </p>
-                        </td>
-                        <td className="px-3 py-3 tabular-nums text-fog">{r.da}</td>
-                        <td className="px-3 py-3 tabular-nums text-fog">{r.pa}</td>
-                        <td className="px-3 py-3 font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                          {r.updated}
-                        </td>
-                        <td className="px-5 py-3">
-                          {r.status === "featured" ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-coral-wash px-2 py-0.5 text-[11px] font-semibold text-coral-600">
-                              <Check size={11} />
-                              Featured
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-coral/40 bg-surface px-2 py-0.5 text-[11px] font-semibold text-coral-600">
-                              <Target size={11} />
-                              Gap · {r.comps} comp.
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="border-t border-border px-5 py-3 font-[family-name:var(--font-mono)] text-[10px] text-muted">
-                Illustrative preview, your report shows real listicles for your keyword.
-              </p>
             </div>
           </Reveal>
 
