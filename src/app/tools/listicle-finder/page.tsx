@@ -91,7 +91,7 @@ export default function ListicleFinderPage() {
           </div>
 
           {/* ---- problem / solution ---- */}
-          <Reveal className="mx-auto mt-24 max-w-3xl">
+          <Reveal className="mx-auto mt-16 max-w-3xl sm:mt-24">
             <h2 className="text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Finding placements by hand doesn&rsquo;t scale
             </h2>
@@ -148,7 +148,7 @@ export default function ListicleFinderPage() {
           </Reveal>
 
           {/* ---- how it works (detailed) ---- */}
-          <Reveal id="how" className="mt-24 scroll-mt-24">
+          <Reveal id="how" className="mt-16 scroll-mt-24 sm:mt-24">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 How it works
@@ -306,7 +306,7 @@ export default function ListicleFinderPage() {
           </Reveal>
 
           {/* ---- what's in your report ---- */}
-          <Reveal className="mt-24">
+          <Reveal className="mt-16 sm:mt-24">
             <div className="mx-auto max-w-2xl text-center">
               <p className="eyebrow-mono flex items-center justify-center gap-2 text-coral">
                 <span className="inline-block h-px w-6 bg-coral" />
@@ -422,7 +422,7 @@ export default function ListicleFinderPage() {
           </Reveal>
 
           {/* ---- split: the gap ---- */}
-          <Reveal className="mt-24">
+          <Reveal className="mt-16 sm:mt-24">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
               <div>
                 <p className="eyebrow-mono text-coral">The gap</p>
@@ -521,7 +521,7 @@ export default function ListicleFinderPage() {
           </Reveal>
 
           {/* ---- how a listicle becomes a recommendation ---- */}
-          <Reveal className="mt-24">
+          <Reveal className="mt-16 sm:mt-24">
             <div className="mx-auto max-w-2xl text-center">
               <p className="eyebrow-mono text-coral">Why placements win</p>
               <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -561,7 +561,7 @@ export default function ListicleFinderPage() {
           </Reveal>
 
           {/* faq */}
-          <Reveal className="mt-24 border-t border-border pt-14">
+          <Reveal className="mt-16 border-t border-border pt-12 sm:mt-24 sm:pt-14">
             <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
               <div className="lg:sticky lg:top-24 lg:self-start">
                 <p className="eyebrow-mono flex items-center gap-2 text-coral">
