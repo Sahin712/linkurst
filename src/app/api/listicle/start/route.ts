@@ -1,0 +1,72 @@
+import { NextResponse, after } from "next/server";
+import { hasDataForSeoCredentials } from "@/lib/listicle/dataforseo";
+import { createReport } from "@/lib/listicle/store";
+import { processReport, reportPath } from "@/lib/listicle/run";
+import { inngest, hasInngest } from "@/lib/inngest/client";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * Kicks off a listicle report. Creates a pending report, hands it to the
+ * background pipeline, and returns a token immediately so the UI can show
+ * "check your inbox" and link to the (still-generating) report page.
+ *
+ * Delivery: Inngest in production; an inline `after()` run in local dev when
+ * Inngest isn't configured (so the flow is fully testable without an account).
+ */
+export async function POST(request: Request) {
+  let body: {
+    keyword?: string;
+    website?: string;
+    competitors?: string[] | string;
+    location?: string;
+    industry?: string;
+    email?: string;
+  };
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid request." }, { status: 400 });
+  }
+
+  if (!body.keyword || typeof body.keyword !== "string" || body.keyword.trim().length < 2) {
+    return NextResponse.json({ ok: false, error: "Please enter a keyword." }, { status: 400 });
+  }
+  if (!body.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(body.email)) {
+    return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
+  }
+  if (!hasDataForSeoCredentials()) {
+    return NextResponse.json(
+      { ok: false, error: "The tool isn't fully configured yet. Please try again later." },
+      { status: 503 },
+    );
+  }
+
+  const competitors = Array.isArray(body.competitors)
+    ? body.competitors
+    : typeof body.competitors === "string"
+      ? body.competitors.split(",").map((c) => c.trim()).filter(Boolean)
+      : [];
+
+  const report = await createReport({
+    keyword: body.keyword.trim(),
+    website: typeof body.website === "string" ? body.website : undefined,
+    competitors,
+    location: typeof body.location === "string" ? body.location : undefined,
+    industry: typeof body.industry === "string" ? body.industry : undefined,
+    email: body.email.trim(),
+  });
+
+  if (hasInngest()) {
+    await inngest.send({
+      name: "listicle/report.requested",
+      data: { reportId: report.id },
+    });
+  } else {
+    // Local-dev fallback: run after the response is sent.
+    after(() => processReport(report.id));
+  }
+
+  return NextResponse.json({ ok: true, token: report.id, reportUrl: reportPath(report.id) });
+}

@@ -35,6 +35,11 @@ export const mainNav = [
 /** Free tools — surfaced in the nav "Tools" dropdown and the footer. */
 export const tools = [
   {
+    label: "Listicle Finder",
+    href: "/tools/listicle-finder",
+    desc: "Find listicles to get your brand placed on",
+  },
+  {
     label: "AEO Content Grader",
     href: "/tools/aeo-content-grader",
     desc: "Score any page for AI-search readiness",
