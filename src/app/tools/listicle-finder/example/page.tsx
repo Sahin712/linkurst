@@ -39,7 +39,7 @@ export default function ExampleReportPage() {
   return (
     <section className="py-12 sm:py-16">
       <Container size="default">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-5xl">
           <p className="mb-6 rounded-lg border border-coral/25 bg-coral-wash/40 px-4 py-2.5 text-center text-[13px] text-fog">
             This is an <strong className="font-semibold text-foreground">example report</strong> with
             sample data. Run the tool with your own keyword to get a real one.

@@ -186,10 +186,18 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
       </div>
 
-      {/* table */}
-      <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface">
+      {/* table (dashboard window) */}
+      <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-[var(--shadow-card)]">
+        <div className="flex items-center gap-2 border-b border-border bg-foreground/[0.025] px-4 py-2.5">
+          <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
+          <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
+          <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
+          <span className="mx-auto font-[family-name:var(--font-mono)] text-[11px] text-muted">
+            listicle-finder · {result.keyword}
+          </span>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[960px] text-left text-[13px]">
+          <table className="w-full min-w-[980px] text-left text-[13px]">
             <thead>
               <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3">
@@ -279,23 +287,18 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         {l.pa ?? "—"}
                       </span>
                     </td>
-                    <td className="px-3 py-3 align-middle">
-                      <div className="mx-auto w-[74px]">
-                        <div className="flex items-baseline justify-between">
-                          <span className="font-[family-name:var(--font-mono)] text-[12px] font-semibold text-foreground">
-                            {formatTraffic(l.traffic)}
-                          </span>
-                          <span className="text-[9px] text-muted">/mo</span>
-                        </div>
-                        <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.06]">
-                          <div
-                            className="h-full rounded-full bg-coral"
-                            style={{
-                              width: `${l.traffic && l.traffic > 0 ? Math.max(4, Math.round((l.traffic / maxTraffic) * 100)) : 0}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
+                    <td className="px-3 py-3 align-middle text-center">
+                      <span
+                        style={{
+                          backgroundColor: l.traffic
+                            ? `rgba(232,85,58,${(0.08 + (l.traffic / maxTraffic) * 0.32).toFixed(3)})`
+                            : undefined,
+                        }}
+                        className="inline-block min-w-[54px] rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
+                      >
+                        {formatTraffic(l.traffic)}
+                      </span>
+                      <div className="mt-0.5 text-[9px] text-muted">/mo</div>
                     </td>
                     <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
                       {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
@@ -370,7 +373,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
 
       {/* sticky action bar */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <p className="text-[13.5px] text-fog">
             {selected.size > 0 ? (
               <>

@@ -25,7 +25,7 @@ export default async function ReportPage({
   return (
     <section className="py-12 sm:py-16">
       <Container size="default">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-5xl">
           {!rec ? (
             <ReportMessage
               title="Report not found"
