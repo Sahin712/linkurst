@@ -115,10 +115,6 @@ export function ReportPreview() {
           </tbody>
         </table>
       </div>
-
-      <p className="border-t border-border px-4 py-2.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
-        Illustrative preview — your report shows real listicles for your keyword.
-      </p>
     </div>
   );
 }

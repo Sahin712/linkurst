@@ -209,11 +209,6 @@ export function AiAnswerDemo() {
           </div>
         )}
 
-        {phase === "done" && (
-          <p className="mt-4 text-center font-[family-name:var(--font-mono)] text-[10px] text-muted">
-            Illustrative example, not a live query.
-          </p>
-        )}
       </div>
     </div>
   );
