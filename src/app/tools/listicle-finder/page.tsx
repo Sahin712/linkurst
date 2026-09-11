@@ -324,20 +324,81 @@ export default function ListicleFinderPage() {
               <ReportPreview />
             </div>
 
-            {/* what you get — divided panel, not cards */}
-            <div className="mx-auto mt-8 grid max-w-4xl gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+            {/* what you get — each card previews the real dashboard element */}
+            <div className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {[
-                ["01", "Opportunity score", "A pitch-priority rank blending authority, freshness, and Google position."],
-                ["02", "Gap detection", "Listicles that rank your competitors but not you, flagged and sorted first."],
-                ["03", "Traffic & authority", "Real Ahrefs DR, page authority, and estimated monthly organic visits."],
-                ["04", "Report + .xlsx", "A shareable dashboard link and a spreadsheet ready for your team."],
-              ].map(([n, t, d]) => (
-                <div key={n} className="bg-surface p-5">
-                  <span className="font-[family-name:var(--font-mono)] text-[12px] font-bold text-coral-600">
-                    {n}
-                  </span>
-                  <h3 className="mt-2 text-[14px] font-bold tracking-tight text-foreground">{t}</h3>
-                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-fog">{d}</p>
+                {
+                  n: "01",
+                  t: "Opportunity score",
+                  d: "A pitch-priority rank blending authority, freshness, and Google position.",
+                  visual: (
+                    <div className="flex items-center gap-2">
+                      <span className="grid h-11 w-11 place-items-center rounded-xl bg-coral text-[16px] font-bold tabular-nums text-white">
+                        87
+                      </span>
+                      <span className="text-[13px] font-semibold text-coral-600">High</span>
+                    </div>
+                  ),
+                },
+                {
+                  n: "02",
+                  t: "Gap detection",
+                  d: "Listicles that rank your competitors but not you, flagged and sorted first.",
+                  visual: (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash/50 px-3 py-1.5 text-[12px] font-semibold text-coral-600">
+                      <Target size={13} />
+                      Gap · 3 comp.
+                    </span>
+                  ),
+                },
+                {
+                  n: "03",
+                  t: "Traffic & authority",
+                  d: "Real Ahrefs DR, page authority, and estimated monthly organic visits.",
+                  visual: (
+                    <div className="flex items-center gap-2.5">
+                      <span className="grid h-11 w-11 place-items-center rounded-full border-2 border-coral/60 text-[13px] font-bold tabular-nums text-foreground">
+                        76
+                      </span>
+                      <div className="w-16">
+                        <div className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-foreground">
+                          184K<span className="text-[9px] text-muted">/mo</span>
+                        </div>
+                        <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
+                          <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-coral/60 to-coral" />
+                        </div>
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  n: "04",
+                  t: "Report + .xlsx",
+                  d: "A shareable dashboard link and a spreadsheet ready for your team.",
+                  visual: (
+                    <span className="inline-flex items-center gap-1.5 rounded-lg border border-coral/30 bg-surface px-3 py-2 text-[12px] font-semibold text-coral-600 shadow-[var(--shadow-card)]">
+                      <Download size={13} />
+                      Download .xlsx
+                    </span>
+                  ),
+                },
+              ].map((f) => (
+                <div
+                  key={f.n}
+                  className="group relative overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-6 transition-all duration-300 hover:-translate-y-1 hover:border-coral/40 hover:shadow-[var(--shadow-panel)]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-coral transition-transform duration-300 group-hover:scale-x-100"
+                  />
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-h-11 items-center">{f.visual}</div>
+                    <span className="font-[family-name:var(--font-serif)] text-3xl font-bold leading-none text-coral/20">
+                      {f.n}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-[15px] font-bold tracking-tight text-foreground">{f.t}</h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-fog">{f.d}</p>
                 </div>
               ))}
             </div>
