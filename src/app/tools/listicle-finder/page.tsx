@@ -16,7 +16,6 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
-import { HeroListiclePreview } from "@/components/tools/hero-listicle-preview";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -91,37 +90,30 @@ export default function ListicleFinderPage() {
           className="pointer-events-none absolute -left-32 top-40 h-[320px] w-[420px] rounded-full opacity-[0.08] blur-[120px]"
           style={{ background: "var(--color-coral)" }}
         />
-        <Container size="wide" className="relative">
-          <div className="mx-auto max-w-6xl">
+        <Container size="default" className="relative">
+          <div className="mx-auto max-w-3xl">
             {/* hero */}
-            <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-              <Reveal>
-                <p className="eyebrow-mono flex items-center gap-2 text-coral">
-                  <span className="inline-block h-px w-6 bg-coral" />
-                  Free tool · No signup
-                </p>
-                <h1 className="mt-6 text-4xl font-bold leading-[1.04] tracking-[var(--tracking-tighter)] text-balance text-foreground sm:text-5xl lg:text-[3.5rem]">
-                  Get on the listicles{" "}
-                  <span className="accent-serif font-normal text-coral">AI actually cites</span>.
-                </h1>
-                <p className="mt-6 max-w-xl text-lg leading-relaxed text-fog">
-                  When buyers ask AI for the best tool in your category, it answers
-                  from &ldquo;best of&rdquo; listicles. Find the ones ranking for
-                  your topic, see where competitors beat you, and win the
-                  placements that get you recommended.
-                </p>
-                {/* engines strip */}
-                <EngineChips />
-              </Reveal>
-
-              {/* hero visual — illustrative listicle preview */}
-              <Reveal className="relative hidden lg:block">
-                <HeroListiclePreview />
-              </Reveal>
-            </div>
+            <Reveal>
+              <p className="eyebrow-mono flex items-center gap-2 text-coral">
+                <span className="inline-block h-px w-6 bg-coral" />
+                Free tool · No signup
+              </p>
+              <h1 className="mt-6 text-4xl font-bold leading-[1.04] tracking-[var(--tracking-tighter)] text-balance text-foreground sm:text-5xl">
+                Get on the listicles{" "}
+                <span className="accent-serif font-normal text-coral">AI actually cites</span>.
+              </h1>
+              <p className="mt-6 text-lg leading-relaxed text-fog">
+                When buyers ask AI for the best tool in your category, it answers
+                from &ldquo;best of&rdquo; listicles. Find the ones ranking for
+                your topic, see where competitors beat you, and win the
+                placements that get you recommended.
+              </p>
+              {/* engines strip */}
+              <EngineChips />
+            </Reveal>
 
             {/* the form */}
-            <div id="finder" className="mx-auto mt-14 max-w-3xl scroll-mt-24">
+            <div id="finder" className="scroll-mt-24">
               <ListicleFinder />
             </div>
           </div>
