@@ -16,6 +16,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
+import { HeroListiclePreview } from "@/components/tools/hero-listicle-preview";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -75,75 +76,6 @@ const faqs = [
   { q: "How is this different from outreach tools?", a: "Outreach tools scrape editor contacts and push you into cold email. We stay focused on the intelligence: which listicles matter and where your gaps are. Cleaner, free, and no contact data required." },
   { q: "How long does it take?", a: "A few minutes. We analyze each listicle live, so rather than making you wait on the page, we email your report the moment it's ready." },
 ];
-
-/** Illustrative listicle preview for the hero (not real data). */
-function HeroListiclePreview() {
-  const rows = [
-    { rank: 1, name: "Apollo", tag: "competitor" },
-    { rank: 2, name: "Outreach", tag: "competitor" },
-    { rank: 3, name: "Salesloft", tag: "competitor" },
-  ];
-  return (
-    <div className="relative mx-auto w-full max-w-md">
-      {/* floating AI badge */}
-      <div className="absolute -left-3 -top-4 z-10 flex items-center gap-1.5 rounded-full border border-coral/30 bg-surface px-3 py-1.5 text-[11px] font-semibold text-coral-600 shadow-[var(--shadow-card)]">
-        <Sparkles size={13} />
-        AI cites this list
-      </div>
-
-      <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-[var(--shadow-panel)]">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[15px] font-bold tracking-tight text-foreground">
-              12 Best Sales Engagement Platforms
-            </p>
-            <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
-              saasreview.io · updated 2026
-            </p>
-          </div>
-          <span className="shrink-0 rounded-full bg-coral-wash px-2 py-0.5 font-[family-name:var(--font-mono)] text-[10px] font-semibold text-coral-600">
-            #3 on Google
-          </span>
-        </div>
-
-        <ul className="mt-4 space-y-2">
-          {rows.map((r) => (
-            <li
-              key={r.rank}
-              className="flex items-center gap-3 rounded-lg border border-border bg-background/50 px-3 py-2"
-            >
-              <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-foreground/[0.06] text-[11px] font-bold text-fog">
-                {r.rank}
-              </span>
-              <span className="text-[13px] font-semibold text-foreground">{r.name}</span>
-              <span className="ml-auto font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-wide text-muted">
-                {r.tag}
-              </span>
-            </li>
-          ))}
-
-          {/* the gap — your brand */}
-          <li className="flex items-center gap-3 rounded-lg border border-dashed border-coral/50 bg-coral-wash/50 px-3 py-2">
-            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-coral text-[11px] font-bold text-white">
-              ?
-            </span>
-            <span className="text-[13px] font-semibold text-coral-600">Your brand</span>
-            <span className="ml-auto font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-wide text-coral-600">
-              not listed yet
-            </span>
-          </li>
-        </ul>
-
-        <div className="mt-4 flex items-center gap-2 border-t border-border pt-3">
-          <Target size={13} className="text-coral-600" />
-          <p className="text-[12px] text-fog">
-            Competitors are on it. <span className="font-semibold text-foreground">You&rsquo;re not.</span>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function ListicleFinderPage() {
   return (
