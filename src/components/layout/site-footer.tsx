@@ -18,6 +18,7 @@ const columns = [
   {
     heading: "Tools",
     links: [
+      { label: "Listicle Finder", href: "/tools/listicle-finder" },
       { label: "AEO Content Grader", href: "/tools/aeo-content-grader" },
     ],
   },
