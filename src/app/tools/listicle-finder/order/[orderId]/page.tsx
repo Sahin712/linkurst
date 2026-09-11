@@ -4,14 +4,8 @@ import { AlertCircle, ArrowLeft, ArrowUpRight, ExternalLink } from "lucide-react
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { getOrder } from "@/lib/listicle/store";
-import {
-  freshness,
-  opportunityScore,
-  tierOf,
-  drStyle,
-  paStyle,
-  formatTraffic,
-} from "@/lib/listicle/score";
+import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
+import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -101,14 +95,20 @@ export default async function OrderPage({
           </div>
 
           {/* table (dashboard window) */}
-          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-[var(--shadow-card)]">
-            <div className="flex items-center gap-2 border-b border-border bg-foreground/[0.025] px-4 py-2.5">
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-gradient-to-b from-surface to-coral-wash/15 shadow-[var(--shadow-panel)]">
+            <div className="flex items-center gap-2 border-b border-border bg-foreground/[0.03] px-4 py-2.5">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FF5F57" }} />
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
-              <span className="mx-auto font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                selected-listicles{order.meta.keyword ? ` · ${order.meta.keyword}` : ""}
-              </span>
+              {order.meta.keyword && (
+                <div className="mx-auto flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-1">
+                  <ExternalLink size={11} className="text-muted" />
+                  <span className="font-[family-name:var(--font-mono)] text-[11px] text-fog">
+                    {order.meta.keyword}
+                  </span>
+                </div>
+              )}
+              <span className="ml-auto text-[12px] font-bold tracking-tight text-coral">Linkurst</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[900px] text-left text-[13px]">
@@ -146,34 +146,14 @@ export default async function OrderPage({
                             </p>
                           )}
                         </td>
-                        <td className="px-3 py-3 align-middle text-center">
-                          <span
-                            style={drStyle(l.da)}
-                            className="inline-block min-w-9 rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
-                          >
-                            {l.da ?? "—"}
-                          </span>
+                        <td className="px-3 py-3 align-middle">
+                          <ScoreRing value={l.da} tone="coral" />
                         </td>
-                        <td className="px-3 py-3 align-middle text-center">
-                          <span
-                            style={paStyle(l.pa)}
-                            className="inline-block min-w-9 rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
-                          >
-                            {l.pa ?? "—"}
-                          </span>
+                        <td className="px-3 py-3 align-middle">
+                          <ScoreRing value={l.pa} tone="slate" />
                         </td>
-                        <td className="px-3 py-3 align-middle text-center">
-                          <span
-                            style={{
-                              backgroundColor: l.traffic
-                                ? `rgba(232,85,58,${(0.08 + (l.traffic / maxTraffic) * 0.32).toFixed(3)})`
-                                : undefined,
-                            }}
-                            className="inline-block min-w-[54px] rounded-md px-2 py-1 text-[13px] font-bold tabular-nums text-foreground"
-                          >
-                            {formatTraffic(l.traffic)}
-                          </span>
-                          <div className="mt-0.5 text-[9px] text-muted">/mo</div>
+                        <td className="px-3 py-3 align-middle">
+                          <TrafficMeter value={l.traffic} max={maxTraffic} />
                         </td>
                         <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
                           {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
