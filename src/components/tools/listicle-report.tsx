@@ -26,6 +26,7 @@ import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
 import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { CtaPanel } from "@/components/sections/cta";
+import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
 
 function isGap(l: Listicle) {
@@ -359,7 +360,26 @@ export function ListicleReport({ result }: { result: FindResult }) {
       {/* metrics legend */}
       <MetricsLegend drLabel={drLabel} />
 
-      {/* service CTA — same panel as the homepage */}
+      {/* services grid + closing CTA */}
+      <div className="pt-16 sm:pt-20">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="eyebrow-mono flex items-center justify-center gap-2 text-coral">
+            <span className="inline-block h-px w-6 bg-coral" />
+            Beyond listicles
+            <span className="inline-block h-px w-6 bg-coral" />
+          </p>
+          <h3 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            The full system that gets you{" "}
+            <span className="accent-serif font-normal text-coral">discovered</span>
+          </h3>
+          <p className="mt-3 text-[15px] leading-relaxed text-fog">
+            Listicles are one surface. Linkurst builds visibility across every place buyers and AI
+            look for answers.
+          </p>
+        </div>
+        <ServicesGrid className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" />
+      </div>
+
       <div className="pt-16 sm:pt-20">
         <CtaPanel />
       </div>
