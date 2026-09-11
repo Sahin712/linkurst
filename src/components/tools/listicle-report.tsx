@@ -333,8 +333,9 @@ function PlacementModal({
           website: result.brandDomain ?? undefined,
           industry: result.industry ?? undefined,
           location: result.location,
+          daSource: result.daSource,
           reportUrl: typeof window !== "undefined" ? window.location.href : undefined,
-          listicles: chosen.map((l) => ({ title: l.title, url: l.url })),
+          listicles: chosen,
         }),
       });
       const data = await res.json();

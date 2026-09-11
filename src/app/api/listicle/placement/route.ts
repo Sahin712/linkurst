@@ -2,14 +2,19 @@ import { NextResponse } from "next/server";
 import {
   sendPlacementEmail,
   sendPlacementConfirmationEmail,
+  siteUrl,
 } from "@/lib/listicle/email";
+import { createOrder } from "@/lib/listicle/store";
+import type { Listicle } from "@/lib/listicle/find";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * Placement request from a report. Emails the selected listicles + contact
- * details to Linkurst via Resend (logged to console in dev without a key).
+ * Placement request from a report. Persists the selected listicles as an order
+ * (so the visitor gets a shareable "selected listicles" page), notifies
+ * Linkurst, and sends the visitor a confirmation with links to both their
+ * selected list and the full research report.
  */
 export async function POST(request: Request) {
   let body: {
@@ -22,7 +27,8 @@ export async function POST(request: Request) {
     industry?: string;
     location?: string;
     reportUrl?: string;
-    listicles?: { title?: string; url?: string }[];
+    daSource?: "ahrefs" | "dataforseo";
+    listicles?: Partial<Listicle>[];
   };
   try {
     body = await request.json();
@@ -36,17 +42,51 @@ export async function POST(request: Request) {
     );
   }
 
-  const listicles = Array.isArray(body.listicles)
-    ? body.listicles
-        .filter((l) => l && typeof l.title === "string" && typeof l.url === "string")
-        .map((l) => ({ title: l.title as string, url: l.url as string }))
-    : [];
-
   const str = (v: unknown) => (typeof v === "string" && v.trim() ? v : undefined);
 
+  // Normalize the selected listicles into full records for the order page.
+  const listicles: Listicle[] = Array.isArray(body.listicles)
+    ? body.listicles
+        .filter((l) => l && typeof l.title === "string" && typeof l.url === "string")
+        .map((l) => ({
+          title: l.title as string,
+          url: l.url as string,
+          domain: typeof l.domain === "string" ? l.domain : "",
+          da: typeof l.da === "number" ? l.da : null,
+          pa: typeof l.pa === "number" ? l.pa : null,
+          updated: typeof l.updated === "string" ? l.updated : null,
+          bestPosition: typeof l.bestPosition === "number" ? l.bestPosition : 0,
+          appearances: typeof l.appearances === "number" ? l.appearances : 1,
+          mentionsBrand: typeof l.mentionsBrand === "boolean" ? l.mentionsBrand : null,
+          competitorsMentioned: Array.isArray(l.competitorsMentioned)
+            ? l.competitorsMentioned.filter((c): c is string => typeof c === "string")
+            : [],
+        }))
+    : [];
+
+  // Persist the order so the visitor has a page of just their selected listicles.
+  const order = await createOrder({
+    contact: {
+      name: body.name,
+      email: body.email,
+      company: str(body.company),
+      message: str(body.message),
+    },
+    meta: {
+      keyword: str(body.keyword),
+      website: str(body.website),
+      industry: str(body.industry),
+      location: str(body.location),
+    },
+    daSource: body.daSource === "dataforseo" ? "dataforseo" : "ahrefs",
+    reportUrl: str(body.reportUrl),
+    listicles,
+  });
+
+  const selectedUrl = `${siteUrl()}/tools/listicle-finder/order/${order.id}`;
+  const emailListicles = listicles.map((l) => ({ title: l.title, url: l.url }));
+
   try {
-    // Notify Linkurst, and send the visitor a confirmation. Run both; a failure
-    // of one shouldn't block the other.
     const results = await Promise.allSettled([
       sendPlacementEmail({
         name: body.name,
@@ -54,7 +94,8 @@ export async function POST(request: Request) {
         company: str(body.company),
         message: str(body.message),
         keyword: str(body.keyword),
-        listicles,
+        listicles: emailListicles,
+        selectedUrl,
       }),
       sendPlacementConfirmationEmail({
         to: body.email,
@@ -63,13 +104,13 @@ export async function POST(request: Request) {
         keyword: str(body.keyword),
         industry: str(body.industry),
         location: str(body.location),
+        selectedUrl,
         reportUrl: str(body.reportUrl),
-        listicles,
+        count: listicles.length,
       }),
     ]);
-    // Only fail the request if the internal notification (index 0) failed.
     if (results[0].status === "rejected") throw results[0].reason;
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, orderUrl: selectedUrl });
   } catch {
     return NextResponse.json(
       { ok: false, error: "Could not send your request. Please try again." },

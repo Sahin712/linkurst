@@ -7,7 +7,7 @@
  */
 
 import { Redis } from "@upstash/redis";
-import type { FindResult } from "./find";
+import type { FindResult, Listicle } from "./find";
 
 export type ReportStatus = "pending" | "done" | "error";
 
@@ -32,6 +32,24 @@ export type ReportRecord = {
 
 const TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days
 const key = (id: string) => `listicle:report:${id}`;
+const orderKey = (id: string) => `listicle:order:${id}`;
+
+/** A placement request: the subset of listicles a visitor selected, plus their
+ *  details and a link back to the full research report. */
+export type PlacementOrder = {
+  id: string;
+  createdAt: number;
+  contact: { name: string; email: string; company?: string; message?: string };
+  meta: {
+    keyword?: string;
+    website?: string;
+    industry?: string;
+    location?: string;
+  };
+  daSource: "ahrefs" | "dataforseo";
+  reportUrl?: string;
+  listicles: Listicle[];
+};
 
 export function hasUpstash(): boolean {
   return (
@@ -78,4 +96,28 @@ export async function getReport(id: string): Promise<ReportRecord | null> {
     return (await redis().get<ReportRecord>(key(id))) ?? null;
   }
   return mem.get(id) ?? null;
+}
+
+// Dev-only fallback store for orders.
+const memOrders = ((globalForStore as unknown as {
+  __listicleOrders?: Map<string, PlacementOrder>;
+}).__listicleOrders ??= new Map<string, PlacementOrder>());
+
+export async function createOrder(
+  data: Omit<PlacementOrder, "id" | "createdAt">,
+): Promise<PlacementOrder> {
+  const order: PlacementOrder = { id: crypto.randomUUID(), createdAt: Date.now(), ...data };
+  if (hasUpstash()) {
+    await redis().set(orderKey(order.id), order, { ex: TTL_SECONDS });
+  } else {
+    memOrders.set(order.id, order);
+  }
+  return order;
+}
+
+export async function getOrder(id: string): Promise<PlacementOrder | null> {
+  if (hasUpstash()) {
+    return (await redis().get<PlacementOrder>(orderKey(id))) ?? null;
+  }
+  return memOrders.get(id) ?? null;
 }

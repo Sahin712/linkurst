@@ -98,6 +98,7 @@ type PlacementRequest = {
   company?: string;
   message?: string;
   keyword?: string;
+  selectedUrl?: string;
   listicles: { title: string; url: string }[];
 };
 
@@ -117,6 +118,7 @@ export async function sendPlacementEmail(m: PlacementRequest): Promise<void> {
     ${m.company ? `<p style="margin:4px 0;"><strong>Company:</strong> ${esc(m.company)}</p>` : ""}
     ${m.keyword ? `<p style="margin:4px 0;"><strong>Keyword:</strong> ${esc(m.keyword)}</p>` : ""}
     ${m.message ? `<p style="margin:12px 0;"><strong>Message:</strong><br>${esc(m.message)}</p>` : ""}
+    ${m.selectedUrl ? `<p style="margin:12px 0 4px;"><strong>Selected listicles page:</strong> <a href="${esc(m.selectedUrl)}" style="color:${COLORS.coral};">${esc(m.selectedUrl)}</a></p>` : ""}
     <p style="margin:12px 0 4px;"><strong>Requested listicles:</strong></p>
     <ul style="padding-left:18px;margin:0;">${list}</ul>
   </div>`;
@@ -143,8 +145,9 @@ type PlacementConfirmation = {
   keyword?: string;
   industry?: string;
   location?: string;
+  selectedUrl?: string;
   reportUrl?: string;
-  listicles: { title: string; url: string }[];
+  count: number;
 };
 
 /** Confirmation sent to the visitor who submitted a placement request. */
@@ -166,16 +169,8 @@ export async function sendPlacementConfirmationEmail(
     m.location ? summaryRow("Location", esc(m.location)) : "",
   ].join("");
 
-  const list = m.listicles.length
-    ? m.listicles
-        .map(
-          (l) =>
-            `<li style="margin:6px 0;"><a href="${esc(l.url)}" style="color:${COLORS.coral};text-decoration:none;">${esc(l.title)}</a></li>`,
-        )
-        .join("")
-    : `<li style="color:${COLORS.gray};">You didn't select specific listicles — we'll recommend the best targets.</li>`;
-
   const firstName = esc(m.name.split(" ")[0] || m.name);
+  const countLabel = m.count === 1 ? "1 listicle" : `${m.count} listicles`;
 
   const html = `
   <div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:${COLORS.ivory};padding:32px 0;">
@@ -196,15 +191,21 @@ export async function sendPlacementConfirmationEmail(
       </div>`
           : ""
       }
-      <div style="padding:8px 32px;">
+      ${
+        m.selectedUrl
+          ? `<div style="padding:8px 32px;">
         <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:${COLORS.charcoal};text-transform:uppercase;letter-spacing:.06em;">Selected listicles</p>
-        <ul style="padding-left:18px;margin:0;font-size:14px;">${list}</ul>
-      </div>
+        <p style="margin:0 0 8px;font-size:14px;color:${COLORS.charcoal};">The ${countLabel} you chose for placement:</p>
+        <a href="${esc(m.selectedUrl)}" style="display:inline-block;background:${COLORS.coral};color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 18px;border-radius:9px;">View selected listicles &rarr;</a>
+      </div>`
+          : ""
+      }
       ${
         m.reportUrl
           ? `<div style="padding:12px 32px 4px;">
-        <p style="margin:0 0 8px;font-size:14px;color:${COLORS.charcoal};">You can view your full research report here:</p>
-        <a href="${esc(m.reportUrl)}" style="display:inline-block;background:${COLORS.coral};color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:11px 18px;border-radius:9px;">View your report &rarr;</a>
+        <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:${COLORS.charcoal};text-transform:uppercase;letter-spacing:.06em;">Research results</p>
+        <p style="margin:0 0 4px;font-size:14px;color:${COLORS.charcoal};">You can also view the full research report (every listicle we found):</p>
+        <p style="margin:0;font-size:14px;"><a href="${esc(m.reportUrl)}" style="color:${COLORS.coral};text-decoration:none;">View research results &rarr;</a></p>
       </div>`
           : ""
       }
@@ -218,7 +219,7 @@ export async function sendPlacementConfirmationEmail(
 
   if (!hasResend()) {
     console.info(
-      `[email:dev] placement confirmation → ${m.to}\n  name: ${m.name}\n  keyword: ${m.keyword ?? "—"} | website: ${m.website ?? "—"}\n  report: ${m.reportUrl ?? "—"}\n  listicles: ${m.listicles.map((l) => l.title).join("; ") || "none"}`,
+      `[email:dev] placement confirmation → ${m.to}\n  name: ${m.name}\n  keyword: ${m.keyword ?? "—"} | website: ${m.website ?? "—"}\n  selected (${m.count}): ${m.selectedUrl ?? "—"}\n  research: ${m.reportUrl ?? "—"}`,
     );
     return;
   }
