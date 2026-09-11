@@ -183,23 +183,17 @@ export default function ListicleFinderPage() {
 
           {/* ---- how it works (detailed) ---- */}
           <Reveal id="how" className="mt-24 scroll-mt-24">
-            <div className="relative overflow-hidden rounded-[var(--radius-xl)] bg-charcoal px-6 py-14 shadow-[var(--shadow-panel)] sm:px-10 sm:py-16">
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -right-24 -top-20 h-[360px] w-[520px] rounded-full opacity-[0.14] blur-[130px]"
-                style={{ background: "var(--color-coral)" }}
-              />
-              <div className="relative mx-auto max-w-2xl text-center">
-                <h2 className="text-2xl font-bold tracking-tight text-ivory sm:text-3xl">
-                  How it works
-                </h2>
-                <p className="mt-4 text-[15px] leading-relaxed text-gray">
-                  Once you hit &ldquo;Find listicles&rdquo;, we turn your search
-                  into a complete placement report.
-                </p>
-              </div>
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                How it works
+              </h2>
+              <p className="mt-4 text-[15px] leading-relaxed text-fog">
+                Once you hit &ldquo;Find listicles&rdquo;, we turn your search
+                into a complete placement report.
+              </p>
+            </div>
 
-              <div className="relative mt-10 grid gap-4 lg:grid-cols-4">
+            <div className="mt-10 grid gap-4 lg:grid-cols-4">
               {/* 1, query */}
               <div className="flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-border">
                 <div className="relative min-h-[150px] bg-coral-wash/40 px-5 pb-5 pt-4">
@@ -334,12 +328,11 @@ export default function ListicleFinderPage() {
               </div>
             </div>
 
-              <div className="relative mt-10 flex justify-center">
-                <Button href="#finder" size="lg">
-                  Find listicles
-                  <ArrowRight size={18} />
-                </Button>
-              </div>
+            <div className="mt-8 flex justify-center">
+              <Button href="#finder" size="lg">
+                Find listicles
+                <ArrowRight size={18} />
+              </Button>
             </div>
           </Reveal>
 
