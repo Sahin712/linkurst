@@ -336,7 +336,7 @@ export default function ListicleFinderPage() {
                   visual: (
                     <div className="flex items-center gap-2">
                       <span className="grid h-11 w-11 place-items-center rounded-xl bg-coral text-[16px] font-bold tabular-nums text-white">
-                        87
+                        89
                       </span>
                       <span className="text-[13px] font-semibold text-coral-600">High</span>
                     </div>
@@ -360,11 +360,11 @@ export default function ListicleFinderPage() {
                   visual: (
                     <div className="flex items-center gap-2.5">
                       <span className="grid h-11 w-11 place-items-center rounded-full border-2 border-coral/60 text-[13px] font-bold tabular-nums text-foreground">
-                        76
+                        92
                       </span>
                       <div className="w-16">
                         <div className="font-[family-name:var(--font-mono)] text-[11px] font-semibold text-foreground">
-                          184K<span className="text-[9px] text-muted">/mo</span>
+                          1.1M<span className="text-[9px] text-muted">/mo</span>
                         </div>
                         <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
                           <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-coral/60 to-coral" />
@@ -411,7 +411,9 @@ export default function ListicleFinderPage() {
                 <ArrowRight size={18} />
               </Button>
               <a
-                href="/tools/listicle-finder/example"
+                href="https://www.linkurst.com/tools/listicle-finder/0dbe3efc-2e5b-47f0-bad1-3af787983c7d"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-sm font-[family-name:var(--font-mono)] text-[12px] font-medium text-coral-600 underline decoration-coral/30 underline-offset-2 transition-colors hover:decoration-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 See an example report

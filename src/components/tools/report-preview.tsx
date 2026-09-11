@@ -4,20 +4,20 @@ import { ArrowUpRight } from "lucide-react";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { rankStyle } from "@/lib/listicle/score";
 
-/** Compact, illustrative preview of the real report dashboard (not live data). */
+/** Compact preview of a real report ("sales engagement platform"). */
 const ROWS = [
-  { title: "12 Best CRM Software, Ranked", domain: "saasreview.io", da: 76, pa: 41, traffic: 184000, rank: 2, opp: 87, tier: "High" as const },
-  { title: "The Best CRM Platforms I Tested", domain: "techtested.com", da: 71, pa: 55, traffic: 96000, rank: 4, opp: 81, tier: "High" as const },
-  { title: "Best CRM Software for Small Business", domain: "smbpicks.com", da: 66, pa: 38, traffic: 52000, rank: 5, opp: 77, tier: "High" as const },
-  { title: "Top 10 CRM Tools Compared", domain: "comparehub.com", da: 59, pa: 44, traffic: 41000, rank: 6, opp: 72, tier: "High" as const },
-  { title: "Best CRM Software 2026: Buyer's Guide", domain: "b2bdigest.com", da: 54, pa: 33, traffic: 23000, rank: 7, opp: 68, tier: "Medium" as const },
+  { title: "Best Sales Engagement Platform | Sales Cloud", domain: "salesforce.com", da: 92, pa: 23, traffic: 1100000, rank: 6, opp: 89, tier: "High" as const },
+  { title: "The 5 Best Sales Engagement Tools for Salesforce", domain: "revenue.io", da: 72, pa: 0, traffic: 2000, rank: 8, opp: 76, tier: "High" as const },
+  { title: "Salesforce Alternatives: Top CRM Competitors", domain: "rox.com", da: 72, pa: 0, traffic: 4000, rank: 16, opp: 66, tier: "Medium" as const },
+  { title: "The 56 Best Sales Engagement Apps for HubSpot", domain: "ecosystem.hubspot.com", da: 93, pa: 0, traffic: 25000, rank: 22, opp: 65, tier: "Medium" as const },
+  { title: "7 Best Sales Engagement Tools in 2026", domain: "sybill.ai", da: 65, pa: 0, traffic: 4000, rank: 8, opp: 61, tier: "Medium" as const },
 ];
 const MAX_TRAFFIC = Math.max(...ROWS.map((r) => r.traffic));
 
 const STATS = [
-  { n: "9", l: "Opportunities" },
-  { n: "6", l: "Prime targets", coral: true },
-  { n: "71", l: "Avg DR" },
+  { n: "11", l: "Opportunities" },
+  { n: "2", l: "Prime targets", coral: true },
+  { n: "68", l: "Avg DR" },
 ];
 
 export function ReportPreview() {
@@ -29,7 +29,7 @@ export function ReportPreview() {
         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
         <span className="mx-auto font-[family-name:var(--font-mono)] text-[11px] text-fog">
-          United States · 9 listicles
+          United States · 11 listicles
         </span>
         <span className="text-[12px] font-bold tracking-tight text-coral">Linkurst</span>
       </div>
