@@ -11,6 +11,11 @@ const ROWS = [
   { title: "Salesforce Alternatives: Top CRM Competitors", domain: "rox.com", da: 72, pa: 0, traffic: 4000, rank: 16, opp: 66, tier: "Medium" as const },
   { title: "The 56 Best Sales Engagement Apps for HubSpot", domain: "ecosystem.hubspot.com", da: 93, pa: 0, traffic: 25000, rank: 22, opp: 65, tier: "Medium" as const },
   { title: "7 Best Sales Engagement Tools in 2026", domain: "sybill.ai", da: 65, pa: 0, traffic: 4000, rank: 8, opp: 61, tier: "Medium" as const },
+  { title: "6 Best Sales Engagement Software in 2026", domain: "salesforge.ai", da: 72, pa: 0, traffic: 17000, rank: 11, opp: 60, tier: "Medium" as const },
+  { title: "10 Best Sales Engagement Platforms to Streamline", domain: "salesmate.io", da: 78, pa: 0, traffic: 4000, rank: 20, opp: 58, tier: "Medium" as const },
+  { title: "The 8 Best Customer Engagement Platforms in 2026", domain: "appcues.com", da: 78, pa: 15, traffic: 3000, rank: 22, opp: 58, tier: "Medium" as const },
+  { title: "Top Sales Engagement Platforms for Enterprise SDRs", domain: "nimitai.com", da: 39, pa: 0, traffic: 9, rank: 20, opp: 50, tier: "Medium" as const },
+  { title: "Top 5 Sales Engagement Tools for Enterprise Sales", domain: "conquer.io", da: 52, pa: 5, traffic: 494, rank: 14, opp: 45, tier: "Low" as const },
 ];
 const MAX_TRAFFIC = Math.max(...ROWS.map((r) => r.traffic));
 
@@ -95,7 +100,11 @@ export function ReportPreview() {
                     <span
                       className={
                         "grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[13px] font-bold tabular-nums " +
-                        (r.tier === "High" ? "bg-coral text-white" : "bg-coral-wash text-coral-600")
+                        (r.tier === "High"
+                          ? "bg-coral text-white"
+                          : r.tier === "Medium"
+                            ? "bg-coral-wash text-coral-600"
+                            : "border border-border text-muted")
                       }
                     >
                       {r.opp}
@@ -103,7 +112,11 @@ export function ReportPreview() {
                     <span
                       className={
                         "text-[12px] font-semibold " +
-                        (r.tier === "High" ? "text-coral-600" : "text-foreground")
+                        (r.tier === "High"
+                          ? "text-coral-600"
+                          : r.tier === "Medium"
+                            ? "text-foreground"
+                            : "text-muted")
                       }
                     >
                       {r.tier}
