@@ -36,7 +36,7 @@ export function EngineChips() {
               visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
             }}
             whileHover={reduce ? undefined : { y: -2 }}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-[12px] font-medium text-fog shadow-[var(--shadow-card)]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-surface/70 px-2.5 py-1 text-[12px] font-medium text-fog shadow-[var(--shadow-card)] backdrop-blur-md"
           >
             <motion.span
               className="inline-flex"

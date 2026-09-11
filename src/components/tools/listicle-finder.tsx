@@ -86,7 +86,7 @@ export function ListicleFinder() {
     <div className="mt-10">
       <form
         onSubmit={openModal}
-        className="rounded-[var(--radius-xl)] border border-coral/20 bg-surface p-6 shadow-[0_24px_70px_-24px_rgba(232,85,58,0.3)] sm:p-8"
+        className="rounded-[var(--radius-xl)] border border-white/50 bg-surface/75 p-6 shadow-[0_24px_70px_-24px_rgba(232,85,58,0.3)] backdrop-blur-xl sm:p-8"
       >
         <div className="grid gap-5 sm:grid-cols-2">
           <Field icon={Search} label="Keyword" required>
