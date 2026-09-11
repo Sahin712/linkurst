@@ -105,7 +105,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
   ];
 
   return (
-    <div className="space-y-6 pb-28">
+    <div className="space-y-6 pb-20">
       {/* header */}
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-gradient-to-br from-coral-wash/70 via-surface to-surface shadow-[var(--shadow-panel)]">
         <div className="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between">
@@ -378,26 +378,39 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
         <ServicesGrid className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" />
 
-        {/* small CTA */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[var(--radius-xl)] border border-coral/25 bg-coral-wash/40 p-5 text-center sm:flex-row sm:p-6 sm:text-left">
-          <div>
-            <p className="text-[15px] font-bold tracking-tight text-foreground">
-              Want Linkurst to run this for you?
-            </p>
-            <p className="mt-1 text-[13.5px] leading-relaxed text-fog">
-              Book a free 30-minute call and we&rsquo;ll map your fastest organic wins.
-            </p>
+        {/* small CTA — homepage dark styling, compact */}
+        <div
+          className="relative mt-8 overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-5 shadow-[0_20px_60px_-30px_rgba(232,85,58,0.35)] sm:p-6"
+          style={{
+            background:
+              "radial-gradient(130% 130% at 50% 0%, rgba(232,85,58,0.16) 0%, #17171b 45%, #0e0e11 100%)",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full opacity-25 blur-[80px]"
+            style={{ background: "var(--color-coral)" }}
+          />
+          <div className="relative flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+            <div>
+              <p className="text-[15px] font-bold tracking-tight text-ivory">
+                Want Linkurst to run this for you?
+              </p>
+              <p className="mt-1 text-[13.5px] leading-relaxed text-ivory/70">
+                Book a free 30-minute call and we&rsquo;ll map your fastest organic wins.
+              </p>
+            </div>
+            <Button
+              href={siteConfig.bookingUrl}
+              size="lg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full shrink-0 sm:w-auto"
+            >
+              Book a call
+              <ArrowRight size={18} />
+            </Button>
           </div>
-          <Button
-            href={siteConfig.bookingUrl}
-            size="lg"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full shrink-0 sm:w-auto"
-          >
-            Book a call
-            <ArrowRight size={18} />
-          </Button>
         </div>
       </div>
 
