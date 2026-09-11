@@ -54,6 +54,7 @@ export default async function OrderPage({
   }
 
   const drLabel = order.daSource === "ahrefs" ? "DR" : "DA";
+  const maxTraffic = Math.max(1, ...order.listicles.map((l) => l.traffic ?? 0));
   const meta = [
     { label: "Website", value: order.meta.website },
     { label: "Keyword", value: order.meta.keyword },
@@ -153,9 +154,23 @@ export default async function OrderPage({
                             {l.pa ?? "—"}
                           </span>
                         </td>
-                        <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] font-medium text-foreground">
-                          {formatTraffic(l.traffic)}
-                          <span className="ml-0.5 text-[9px] text-muted">/mo</span>
+                        <td className="px-3 py-3 align-middle">
+                          <div className="mx-auto w-[74px]">
+                            <div className="flex items-baseline justify-between">
+                              <span className="font-[family-name:var(--font-mono)] text-[12px] font-semibold text-foreground">
+                                {formatTraffic(l.traffic)}
+                              </span>
+                              <span className="text-[9px] text-muted">/mo</span>
+                            </div>
+                            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.06]">
+                              <div
+                                className="h-full rounded-full bg-coral"
+                                style={{
+                                  width: `${l.traffic && l.traffic > 0 ? Math.max(4, Math.round((l.traffic / maxTraffic) * 100)) : 0}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
                         </td>
                         <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
                           {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
