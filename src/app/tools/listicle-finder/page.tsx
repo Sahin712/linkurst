@@ -1,21 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  Sparkles,
-  Target,
-  Gauge,
-  CalendarClock,
-  Download,
-  Users,
-  Check,
-  Search,
-  MapPin,
-  ArrowRight,
-} from "lucide-react";
+import { Target, Download, Check, Search, MapPin, ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ListicleFinder } from "@/components/tools/listicle-finder";
 import { EngineChips } from "@/components/tools/engine-chips";
+import { ReportPreview } from "@/components/tools/report-preview";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
@@ -41,15 +31,6 @@ const toolLogos = [
   { name: "Spreadsheet", file: "spreadsheet" },
   { name: "Gmail", file: "gmail" },
 ] as const;
-
-const features = [
-  { icon: Target, t: "Gap analysis, not just a list", d: "We flag every listicle that ranks your competitors but not you, your highest-intent placement targets, sorted to the top." },
-  { icon: Gauge, t: "DA + PA on every result", d: "Domain and page authority for each listicle, so you chase the placements that actually move the needle." },
-  { icon: CalendarClock, t: "Freshness dates", d: "See when each listicle was last updated, so you prioritize the ones editors still maintain." },
-  { icon: Users, t: "Competitor visibility", d: "See exactly which competitors are featured on each page, so you know what you're up against." },
-  { icon: Download, t: "Export everything", d: "Download the full report as a spreadsheet to share with your team or feed your outreach." },
-  { icon: Sparkles, t: "Built for AI search", d: "Listicles are the pages ChatGPT, Perplexity, and Gemini cite most. Getting on them is how you get recommended." },
-];
 
 const faqs = [
   { q: "What exactly does the Listicle Finder do?", a: "It finds the 'best of' and 'top' listicles ranking for your keyword, scores each by domain and page authority, checks how recently they were updated, and flags which ones feature your competitors but not you." },
@@ -322,6 +303,59 @@ export default function ListicleFinderPage() {
             </div>
           </Reveal>
 
+          {/* ---- what's in your report ---- */}
+          <Reveal className="mt-24">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="eyebrow-mono flex items-center justify-center gap-2 text-coral">
+                <span className="inline-block h-px w-6 bg-coral" />
+                Your report
+                <span className="inline-block h-px w-6 bg-coral" />
+              </p>
+              <h2 className="mt-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                What&rsquo;s in your report
+              </h2>
+              <p className="mt-4 text-[15px] leading-relaxed text-fog">
+                Not a flat list, a scored dashboard. Every listicle ranked by our
+                Opportunity score, so you know exactly which to pitch first.
+              </p>
+            </div>
+
+            <div className="mt-10">
+              <ReportPreview />
+            </div>
+
+            {/* what you get — divided panel, not cards */}
+            <div className="mx-auto mt-8 grid max-w-4xl gap-px overflow-hidden rounded-[var(--radius-xl)] border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                ["01", "Opportunity score", "A pitch-priority rank blending authority, freshness, and Google position."],
+                ["02", "Gap detection", "Listicles that rank your competitors but not you, flagged and sorted first."],
+                ["03", "Traffic & authority", "Real Ahrefs DR, page authority, and estimated monthly organic visits."],
+                ["04", "Report + .xlsx", "A shareable dashboard link and a spreadsheet ready for your team."],
+              ].map(([n, t, d]) => (
+                <div key={n} className="bg-surface p-5">
+                  <span className="font-[family-name:var(--font-mono)] text-[12px] font-bold text-coral-600">
+                    {n}
+                  </span>
+                  <h3 className="mt-2 text-[14px] font-bold tracking-tight text-foreground">{t}</h3>
+                  <p className="mt-1.5 text-[12.5px] leading-relaxed text-fog">{d}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex flex-col items-center gap-3">
+              <Button href="#finder" size="lg">
+                Find my listicles
+                <ArrowRight size={18} />
+              </Button>
+              <a
+                href="/tools/listicle-finder/example"
+                className="rounded-sm font-[family-name:var(--font-mono)] text-[12px] font-medium text-coral-600 underline decoration-coral/30 underline-offset-2 transition-colors hover:decoration-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                See an example report
+              </a>
+            </div>
+          </Reveal>
+
           {/* ---- split: the gap ---- */}
           <Reveal className="mt-24">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -422,118 +456,6 @@ export default function ListicleFinderPage() {
               ChatGPT cited: the single most common source. Recently updated
               &ldquo;best of&rdquo; lists ranked highest of all.
             </p>
-          </Reveal>
-
-          {/* ---- what's in your report (wide) ---- */}
-          <Reveal className="mt-24">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                What&rsquo;s in your report
-              </h2>
-              <p className="mt-4 text-[15px] leading-relaxed text-fog">
-                Every listicle that matters, scored and sorted, with your gaps
-                flagged. Delivered as an online report and a spreadsheet you can
-                hand straight to your team.
-              </p>
-            </div>
-
-            {/* spreadsheet (xlsx) mockup */}
-            <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface shadow-[var(--shadow-panel)]">
-              <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
-                <Image src="/tools/spreadsheet.svg" alt="" width={16} height={16} className="h-4 w-4" />
-                <span className="font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                  linkurst-listicles.xlsx
-                </span>
-                <span className="ml-auto inline-flex items-center gap-1 rounded-md border border-coral/30 px-2 py-0.5 font-[family-name:var(--font-mono)] text-[10px] font-semibold text-coral-600">
-                  <Download size={11} />
-                  Export
-                </span>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] border-collapse text-[12px]">
-                  <thead>
-                    <tr className="bg-background font-[family-name:var(--font-mono)] text-[9.5px] uppercase tracking-wider text-muted">
-                      <th className="w-8 border-b border-r border-border px-1 py-1.5" />
-                      <th className="border-b border-r border-border px-3 py-1.5 text-left font-medium">
-                        A · Listicle
-                      </th>
-                      <th className="border-b border-r border-border px-3 py-1.5 font-medium">B · DA</th>
-                      <th className="border-b border-r border-border px-3 py-1.5 font-medium">C · PA</th>
-                      <th className="border-b border-r border-border px-3 py-1.5 font-medium">D · Updated</th>
-                      <th className="border-b border-border px-3 py-1.5 font-medium">E · Mentioned</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { t: "The best CRM platforms in 2026 (TechRadar)", da: 91, pa: 51, u: "22.08.26", m: true },
-                      { t: "12 Best CRM Software, Ranked", da: 76, pa: 37, u: "15.07.26", m: false },
-                      { t: "Best CRM for Startups (SoftwareWorld)", da: 42, pa: 35, u: "01.09.26", m: true },
-                      { t: "Top CRM Tools & Platforms Reviewed", da: 49, pa: 31, u: "01.09.26", m: false },
-                      { t: "Best CRM Software Compared", da: 53, pa: 31, u: "03.08.26", m: false },
-                      { t: "CRM Buyer's Guide & Rankings", da: 33, pa: 33, u: "01.10.26", m: true },
-                    ].map((r, i) => (
-                      <tr key={r.t}>
-                        <td className="border-b border-r border-border bg-background px-1 py-1.5 text-center font-[family-name:var(--font-mono)] text-[10px] text-muted">
-                          {i + 1}
-                        </td>
-                        <td className="border-b border-r border-border px-3 py-1.5 text-foreground">
-                          {r.t}
-                        </td>
-                        <td className="border-b border-r border-border px-3 py-1.5 text-center tabular-nums text-fog">
-                          {r.da}
-                        </td>
-                        <td className="border-b border-r border-border px-3 py-1.5 text-center tabular-nums text-fog">
-                          {r.pa}
-                        </td>
-                        <td className="border-b border-r border-border px-3 py-1.5 text-center font-[family-name:var(--font-mono)] text-[11px] text-muted">
-                          {r.u}
-                        </td>
-                        <td
-                          className={
-                            "border-b border-border px-3 py-1.5 text-center font-semibold " +
-                            (r.m ? "bg-coral-wash/60 text-coral-600" : "text-fog")
-                          }
-                        >
-                          {r.m ? "Yes" : "No"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="border-t border-border px-4 py-2.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
-                Illustrative export, your file lists real listicles for your keyword.
-              </p>
-            </div>
-
-            {/* feature cards */}
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((f) => (
-                <div
-                  key={f.t}
-                  className="rounded-[var(--radius-xl)] border border-border bg-surface p-5 transition-colors hover:border-coral/30"
-                >
-                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-coral-wash text-coral-600">
-                    <f.icon size={18} />
-                  </span>
-                  <h3 className="mt-4 text-[15px] font-semibold text-foreground">{f.t}</h3>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-fog">{f.d}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-col items-center gap-3">
-              <Button href="#finder" size="lg">
-                Find my listicles
-                <ArrowRight size={18} />
-              </Button>
-              <a
-                href="/tools/listicle-finder/example"
-                className="rounded-sm font-[family-name:var(--font-mono)] text-[12px] font-medium text-coral-600 underline decoration-coral/30 underline-offset-2 transition-colors hover:decoration-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                See an example report
-              </a>
-            </div>
           </Reveal>
 
           <div className="mx-auto max-w-3xl">
