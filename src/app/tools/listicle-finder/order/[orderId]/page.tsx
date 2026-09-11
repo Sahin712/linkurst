@@ -6,7 +6,7 @@ import brandMark from "../../../../../../public/brand/Linkurst_Logo_V10-removebg
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { getOrder } from "@/lib/listicle/store";
-import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
+import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { cn } from "@/lib/utils";
 
@@ -161,8 +161,13 @@ export default async function OrderPage({
                         <td className="px-3 py-3 align-middle">
                           <TrafficMeter value={l.traffic} max={maxTraffic} />
                         </td>
-                        <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
-                          {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
+                        <td className="px-3 py-3 align-middle text-center">
+                          <span
+                            style={rankStyle(l.bestPosition)}
+                            className="inline-block min-w-[42px] rounded-md px-2 py-1 font-[family-name:var(--font-mono)] text-[12px] font-bold text-foreground"
+                          >
+                            {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
+                          </span>
                         </td>
                         <td className="px-3 py-3 align-middle">
                           <span

@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
-import { freshness, opportunityScore, tierOf } from "@/lib/listicle/score";
+import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
@@ -288,8 +288,13 @@ export function ListicleReport({ result }: { result: FindResult }) {
                     <td className="px-3 py-3 align-middle">
                       <TrafficMeter value={l.traffic} max={maxTraffic} />
                     </td>
-                    <td className="px-3 py-3 align-middle text-center font-[family-name:var(--font-mono)] text-[12px] text-fog">
-                      {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
+                    <td className="px-3 py-3 align-middle text-center">
+                      <span
+                        style={rankStyle(l.bestPosition)}
+                        className="inline-block min-w-[42px] rounded-md px-2 py-1 font-[family-name:var(--font-mono)] text-[12px] font-bold text-foreground"
+                      >
+                        {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
+                      </span>
                     </td>
                     <td className="px-3 py-3 align-middle">
                       <span
@@ -517,7 +522,10 @@ const METRICS: {
     icon: Search,
     title: "Rank",
     visual: (
-      <span className="rounded-md bg-foreground/[0.05] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[13px] font-bold text-foreground">
+      <span
+        style={rankStyle(3)}
+        className="rounded-md px-2.5 py-1 font-[family-name:var(--font-mono)] text-[13px] font-bold text-foreground"
+      >
         #3
       </span>
     ),

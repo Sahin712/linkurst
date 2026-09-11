@@ -54,3 +54,10 @@ export function paStyle(v: number | null): CSSProperties {
   if (v == null) return {};
   return { backgroundColor: `rgba(58,58,61,${(0.06 + (v / 100) * 0.2).toFixed(3)})` };
 }
+
+/** Google-rank pill tint: better (lower) positions get a stronger coral. */
+export function rankStyle(pos: number): CSSProperties {
+  if (!pos || pos <= 0) return {};
+  const t = Math.max(0.05, Math.min(1, (21 - pos) / 20));
+  return { backgroundColor: `rgba(232,85,58,${(0.08 + t * 0.3).toFixed(3)})` };
+}
