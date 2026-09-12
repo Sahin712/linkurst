@@ -62,10 +62,21 @@ function FreshnessBars({ tone }: { tone: FreshTone }) {
   );
 }
 
+/** Live pulsing beacon — a solid coral dot with a radiating ring. */
+function BeaconDot() {
+  return (
+    <span className="relative flex h-1.5 w-1.5">
+      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral opacity-75 motion-reduce:hidden" />
+      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-coral" />
+    </span>
+  );
+}
+
 /**
  * Whether the brand already appears on a listicle. "Not yet" (the placement
- * opportunity — the point of the tool) gets the coral highlight; "Featured"
- * gets a solid dark badge so it stands apart; unknown stays quiet.
+ * opportunity — the point of the tool) gets the coral highlight with a live
+ * pulsing beacon; "Featured" gets a solid dark badge so it stands apart;
+ * unknown stays quiet.
  */
 function MentionBadge({ value }: { value: boolean | null }) {
   if (value === true) {
@@ -79,7 +90,7 @@ function MentionBadge({ value }: { value: boolean | null }) {
   if (value === false) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash px-3 py-1.5 text-[11.5px] font-semibold text-coral-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+        <BeaconDot />
         Not yet
       </span>
     );
@@ -547,7 +558,7 @@ const METRICS: {
     title: "Mentioned",
     visual: (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash px-3 py-1.5 text-[11.5px] font-semibold text-coral-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+        <BeaconDot />
         Not yet
       </span>
     ),
