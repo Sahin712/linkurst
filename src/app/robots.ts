@@ -12,6 +12,5 @@ export default function robots(): MetadataRoute.Robots {
       disallow: ["/tools/listicle-finder/", "/api/"],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
-    host: siteConfig.url,
   };
 }
