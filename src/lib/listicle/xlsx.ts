@@ -1,10 +1,14 @@
 import type { FindResult } from "./find";
-import { opportunityScore, tierOf } from "./score";
+import { opportunityScore } from "./score";
 
 /**
  * Client-side .xlsx export of a listicle report. Dynamically imports exceljs so
  * it stays out of the main bundle. Only the selected rows are exported when
  * `onlyUrls` is provided; otherwise the full report.
+ *
+ * Styled as a clean, presentable table: a numbered index column, a branded
+ * bold header, centered numeric columns with thousands separators, hairline
+ * borders, a frozen + filtered header row, and the Inter font throughout.
  */
 export async function downloadListiclesXlsx(
   result: FindResult,
@@ -15,67 +19,111 @@ export async function downloadListiclesXlsx(
   wb.creator = "Linkurst";
   wb.created = new Date();
 
-  const ws = wb.addWorksheet("Listicles");
-  const drLabel = result.daSource === "ahrefs" ? "DR (Ahrefs)" : "Authority";
-  ws.columns = [
-    { header: "Opportunity", key: "opp", width: 12 },
-    { header: "Tier", key: "tier", width: 10 },
-    { header: "Listicle", key: "title", width: 50 },
-    { header: "URL", key: "url", width: 52 },
-    { header: "Domain", key: "domain", width: 24 },
-    { header: drLabel, key: "da", width: 12 },
-    { header: "PA", key: "pa", width: 8 },
-    { header: "Est. traffic/mo", key: "traffic", width: 16 },
-    { header: "Google rank", key: "pos", width: 12 },
-    { header: "Updated", key: "updated", width: 14 },
-    { header: "You featured?", key: "mentions", width: 14 },
-    { header: "Competitors featured", key: "comps", width: 34 },
-  ];
+  const FONT = "Inter";
+  const CHARCOAL = "FF1C1C1E";
+  const CORAL = "FFE8553A";
+  const HEADER_BG = "FFFBEDE8"; // coral-wash
+  const BORDER = "FFE7E1D8";
+  const hair = { style: "thin" as const, color: { argb: BORDER } };
 
+  const ws = wb.addWorksheet("Listicles", {
+    views: [{ state: "frozen", ySplit: 1 }],
+  });
+  const drLabel = result.daSource === "ahrefs" ? "DR (Ahrefs)" : "Authority";
+
+  // Column definitions: key, header, width, and horizontal alignment.
+  const cols: { key: string; header: string; width: number; align: "left" | "center" }[] = [
+    { key: "idx", header: "#", width: 5, align: "center" },
+    { key: "title", header: "Listicle", width: 46, align: "left" },
+    { key: "url", header: "URL", width: 52, align: "left" },
+    { key: "domain", header: "Domain", width: 22, align: "left" },
+    { key: "da", header: drLabel, width: 12, align: "center" },
+    { key: "pa", header: "PA", width: 8, align: "center" },
+    { key: "traffic", header: "Est. traffic/mo", width: 16, align: "center" },
+    { key: "pos", header: "Google rank", width: 13, align: "center" },
+    { key: "updated", header: "Updated", width: 14, align: "center" },
+    { key: "mentions", header: "You featured?", width: 14, align: "center" },
+    { key: "comps", header: "Competitors featured", width: 34, align: "left" },
+  ];
+  ws.columns = cols.map((c) => ({ key: c.key, width: c.width }));
+
+  // Header row.
   const header = ws.getRow(1);
-  header.font = { bold: true, color: { argb: "FF1C1C1E" } };
-  header.eachCell((c) => {
-    c.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFFBE4DE" } };
-    c.alignment = { vertical: "middle" };
+  header.height = 26;
+  cols.forEach((c, i) => {
+    const cell = header.getCell(i + 1);
+    cell.value = c.header;
+    cell.font = { name: FONT, bold: true, size: 11, color: { argb: CHARCOAL } };
+    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HEADER_BG } };
+    cell.alignment = { vertical: "middle", horizontal: c.align, wrapText: false };
+    cell.border = {
+      top: hair,
+      left: hair,
+      right: hair,
+      bottom: { style: "medium", color: { argb: CORAL } },
+    };
   });
 
   const rows = result.listicles
     .filter((l) => !onlyUrls || onlyUrls.has(l.url))
     .sort((a, b) => opportunityScore(b) - opportunityScore(a));
-  for (const l of rows) {
-    const score = opportunityScore(l);
-    ws.addRow({
-      opp: score,
-      tier: tierOf(score),
+
+  rows.forEach((l, i) => {
+    const row = ws.addRow({
+      idx: i + 1,
       title: l.title,
       url: l.url,
       domain: l.domain,
       da: l.da ?? "",
       pa: l.pa ?? "",
       traffic: l.traffic ?? "",
-      pos: l.bestPosition,
+      pos: l.bestPosition > 0 ? l.bestPosition : "",
       updated: l.updated ?? "",
-      mentions: l.mentionsBrand == null ? "" : l.mentionsBrand ? "Yes" : "No",
+      mentions: l.mentionsBrand == null ? "—" : l.mentionsBrand ? "Yes" : "No",
       comps: l.competitorsMentioned.join(", "),
     });
-  }
-  ws.autoFilter = { from: "A1", to: "L1" };
-  ws.views = [{ state: "frozen", ySplit: 1 }];
+    row.height = 20;
+    cols.forEach((c, ci) => {
+      const cell = row.getCell(ci + 1);
+      cell.font = { name: FONT, size: 10, color: { argb: CHARCOAL } };
+      cell.alignment = { vertical: "middle", horizontal: c.align };
+      cell.border = { top: hair, left: hair, right: hair, bottom: hair };
+      if (c.key === "traffic") cell.numFmt = "#,##0";
+      if (c.key === "url") {
+        // Make the URL a real clickable link, styled subtly.
+        cell.value = { text: l.url, hyperlink: l.url };
+        cell.font = { name: FONT, size: 10, color: { argb: "FF8A8A8E" }, underline: true };
+      }
+      if (c.key === "mentions") {
+        cell.font = {
+          name: FONT,
+          size: 10,
+          bold: true,
+          color: { argb: l.mentionsBrand === false ? CORAL : CHARCOAL },
+        };
+      }
+    });
+  });
+
+  ws.autoFilter = { from: "A1", to: `${String.fromCharCode(64 + cols.length)}1` };
 
   // Meta sheet with the query + attribution.
   const meta = wb.addWorksheet("About");
   meta.columns = [{ width: 20 }, { width: 60 }];
-  meta.addRows([
+  const metaRows: [string, string | number][] = [
     ["Keyword", result.keyword],
     ["Location", result.location],
     ["Your website", result.brandDomain ?? ""],
     ["Competitors", result.competitors.join(", ")],
     ["Listicles found", result.totals.listicles],
-    ["Placement gaps", result.totals.gaps],
     ["Generated by", "Linkurst · linkurst.com"],
     ["Domain Rating", "Domain Rating by Ahrefs (ahrefs.com)"],
-  ]);
-  meta.getColumn(1).font = { bold: true };
+  ];
+  meta.addRows(metaRows);
+  meta.eachRow((row) => {
+    row.getCell(1).font = { name: FONT, bold: true, color: { argb: CHARCOAL } };
+    row.getCell(2).font = { name: FONT, color: { argb: CHARCOAL } };
+  });
 
   const buf = await wb.xlsx.writeBuffer();
   const blob = new Blob([buf], {
