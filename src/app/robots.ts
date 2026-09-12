@@ -5,10 +5,10 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      // Keep the tool landing page and the marketing example report crawlable,
-      // but block private, token-based generated reports and order pages
-      // (/tools/listicle-finder/<token> and /order/<id>) plus API routes.
-      allow: ["/", "/tools/listicle-finder/example"],
+      // Keep the tool landing page crawlable, but block everything under
+      // /tools/listicle-finder/ — the generated token reports, order pages,
+      // and the example report — plus API routes.
+      allow: "/",
       disallow: ["/tools/listicle-finder/", "/api/"],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
