@@ -7,11 +7,13 @@ import { DeferredBackdrop } from "@/components/layout/deferred-backdrop";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import { siteConfig } from "@/lib/site";
 
+// Variable fonts: omit `weight` so next/font loads one variable file covering
+// every weight (300–700) instead of ~10 static files — far fewer requests, so
+// the headline's real font arrives sooner (better LCP on mobile).
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
 });
 
@@ -20,7 +22,6 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500"],
   style: ["normal", "italic"],
 });
 
