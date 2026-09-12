@@ -158,6 +158,77 @@ type TrafficResponse = {
   }>;
 };
 
+type ContentParsingResponse = {
+  tasks?: Array<{ result?: Array<Record<string, unknown> | null> | null }>;
+};
+
+/** Recursively harvest visible text (and any markdown) from a parsed page. */
+function harvestText(node: unknown, out: string[], depth = 0): void {
+  if (node == null || depth > 12) return;
+  if (typeof node === "string") {
+    out.push(node);
+    return;
+  }
+  if (Array.isArray(node)) {
+    for (const v of node) harvestText(v, out, depth + 1);
+    return;
+  }
+  if (typeof node === "object") {
+    for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
+      if ((k === "page_as_markdown" || k === "text") && typeof v === "string") {
+        out.push(v);
+      } else {
+        harvestText(v, out, depth + 1);
+      }
+    }
+  }
+}
+
+const RENDER_TIMEOUT_MS = 15000;
+const RENDER_MAX_TEXT = 2_000_000;
+
+/**
+ * Render a JavaScript-heavy page via DataForSEO On-Page (browser rendering) and
+ * return its visible text as one string. Best-effort: returns "" on any failure
+ * so the caller can fall back to whatever the plain fetch produced. Reads the
+ * real content of client-rendered SPAs (e.g. editgpt.app) that serve an empty
+ * shell to a non-JS crawler.
+ */
+export async function renderPageText(url: string): Promise<string> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), RENDER_TIMEOUT_MS);
+  try {
+    const res = await fetch(BASE + "/on_page/content_parsing/live", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authHeader(),
+      },
+      body: JSON.stringify([
+        {
+          url,
+          enable_javascript: true,
+          enable_browser_rendering: true,
+          load_resources: true,
+          markdown_view: true,
+        },
+      ]),
+      signal: controller.signal,
+    });
+    if (!res.ok) return "";
+    const json = (await res.json()) as ContentParsingResponse;
+    const result = json.tasks?.[0]?.result?.[0];
+    if (!result) return "";
+    const out: string[] = [];
+    harvestText(result, out);
+    return out.join("\n").slice(0, RENDER_MAX_TEXT);
+  } catch {
+    return "";
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 // DataForSEO location codes for the locations the form offers (defaults to US).
 const LOCATION_CODES: Record<string, number> = {
   "united states": 2840,

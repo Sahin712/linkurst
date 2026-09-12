@@ -1,4 +1,4 @@
-import { serpOrganic, bulkRanks, bulkTrafficEstimation } from "./dataforseo";
+import { serpOrganic, bulkRanks, bulkTrafficEstimation, renderPageText } from "./dataforseo";
 import { hasAhrefsCredentials, domainRatings } from "./ahrefs";
 
 /**
@@ -61,6 +61,9 @@ const LISTICLE_QUERY_TEMPLATES = (k: string) => [
 
 const FETCH_TIMEOUT_MS = 6000;
 const MAX_HTML_BYTES = 1_500_000;
+// Cap how many JS-shell pages we re-fetch through browser rendering per report,
+// to bound wall-clock time (rendering is slow) when LISTICLE_JS_RENDER is on.
+const MAX_RENDER = 12;
 
 function normDomain(input: string): string {
   return input
@@ -392,6 +395,34 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
           .map((c) => c.domain);
       }),
     );
+
+    // 4b. Render fallback: JS-only pages (client-rendered SPAs) serve an empty
+    //     shell to the plain fetch, so we couldn't read a date. Re-fetch those
+    //     through DataForSEO On-Page browser rendering and re-extract. Opt-in
+    //     (LISTICLE_JS_RENDER) because rendering is slow and costs credits.
+    const renderEnabled = /^(1|true|yes)$/i.test(process.env.LISTICLE_JS_RENDER ?? "");
+    if (renderEnabled) {
+      const needsRender = listicles
+        .filter((l) => l.updated == null)
+        .slice(0, MAX_RENDER);
+      await Promise.all(
+        needsRender.map(async (l) => {
+          const text = await renderPageText(l.url);
+          if (!text) return;
+          const lower = text.toLowerCase();
+          l.updated = extractDate(text) ?? l.updated;
+          if (brandDomain && l.mentionsBrand !== true) {
+            l.mentionsBrand = brandNeedles.some((n) => n && lower.includes(n));
+          }
+          if (compNeedles.length) {
+            const found = compNeedles
+              .filter((c) => c.needles.some((n) => n && lower.includes(n)))
+              .map((c) => c.domain);
+            l.competitorsMentioned = [...new Set([...l.competitorsMentioned, ...found])];
+          }
+        }),
+      );
+    }
   }
 
   const daValues = listicles.map((l) => l.da).filter((d): d is number => d != null);
