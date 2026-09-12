@@ -57,6 +57,7 @@ export async function POST(request: Request) {
           traffic: typeof l.traffic === "number" ? l.traffic : null,
           updated: typeof l.updated === "string" ? l.updated : null,
           author: typeof l.author === "string" ? l.author : null,
+          citedByAi: l.citedByAi === true,
           bestPosition: typeof l.bestPosition === "number" ? l.bestPosition : 0,
           appearances: typeof l.appearances === "number" ? l.appearances : 1,
           mentionsBrand: typeof l.mentionsBrand === "boolean" ? l.mentionsBrand : null,

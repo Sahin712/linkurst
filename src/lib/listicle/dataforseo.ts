@@ -86,20 +86,48 @@ export type SerpItem = {
   domain: string;
 };
 
+export type SerpResult = {
+  items: SerpItem[];
+  /** URLs the Google AI Overview cited for this query (empty if none shown). */
+  aiOverviewUrls: string[];
+};
+
 type SerpResponse = {
   tasks?: Array<{
     status_code?: number;
-    result?: Array<{ items?: SerpItem[] } | null> | null;
+    result?: Array<{ items?: Array<Record<string, unknown>> } | null> | null;
   }>;
 };
 
-/** Live Google organic results for a keyword. Returns organic items only. */
+/** Recursively collect every http(s) URL under a node (used on the AI Overview item). */
+function harvestUrls(node: unknown, out: Set<string>, depth = 0): void {
+  if (node == null || depth > 10) return;
+  if (typeof node === "string") {
+    if (/^https?:\/\/\S+$/i.test(node)) out.add(node);
+    return;
+  }
+  if (Array.isArray(node)) {
+    for (const v of node) harvestUrls(v, out, depth + 1);
+    return;
+  }
+  if (typeof node === "object") {
+    for (const v of Object.values(node as Record<string, unknown>)) {
+      harvestUrls(v, out, depth + 1);
+    }
+  }
+}
+
+/**
+ * Live Google organic results for a keyword, plus any AI Overview citations.
+ * `load_async_ai_overview` asks DataForSEO to include the AI Overview block
+ * (it loads asynchronously in Google); we then harvest the URLs it cites.
+ */
 export async function serpOrganic(
   keyword: string,
   locationName = "United States",
   languageCode = "en",
   depth = 50,
-): Promise<SerpItem[]> {
+): Promise<SerpResult> {
   const data = await dfsPost<SerpResponse>(
     "/serp/google/organic/live/advanced",
     [
@@ -109,14 +137,22 @@ export async function serpOrganic(
         language_code: languageCode,
         depth,
         device: "desktop",
+        load_async_ai_overview: true,
       },
     ],
   );
   const items = data.tasks?.[0]?.result?.[0]?.items ?? [];
-  return items.filter(
+  const organic = items.filter(
     (i): i is SerpItem =>
       !!i && i.type === "organic" && typeof i.url === "string" && !!i.domain,
   );
+  const aiUrls = new Set<string>();
+  for (const it of items) {
+    if (it && typeof it === "object" && it.type === "ai_overview") {
+      harvestUrls(it, aiUrls);
+    }
+  }
+  return { items: organic, aiOverviewUrls: [...aiUrls] };
 }
 
 type RanksResponse = {

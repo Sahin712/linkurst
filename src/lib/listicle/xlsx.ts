@@ -43,6 +43,7 @@ export async function downloadListiclesXlsx(
     { key: "pos", header: "Google rank", width: 13, align: "center" },
     { key: "updated", header: "Updated", width: 14, align: "center" },
     { key: "author", header: "Author", width: 20, align: "left" },
+    { key: "ai", header: "Cited by Google AI", width: 18, align: "center" },
     { key: "mentions", header: "You featured?", width: 14, align: "center" },
     { key: "comps", header: "Competitors featured", width: 34, align: "left" },
   ];
@@ -81,6 +82,7 @@ export async function downloadListiclesXlsx(
       pos: l.bestPosition > 0 ? l.bestPosition : "",
       updated: l.updated ?? "",
       author: l.author ?? "",
+      ai: l.citedByAi ? "Yes" : "",
       mentions: l.mentionsBrand == null ? "—" : l.mentionsBrand ? "Yes" : "No",
       comps: l.competitorsMentioned.join(", "),
     });

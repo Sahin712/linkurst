@@ -159,6 +159,10 @@ export function ListicleReport({
     () => Math.max(1, ...filtered.listicles.map((l) => l.traffic ?? 0)),
     [filtered],
   );
+  const aiCitedCount = useMemo(
+    () => filtered.listicles.filter((l) => l.citedByAi).length,
+    [filtered],
+  );
 
   const drLabel = filtered.daSource === "ahrefs" ? "DR" : "DA";
   const allSelected = selected.size === rows.length && rows.length > 0;
@@ -263,9 +267,17 @@ export function ListicleReport({
               </p>
             </div>
           </div>
-          <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-coral/30 bg-surface/70 px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-coral-600 sm:inline-flex">
-            <Check size={13} />
-            {filtered.opportunities} ready to pitch
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <div className="hidden items-center gap-1.5 rounded-full border border-coral/30 bg-surface/70 px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-coral-600 sm:inline-flex">
+              <Check size={13} />
+              {filtered.opportunities} ready to pitch
+            </div>
+            {aiCitedCount > 0 && (
+              <div className="hidden items-center gap-1.5 rounded-full bg-coral px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-white sm:inline-flex">
+                <Sparkles size={12} />
+                {aiCitedCount} cited by Google AI
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -342,6 +354,12 @@ export function ListicleReport({
                         {l.title}
                         <ArrowUpRight size={13} className="mt-0.5 shrink-0 text-muted" />
                       </a>
+                      {l.citedByAi && (
+                        <span className="ml-1.5 inline-flex items-center gap-1 rounded-full bg-coral px-2 py-0.5 align-[2px] text-[10px] font-semibold text-white">
+                          <Sparkles size={10} />
+                          AI cited
+                        </span>
+                      )}
                       <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
                         {l.domain}
                         {l.author && (

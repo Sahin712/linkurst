@@ -17,6 +17,7 @@ export type Listicle = {
   traffic: number | null; // estimated monthly organic visits to the domain
   updated: string | null; // ISO date (YYYY-MM-DD) the page was last modified
   author: string | null; // byline / author name, when the page exposes one
+  citedByAi: boolean; // this exact page is cited in Google's AI Overview
   bestPosition: number;
   appearances: number;
   mentionsBrand: boolean | null;
@@ -165,6 +166,17 @@ function normTarget(input: string): string {
     .toLowerCase()
     .replace(/^https?:\/\//, "")
     .replace(/^www\./, "")
+    .replace(/\/$/, "");
+}
+
+/** Normalize a URL for citation matching: drop protocol, www, query, hash, trailing slash. */
+function normUrl(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/[?#].*$/, "")
     .replace(/\/$/, "");
 }
 
@@ -332,10 +344,16 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
       new Error("SERP discovery failed.");
   }
 
+  // Collect every URL Google's AI Overview cited across the queries.
+  const aiCited = new Set<string>();
+  for (const pq of perQuery) {
+    for (const u of pq.aiOverviewUrls) aiCited.add(normUrl(u));
+  }
+
   // 2. Aggregate + dedupe by URL, keeping best rank and appearance count.
   const byUrl = new Map<string, Listicle>();
-  for (const items of perQuery) {
-    for (const it of items) {
+  for (const pq of perQuery) {
+    for (const it of pq.items) {
       if (!isListicleTitle(it.title)) continue;
       const dom = normDomain(it.domain);
       if (brandDomain && dom === brandDomain) continue; // skip the user's own page
@@ -354,6 +372,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
           traffic: null,
           updated: null,
           author: null,
+          citedByAi: aiCited.has(normUrl(it.url)),
           bestPosition: it.rank_absolute,
           appearances: 1,
           mentionsBrand: null,
