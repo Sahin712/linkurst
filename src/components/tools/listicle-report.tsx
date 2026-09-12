@@ -241,10 +241,10 @@ export function ListicleReport({ result }: { result: FindResult }) {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1080px] text-left text-[13px]">
+          <table className="w-full min-w-[940px] text-left text-[13px]">
             <thead>
-              <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
-                <th className="w-10 px-4 py-3">
+              <tr className="border-b border-border bg-foreground/[0.02] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
+                <th className="w-10 px-4 py-3.5">
                   <input
                     type="checkbox"
                     checked={allSelected}
@@ -253,14 +253,13 @@ export function ListicleReport({ result }: { result: FindResult }) {
                     className="h-4 w-4 accent-coral"
                   />
                 </th>
-                <th className="px-3 py-3 font-medium">Listicle</th>
-                <th className="px-3 py-3 text-center font-medium">{drLabel}</th>
-                <th className="px-3 py-3 text-center font-medium">PA</th>
-                <th className="px-3 py-3 text-center font-medium">Traffic</th>
-                <th className="px-3 py-3 text-center font-medium">Rank</th>
-                <th className="px-3 py-3 text-center font-medium">Mentioned</th>
-                <th className="px-3 py-3 font-medium">Freshness</th>
-                <th className="px-4 py-3 font-medium">Opportunity</th>
+                <th className="px-3 py-3.5 font-medium">Listicle</th>
+                <th className="px-3 py-3.5 text-center font-medium">{drLabel}&nbsp;/&nbsp;PA</th>
+                <th className="px-3 py-3.5 text-center font-medium">Traffic</th>
+                <th className="px-3 py-3.5 text-center font-medium">Rank</th>
+                <th className="px-3 py-3.5 text-center font-medium">Mentioned</th>
+                <th className="px-3 py-3.5 font-medium">Freshness</th>
+                <th className="px-4 py-3.5 text-right font-medium">Opportunity</th>
               </tr>
             </thead>
             <tbody>
@@ -277,7 +276,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
                       on ? "bg-coral-wash/50" : "hover:bg-foreground/[0.015]",
                     )}
                   >
-                    <td className="px-4 py-3 align-top">
+                    <td className="px-4 py-3.5 align-top">
                       <input
                         type="checkbox"
                         checked={on}
@@ -286,7 +285,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         className="mt-0.5 h-4 w-4 accent-coral"
                       />
                     </td>
-                    <td className="px-3 py-3">
+                    <td className="px-3 py-3.5 align-top">
                       <a
                         href={l.url}
                         target="_blank"
@@ -300,31 +299,27 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         {l.domain}
                       </p>
                       {l.competitorsMentioned.length > 0 && (
-                        <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                          <span className="font-[family-name:var(--font-mono)] text-[9px] uppercase tracking-wide text-coral-600">
-                            Competitors:
-                          </span>
-                          {l.competitorsMentioned.map((c) => (
-                            <span
-                              key={c}
-                              className="rounded border border-coral/30 bg-coral-wash/40 px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[9.5px] text-coral-600"
-                            >
-                              {c}
-                            </span>
-                          ))}
-                        </div>
+                        <p className="mt-1 font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                          <span className="text-coral-600/80">vs</span>{" "}
+                          {l.competitorsMentioned.slice(0, 3).join(", ")}
+                          {l.competitorsMentioned.length > 3
+                            ? ` +${l.competitorsMentioned.length - 3}`
+                            : ""}
+                        </p>
                       )}
                     </td>
-                    <td className="px-3 py-3 align-middle">
-                      <ScoreRing value={l.da} tone="coral" />
+                    <td className="px-3 py-3.5 align-middle">
+                      <div className="flex flex-col items-center">
+                        <ScoreRing value={l.da} tone="coral" />
+                        <span className="mt-1 font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                          PA {l.pa ?? "—"}
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-3 py-3 align-middle">
-                      <ScoreRing value={l.pa} tone="slate" />
-                    </td>
-                    <td className="px-3 py-3 align-middle">
+                    <td className="px-3 py-3.5 align-middle">
                       <TrafficMeter value={l.traffic} max={maxTraffic} />
                     </td>
-                    <td className="px-3 py-3 align-middle text-center">
+                    <td className="px-3 py-3.5 align-middle text-center">
                       <span
                         style={rankStyle(l.bestPosition)}
                         className="inline-block min-w-[42px] rounded-md px-2 py-1 font-[family-name:var(--font-mono)] text-[12px] font-bold text-foreground"
@@ -332,10 +327,10 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
                       </span>
                     </td>
-                    <td className="px-3 py-3 align-middle text-center">
+                    <td className="px-3 py-3.5 align-middle text-center">
                       <MentionBadge value={l.mentionsBrand} />
                     </td>
-                    <td className="px-3 py-3 align-middle">
+                    <td className="px-3 py-3.5 align-middle">
                       <span
                         className={cn(
                           "inline-flex items-center gap-1.5 text-[12px] font-medium",
@@ -364,31 +359,31 @@ export function ListicleReport({ result }: { result: FindResult }) {
                         </p>
                       )}
                     </td>
-                    <td className="px-4 py-3 align-middle">
-                      <div className="flex items-center gap-2">
+                    <td className="px-4 py-3.5 align-middle">
+                      <div className="flex items-center justify-end gap-2.5">
                         <span
                           className={cn(
-                            "grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[13px] font-bold tabular-nums",
+                            "text-[11px] font-semibold uppercase tracking-wide",
                             tier === "High"
-                              ? "bg-coral text-white"
+                              ? "text-coral-600"
+                              : tier === "Medium"
+                                ? "text-fog"
+                                : "text-muted",
+                          )}
+                        >
+                          {tier}
+                        </span>
+                        <span
+                          className={cn(
+                            "grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[14px] font-bold tabular-nums",
+                            tier === "High"
+                              ? "bg-coral text-white shadow-[0_4px_12px_-4px_rgba(232,85,58,0.6)]"
                               : tier === "Medium"
                                 ? "bg-coral-wash text-coral-600"
                                 : "border border-border text-muted",
                           )}
                         >
                           {score}
-                        </span>
-                        <span
-                          className={cn(
-                            "text-[12px] font-semibold",
-                            tier === "High"
-                              ? "text-coral-600"
-                              : tier === "Medium"
-                                ? "text-foreground"
-                                : "text-muted",
-                          )}
-                        >
-                          {tier}
                         </span>
                       </div>
                     </td>
@@ -548,8 +543,17 @@ const METRICS: {
   {
     icon: FileText,
     title: "PA",
-    visual: <ScoreRing value={46} tone="slate" />,
-    body: <>Page authority for that specific article, 0–100 — how strong the individual page is.</>,
+    visual: (
+      <span className="font-[family-name:var(--font-mono)] text-[11px] text-muted">
+        PA 46
+      </span>
+    ),
+    body: (
+      <>
+        Page authority for that specific article, 0–100 — shown under the authority ring. Often
+        low for individual blog posts.
+      </>
+    ),
   },
   {
     icon: Users,
