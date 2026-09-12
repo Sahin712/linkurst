@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "See an example of the Linkurst Listicle Finder report: listicles ranking for a keyword, scored by authority, with placement gaps flagged.",
   alternates: { canonical: "/tools/listicle-finder/example" },
+  robots: { index: false, follow: false },
 };
 
 // Illustrative sample report (not real search data).
