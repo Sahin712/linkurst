@@ -25,13 +25,41 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
-import { freshness, opportunityScore, rankStyle } from "@/lib/listicle/score";
+import {
+  freshness,
+  opportunityScore,
+  rankStyle,
+  relativeAge,
+  type FreshTone,
+} from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
 
 function isGap(l: Listicle) {
   return l.mentionsBrand === false && l.competitorsMentioned.length > 0;
+}
+
+/** Signal-strength style freshness gauge: 3 bars for Fresh, stepping down. */
+function FreshnessBars({ tone }: { tone: FreshTone }) {
+  const filled = tone === "fresh" ? 3 : tone === "aging" ? 2 : tone === "stale" ? 1 : 0;
+  const color =
+    tone === "fresh" ? "bg-coral" : tone === "aging" ? "bg-slate" : "bg-gray";
+  const heights = ["h-2", "h-3", "h-[18px]"];
+  return (
+    <span className="inline-flex items-end gap-[3px]" aria-hidden="true">
+      {heights.map((h, i) => (
+        <span
+          key={i}
+          className={cn(
+            "w-[3.5px] rounded-full",
+            h,
+            i < filled ? color : "bg-foreground/[0.1]",
+          )}
+        />
+      ))}
+    </span>
+  );
 }
 
 /**
@@ -332,33 +360,29 @@ export function ListicleReport({ result }: { result: FindResult }) {
                       <MentionBadge value={l.mentionsBrand} />
                     </td>
                     <td className="px-4 py-3.5 align-middle">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 text-[12px] font-medium",
-                          fresh.tone === "fresh"
-                            ? "text-coral-600"
-                            : fresh.tone === "aging"
-                              ? "text-foreground"
-                              : "text-muted",
-                        )}
-                      >
-                        <span
-                          className={cn(
-                            "h-1.5 w-1.5 rounded-full",
-                            fresh.tone === "fresh"
-                              ? "bg-coral"
-                              : fresh.tone === "aging"
-                                ? "bg-slate"
-                                : "bg-border",
-                          )}
-                        />
-                        {fresh.label}
-                      </span>
-                      {l.updated && (
-                        <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
-                          {l.updated}
-                        </p>
-                      )}
+                      <div className="flex items-center gap-2.5">
+                        <FreshnessBars tone={fresh.tone} />
+                        <div className="leading-tight">
+                          <p
+                            className={cn(
+                              "text-[12px] font-semibold",
+                              fresh.tone === "fresh"
+                                ? "text-coral-600"
+                                : fresh.tone === "aging"
+                                  ? "text-foreground"
+                                  : "text-muted",
+                            )}
+                          >
+                            {fresh.label}
+                          </p>
+                          <p
+                            className="font-[family-name:var(--font-mono)] text-[10px] text-muted"
+                            title={l.updated ?? undefined}
+                          >
+                            {relativeAge(l.updated) ?? "—"}
+                          </p>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -552,12 +576,12 @@ const METRICS: {
     icon: Clock,
     title: "Freshness",
     visual: (
-      <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-coral-600">
-        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+      <span className="inline-flex items-center gap-2 text-[12px] font-semibold text-coral-600">
+        <FreshnessBars tone="fresh" />
         Fresh
       </span>
     ),
-    body: <>How recently the list was updated. <strong className="font-semibold text-foreground">Fresh</strong> lists are far likelier to add a new tool.</>,
+    body: <>How recently the list was updated — the bars step down from <strong className="font-semibold text-foreground">Fresh</strong> to Aging to Stale. Fresher lists are far likelier to add a new tool.</>,
   },
 ];
 

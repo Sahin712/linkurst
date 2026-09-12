@@ -29,8 +29,8 @@ const EXAMPLE: FindResult = {
     { title: "Best CRM for Startups (SoftwareWorld)", url: "https://softwareworld.co/best-crm-for-startups", domain: "softwareworld.co", da: 62, pa: 35, traffic: 38000, updated: "2026-09-01", bestPosition: 3, appearances: 2, mentionsBrand: true, competitorsMentioned: ["hubspot.com"] },
     { title: "Best CRM Software Compared (2026)", url: "https://toolfinder.com/crm-compared", domain: "toolfinder.com", da: 69, pa: 47, traffic: 71000, updated: "2026-08-10", bestPosition: 8, appearances: 1, mentionsBrand: true, competitorsMentioned: ["salesforce.com"] },
     { title: "CRM Software: The Complete Roundup", url: "https://saascentral.io/crm-roundup", domain: "saascentral.io", da: 57, pa: 40, traffic: 29000, updated: "2026-07-30", bestPosition: 10, appearances: 1, mentionsBrand: true, competitorsMentioned: [] },
-    { title: "Best CRM Tools for Sales Teams", url: "https://salesstack.com/best-crm", domain: "salesstack.com", da: 51, pa: 31, traffic: 16000, updated: "2026-04-12", bestPosition: 12, appearances: 1, mentionsBrand: false, competitorsMentioned: [] },
-    { title: "Affordable CRM Software Options", url: "https://budgetsaas.com/crm", domain: "budgetsaas.com", da: 44, pa: 27, traffic: 8400, updated: "2026-03-22", bestPosition: 14, appearances: 1, mentionsBrand: false, competitorsMentioned: [] },
+    { title: "Best CRM Tools for Sales Teams", url: "https://salesstack.com/best-crm", domain: "salesstack.com", da: 51, pa: 31, traffic: 16000, updated: "2024-08-01", bestPosition: 12, appearances: 1, mentionsBrand: false, competitorsMentioned: [] },
+    { title: "Affordable CRM Software Options", url: "https://budgetsaas.com/crm", domain: "budgetsaas.com", da: 44, pa: 27, traffic: 8400, updated: "2025-05-10", bestPosition: 14, appearances: 1, mentionsBrand: false, competitorsMentioned: [] },
     { title: "Enterprise CRM Platforms Reviewed", url: "https://enterprisetech.com/crm", domain: "enterprisetech.com", da: 73, pa: 52, traffic: 118000, updated: "2026-06-05", bestPosition: 15, appearances: 1, mentionsBrand: false, competitorsMentioned: ["salesforce.com"] },
   ],
 };

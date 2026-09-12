@@ -19,6 +19,16 @@ export function freshness(iso: string | null): { label: string; tone: FreshTone 
   return { label: "Stale", tone: "stale" };
 }
 
+/** Human "how long ago", e.g. "new", "4mo ago", "2y ago". Null if no date. */
+export function relativeAge(iso: string | null): string | null {
+  const m = monthsSince(iso);
+  if (m == null) return null;
+  if (m < 1) return "new";
+  if (m < 12) return `${Math.round(m)}mo ago`;
+  const y = m / 12;
+  return `${y < 2 ? y.toFixed(1).replace(/\.0$/, "") : Math.round(y)}y ago`;
+}
+
 /**
  * Opportunity Score (0–100): which listicles to pitch first. Blends domain
  * authority (the prize), freshness (recently updated lists are likelier to add
