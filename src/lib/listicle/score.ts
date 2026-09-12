@@ -36,6 +36,50 @@ export function tierOf(score: number): "High" | "Medium" | "Low" {
   return score >= 72 ? "High" : score >= 50 ? "Medium" : "Low";
 }
 
+/**
+ * The link-building "play" we'd use to win a placement, inferred from the data
+ * signals on each opportunity. `null` means the brand is already featured, so
+ * there's no outreach to run. Order matters: a listed competitor is the
+ * strongest hook, then site authority, then how stale the list is.
+ */
+export type Play = "gap" | "priority" | "refresh" | "quick";
+
+export const PLAYS: { id: Play; label: string; blurb: string }[] = [
+  {
+    id: "gap",
+    label: "Gap pitch",
+    blurb:
+      "Rivals are already listed — we show the editor exactly where you beat them. Fastest to convert.",
+  },
+  {
+    id: "refresh",
+    label: "Refresh angle",
+    blurb:
+      "Older or dated lists. We lead with value — fix stale entries and broken links, then add you as the natural update.",
+  },
+  {
+    id: "priority",
+    label: "Priority target",
+    blurb:
+      "High-authority lists ranking on page one. Worth a personal, multi-touch approach — where the agency earns its keep.",
+  },
+  {
+    id: "quick",
+    label: "Quick win",
+    blurb:
+      "Lower-authority but an easy yes. Light outreach for early momentum and proof the flywheel is turning.",
+  },
+];
+
+export function approachFor(l: Listicle): Play | null {
+  if (l.mentionsBrand === true) return null; // already featured — nothing to pitch
+  if (l.competitorsMentioned.length > 0) return "gap";
+  if ((l.da ?? 0) >= 75) return "priority";
+  const tone = freshness(l.updated).tone;
+  if (tone === "aging" || tone === "stale" || tone === "unknown") return "refresh";
+  return "quick";
+}
+
 /** Compact traffic label, e.g. 1_565_477 → "1.6M", 184_000 → "184K". */
 export function formatTraffic(v: number | null): string {
   if (v == null) return "—";

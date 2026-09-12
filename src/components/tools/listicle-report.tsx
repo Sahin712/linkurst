@@ -25,13 +25,59 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
-import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
+import {
+  freshness,
+  opportunityScore,
+  tierOf,
+  rankStyle,
+  approachFor,
+  PLAYS,
+  type Play,
+} from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
 
 function isGap(l: Listicle) {
   return l.mentionsBrand === false && l.competitorsMentioned.length > 0;
+}
+
+// Visual styling per outreach play (brand palette: coral family + slate + neutral).
+const PLAY_STYLE: Record<Play, { accent: string; tag: string; text: string }> = {
+  gap: { accent: "bg-coral", tag: "bg-coral text-white", text: "text-coral-600" },
+  refresh: {
+    accent: "bg-[#F0997B]",
+    tag: "bg-coral-wash text-coral-600",
+    text: "text-[#B4552F]",
+  },
+  priority: {
+    accent: "bg-slate",
+    tag: "bg-foreground/[0.06] text-slate",
+    text: "text-slate",
+  },
+  quick: {
+    accent: "bg-border",
+    tag: "border border-border text-muted",
+    text: "text-muted",
+  },
+};
+const PLAY_LABEL = Object.fromEntries(PLAYS.map((p) => [p.id, p.label])) as Record<Play, string>;
+
+/** The recommended outreach play for a row, or a muted marker when already on. */
+function ApproachTag({ play }: { play: Play | null }) {
+  if (!play) {
+    return <span className="font-[family-name:var(--font-mono)] text-[11px] text-muted">On list</span>;
+  }
+  return (
+    <span
+      className={cn(
+        "inline-block rounded-full px-2.5 py-1 text-[11.5px] font-semibold",
+        PLAY_STYLE[play].tag,
+      )}
+    >
+      {PLAY_LABEL[play]}
+    </span>
+  );
 }
 
 /** Yes / No / — badge for whether a listicle already mentions the brand. */
@@ -109,6 +155,16 @@ export function ListicleReport({ result }: { result: FindResult }) {
     () => Math.max(1, ...filtered.listicles.map((l) => l.traffic ?? 0)),
     [filtered],
   );
+
+  // Count opportunities by outreach play for the game-plan summary.
+  const playCounts = useMemo(() => {
+    const counts: Record<Play, number> = { gap: 0, priority: 0, refresh: 0, quick: 0 };
+    for (const l of filtered.listicles) {
+      const p = approachFor(l);
+      if (p) counts[p] += 1;
+    }
+    return counts;
+  }, [filtered]);
 
   const drLabel = filtered.daSource === "ahrefs" ? "DR" : "DA";
   const allSelected = selected.size === rows.length && rows.length > 0;
@@ -194,6 +250,11 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
       </div>
 
+      {/* outreach game plan */}
+      {filtered.opportunities > 0 && (
+        <GamePlan counts={playCounts} total={filtered.opportunities} />
+      )}
+
       {/* CTA banner */}
       <div className="overflow-hidden rounded-[var(--radius-xl)] border border-coral/30 bg-gradient-to-br from-coral-wash to-coral-wash/40 p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -241,7 +302,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[940px] text-left text-[13px]">
+          <table className="w-full min-w-[1080px] text-left text-[13px]">
             <thead>
               <tr className="border-b border-border bg-foreground/[0.02] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3.5">
@@ -259,6 +320,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
                 <th className="px-3 py-3.5 text-center font-medium">Rank</th>
                 <th className="px-3 py-3.5 text-center font-medium">Mentioned</th>
                 <th className="px-3 py-3.5 font-medium">Freshness</th>
+                <th className="px-3 py-3.5 font-medium">Approach</th>
                 <th className="px-4 py-3.5 text-right font-medium">Opportunity</th>
               </tr>
             </thead>
@@ -358,6 +420,9 @@ export function ListicleReport({ result }: { result: FindResult }) {
                           {l.updated}
                         </p>
                       )}
+                    </td>
+                    <td className="px-3 py-3.5 align-middle">
+                      <ApproachTag play={approachFor(l)} />
                     </td>
                     <td className="px-4 py-3.5 align-middle">
                       <div className="flex items-center justify-end gap-2.5">
@@ -495,6 +560,44 @@ export function ListicleReport({ result }: { result: FindResult }) {
           onClose={() => setPlaceOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+function GamePlan({ counts, total }: { counts: Record<Play, number>; total: number }) {
+  return (
+    <div className="overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-[var(--shadow-card)] sm:p-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div>
+          <p className="eyebrow-mono text-coral">How we&rsquo;d win these</p>
+          <h2 className="mt-1.5 text-lg font-bold tracking-tight text-foreground sm:text-xl">
+            Your outreach game plan
+          </h2>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/30 bg-coral-wash/60 px-3 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium text-coral-600">
+          <Sparkles size={12} />
+          {total} opportunities · {PLAYS.filter((p) => counts[p.id] > 0).length} plays
+        </span>
+      </div>
+      <p className="mt-2 max-w-2xl text-[13.5px] leading-relaxed text-fog">
+        Every list carries signals — authority, freshness, Google rank, which rivals are already on
+        it. We&rsquo;ve sorted your opportunities into the exact approach we&rsquo;d use to earn each spot.
+      </p>
+      <div className="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        {PLAYS.map((p) => (
+          <div
+            key={p.id}
+            className="relative overflow-hidden rounded-[var(--radius-lg)] border border-border bg-background/40 p-4"
+          >
+            <span className={cn("absolute inset-x-0 top-0 h-[3px]", PLAY_STYLE[p.id].accent)} />
+            <p className="text-3xl font-bold tabular-nums leading-none text-foreground">
+              {counts[p.id]}
+            </p>
+            <p className={cn("mt-1 text-[14px] font-semibold", PLAY_STYLE[p.id].text)}>{p.label}</p>
+            <p className="mt-2 text-[12px] leading-relaxed text-fog">{p.blurb}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
