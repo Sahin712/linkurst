@@ -48,7 +48,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 px-4 pt-3 sm:pt-4">
       {/* floating pill */}
-      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-1 rounded-full border border-white/40 bg-white/45 py-2 pl-4 pr-2 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.35),inset_0_1px_0_0_rgba(255,255,255,0.7)] backdrop-blur-2xl backdrop-saturate-150 md:max-w-fit md:justify-normal md:border-border md:bg-surface/80">
+      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-1 rounded-full border border-white/50 bg-white/20 py-2 pl-4 pr-2 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3),inset_0_1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-200 md:max-w-fit md:justify-normal md:border-border md:bg-surface/80">
         <LogoMark />
 
         <nav aria-label="Primary" className="hidden items-center md:flex">
@@ -156,12 +156,12 @@ export function SiteHeader() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.98 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="relative mx-auto mt-2 max-w-md origin-top overflow-hidden rounded-[26px] border border-white/40 bg-white/45 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.28),inset_0_1px_0_0_rgba(255,255,255,0.7),inset_0_0_0_1px_rgba(255,255,255,0.12)] backdrop-blur-2xl backdrop-saturate-150 md:hidden"
+            className="relative mx-auto mt-2 max-w-md origin-top overflow-hidden rounded-[26px] border border-white/50 bg-white/20 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.25),inset_0_1px_0_0_rgba(255,255,255,0.8),inset_0_0_0_1px_rgba(255,255,255,0.15)] backdrop-blur-xl backdrop-saturate-200 md:hidden"
           >
             {/* liquid-glass sheen */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 rounded-[26px] bg-gradient-to-b from-white/50 via-transparent to-white/10"
+              className="pointer-events-none absolute inset-0 rounded-[26px] bg-gradient-to-b from-white/35 via-transparent to-white/5"
             />
             <div
               aria-hidden="true"
@@ -193,7 +193,7 @@ export function SiteHeader() {
               {/* Tools */}
               <motion.div
                 variants={reduce ? undefined : itemVariants}
-                className="mt-2 rounded-2xl border border-white/40 bg-white/30 p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6)] backdrop-blur-md"
+                className="mt-2 rounded-2xl border border-white/50 bg-white/15 p-2 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7)] backdrop-blur-md"
               >
                 <p className="px-2 py-1 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-coral-600">
                   Free tools
