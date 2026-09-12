@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Download,
   Loader2,
@@ -39,6 +39,7 @@ import {
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 function isGap(l: Listicle) {
   return l.mentionsBrand === false && l.competitorsMentioned.length > 0;
@@ -121,6 +122,15 @@ export function ListicleReport({
   const [downloading, setDownloading] = useState(false);
   const [placeOpen, setPlaceOpen] = useState(false);
 
+  // Funnel: a completed report was viewed.
+  useEffect(() => {
+    track("listicle_report_viewed", {
+      keyword: result.keyword,
+      listicles: result.totals.listicles,
+      ai_cited: (result.aiCitations?.chatgpt ?? 0) + (result.aiCitations?.claude ?? 0),
+    });
+  }, [result.keyword, result.totals.listicles, result.aiCitations]);
+
   // Show every listicle found (the brand's own page is already excluded
   // upstream). Each row is flagged with whether it already mentions the brand,
   // so opportunities (not yet mentioned) and existing features both stay visible.
@@ -183,6 +193,7 @@ export function ListicleReport({
   }
 
   async function download(onlySelected: boolean) {
+    track("report_downloaded", { only_selected: onlySelected, selected: selected.size });
     setDownloading(true);
     try {
       await downloadListiclesXlsx(filtered, onlySelected ? selected : undefined);
@@ -492,6 +503,7 @@ export function ListicleReport({
               size="lg"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("book_call_clicked", { location: "report_cta" })}
               className="w-full shrink-0 sm:w-auto"
             >
               Book a call
@@ -526,7 +538,10 @@ export function ListicleReport({
             )}
             <button
               type="button"
-              onClick={() => setPlaceOpen(true)}
+              onClick={() => {
+                track("placement_modal_opened", { selected: selected.size });
+                setPlaceOpen(true);
+              }}
               className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-coral px-4 text-[13px] font-medium text-white transition-colors hover:bg-coral-600"
             >
               Request placement
@@ -636,6 +651,7 @@ function AiCitationTeaser({
           size="lg"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => track("book_call_clicked", { location: "ai_teaser" })}
           className="w-full shrink-0 sm:w-auto"
         >
           Book a call
@@ -864,6 +880,7 @@ function PlacementModal({
         setStatus("error");
       } else {
         setStatus("sent");
+        track("placement_requested", { count: chosen.length, keyword: result.keyword });
       }
     } catch {
       setError("Network error. Please try again.");
@@ -906,6 +923,7 @@ function PlacementModal({
               size="lg"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("book_call_clicked", { location: "placement_confirmed" })}
               className="mt-6 w-full"
             >
               Book a call now

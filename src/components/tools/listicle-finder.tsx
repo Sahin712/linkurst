@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, Globe, MapPin, Briefcase, Users, X, Loader2, Mail, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 
 const LOCATIONS = [
   "United States",
@@ -72,6 +73,11 @@ export function ListicleFinder() {
       } else {
         setReportUrl(typeof data.reportUrl === "string" ? data.reportUrl : null);
         setStatus("sent");
+        track("listicle_report_started", {
+          keyword: f.keyword,
+          has_website: !!f.website,
+          has_competitors: !!f.competitors,
+        });
       }
     } catch {
       setError("Network error. Please try again.");
