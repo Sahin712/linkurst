@@ -34,31 +34,35 @@ function isGap(l: Listicle) {
   return l.mentionsBrand === false && l.competitorsMentioned.length > 0;
 }
 
-/** Yes / No / — badge for whether a listicle already mentions the brand. */
+/**
+ * Whether the brand already appears on a listicle. "Not yet" (the placement
+ * opportunity — the point of the tool) gets the coral highlight; "Featured"
+ * gets a solid dark badge so it stands apart; unknown stays quiet.
+ */
 function MentionBadge({ value }: { value: boolean | null }) {
   if (value === true) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-coral/30 bg-coral-wash px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-coral-600">
-        <Check size={12} />
-        Yes
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-[11.5px] font-semibold text-white">
+        <Check size={13} strokeWidth={3} />
+        Featured
       </span>
     );
   }
   if (value === false) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-border bg-foreground/[0.03] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-fog">
-        <X size={12} />
-        No
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash px-3 py-1.5 text-[11.5px] font-semibold text-coral-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+        Not yet
       </span>
     );
   }
   return (
     <span
       title="Couldn't read this page — mention unknown"
-      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium text-muted"
+      className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border px-3 py-1.5 text-[11.5px] font-medium text-muted"
     >
       <Minus size={12} />
-      —
+      Unknown
     </span>
   );
 }
@@ -518,15 +522,16 @@ const METRICS: {
     icon: BadgeCheck,
     title: "Mentioned",
     visual: (
-      <span className="inline-flex items-center gap-1 rounded-full border border-coral/30 bg-coral-wash px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-coral-600">
-        <Check size={12} />
-        Yes
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash px-3 py-1.5 text-[11.5px] font-semibold text-coral-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+        Not yet
       </span>
     ),
     body: (
       <>
-        Whether your brand already appears on the list. <strong className="font-semibold text-foreground">No</strong> is
-        the opportunity to chase; <strong className="font-semibold text-foreground">—</strong> means we couldn&rsquo;t read the page.
+        Whether your brand already appears on the list. <strong className="font-semibold text-coral-600">Not yet</strong> is
+        the opportunity to chase; <strong className="font-semibold text-foreground">Featured</strong> means you&rsquo;re already
+        on it; <strong className="font-semibold text-foreground">Unknown</strong> means we couldn&rsquo;t read the page.
       </>
     ),
   },
