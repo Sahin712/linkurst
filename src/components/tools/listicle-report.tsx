@@ -15,6 +15,8 @@ import {
   Clock,
   Users,
   ListChecks,
+  Minus,
+  BadgeCheck,
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -32,43 +34,77 @@ function isGap(l: Listicle) {
   return l.mentionsBrand === false && l.competitorsMentioned.length > 0;
 }
 
+/** Yes / No / — badge for whether a listicle already mentions the brand. */
+function MentionBadge({ value }: { value: boolean | null }) {
+  if (value === true) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-coral/30 bg-coral-wash px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-coral-600">
+        <Check size={12} />
+        Yes
+      </span>
+    );
+  }
+  if (value === false) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-border bg-foreground/[0.03] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-fog">
+        <X size={12} />
+        No
+      </span>
+    );
+  }
+  return (
+    <span
+      title="Couldn't read this page — mention unknown"
+      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium text-muted"
+    >
+      <Minus size={12} />
+      —
+    </span>
+  );
+}
+
 export function ListicleReport({ result }: { result: FindResult }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState(false);
   const [placeOpen, setPlaceOpen] = useState(false);
 
-  // Only listicles that don't already feature the brand — these are the
-  // placement opportunities. Featured listicles are excluded entirely.
+  // Show every listicle found (the brand's own page is already excluded
+  // upstream). Each row is flagged with whether it already mentions the brand,
+  // so opportunities (not yet mentioned) and existing features both stay visible.
   const filtered = useMemo(() => {
-    const listicles = result.listicles.filter((l) => l.mentionsBrand !== true);
+    const listicles = result.listicles;
     const daValues = listicles
       .map((l) => l.da)
       .filter((d): d is number => d != null);
+    const mentioned = listicles.filter((l) => l.mentionsBrand === true).length;
+    const opportunities = listicles.filter((l) => l.mentionsBrand !== true).length;
     return {
       ...result,
       listicles,
       totals: {
         listicles: listicles.length,
-        featured: 0,
+        featured: mentioned,
         gaps: listicles.filter(isGap).length,
         avgDa: daValues.length
           ? Math.round(daValues.reduce((s, d) => s + d, 0) / daValues.length)
           : null,
       },
+      mentioned,
+      opportunities,
     };
   }, [result]);
 
-  // Best pitch targets first (highest opportunity score).
+  // Opportunities (not yet mentioned) first, best score on top; listicles that
+  // already feature the brand sink to the bottom.
   const rows = useMemo(() => {
-    return [...filtered.listicles].sort(
-      (a, b) => opportunityScore(b) - opportunityScore(a),
-    );
+    return [...filtered.listicles].sort((a, b) => {
+      const am = a.mentionsBrand === true ? 1 : 0;
+      const bm = b.mentionsBrand === true ? 1 : 0;
+      if (am !== bm) return am - bm;
+      return opportunityScore(b) - opportunityScore(a);
+    });
   }, [filtered]);
 
-  const primeTargets = useMemo(
-    () => filtered.listicles.filter((l) => opportunityScore(l) >= 72).length,
-    [filtered],
-  );
   const maxTraffic = useMemo(
     () => Math.max(1, ...filtered.listicles.map((l) => l.traffic ?? 0)),
     [filtered],
@@ -99,8 +135,8 @@ export function ListicleReport({ result }: { result: FindResult }) {
   }
 
   const stats = [
-    { n: filtered.totals.listicles, l: "Opportunities" },
-    { n: primeTargets, l: "Prime targets", coral: true },
+    { n: filtered.opportunities, l: "Opportunities", coral: true },
+    { n: filtered.mentioned, l: "Already mentioned" },
     { n: filtered.totals.avgDa ?? "—", l: `Avg ${drLabel}` },
   ];
 
@@ -179,7 +215,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
           </div>
           <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-coral/30 bg-surface/70 px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-coral-600 sm:inline-flex">
             <Check size={13} />
-            {rows.length} ready to pitch
+            {filtered.opportunities} ready to pitch
           </div>
         </div>
       </div>
@@ -205,7 +241,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] text-left text-[13px]">
+          <table className="w-full min-w-[1080px] text-left text-[13px]">
             <thead>
               <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3">
@@ -222,13 +258,13 @@ export function ListicleReport({ result }: { result: FindResult }) {
                 <th className="px-3 py-3 text-center font-medium">PA</th>
                 <th className="px-3 py-3 text-center font-medium">Traffic</th>
                 <th className="px-3 py-3 text-center font-medium">Rank</th>
+                <th className="px-3 py-3 text-center font-medium">Mentioned</th>
                 <th className="px-3 py-3 font-medium">Freshness</th>
                 <th className="px-4 py-3 font-medium">Opportunity</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((l) => {
-                const gap = isGap(l);
                 const on = selected.has(l.url);
                 const fresh = freshness(l.updated);
                 const score = opportunityScore(l);
@@ -295,6 +331,9 @@ export function ListicleReport({ result }: { result: FindResult }) {
                       >
                         {l.bestPosition > 0 ? `#${l.bestPosition}` : "—"}
                       </span>
+                    </td>
+                    <td className="px-3 py-3 align-middle text-center">
+                      <MentionBadge value={l.mentionsBrand} />
                     </td>
                     <td className="px-3 py-3 align-middle">
                       <span
@@ -517,6 +556,22 @@ const METRICS: {
     title: "Traffic",
     visual: <TrafficMeter value={140000} max={160000} />,
     body: <>Estimated monthly organic visits to the site — how many buyers actually see the list.</>,
+  },
+  {
+    icon: BadgeCheck,
+    title: "Mentioned",
+    visual: (
+      <span className="inline-flex items-center gap-1 rounded-full border border-coral/30 bg-coral-wash px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-semibold text-coral-600">
+        <Check size={12} />
+        Yes
+      </span>
+    ),
+    body: (
+      <>
+        Whether your brand already appears on the list. <strong className="font-semibold text-foreground">No</strong> is
+        the opportunity to chase; <strong className="font-semibold text-foreground">—</strong> means we couldn&rsquo;t read the page.
+      </>
+    ),
   },
   {
     icon: Search,
