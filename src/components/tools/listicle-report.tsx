@@ -23,6 +23,8 @@ import {
 import { motion } from "motion/react";
 import Image from "next/image";
 import brandMark from "../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
+import chatgptLogo from "../../../public/brand/chatgpt.png";
+import claudeLogo from "../../../public/brand/claude.png";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
@@ -550,59 +552,28 @@ const AI_PLATFORMS: { key: "chatgpt" | "claude"; label: string }[] = [
   { key: "claude", label: "Claude" },
 ];
 
-/**
- * Animated, stylized platform marks (monochrome, inherit color). Swap for the
- * official logo SVGs when they're added to /public/brand.
- */
+/** Official platform logo in a white badge, with a gentle animation. */
 function PlatformMark({ platform }: { platform: "chatgpt" | "claude" }) {
-  if (platform === "claude") {
-    // Shimmering sunburst.
-    return (
-      <svg
-        viewBox="0 0 24 24"
-        className="h-3.5 w-3.5 animate-[spin_9s_linear_infinite] motion-reduce:animate-none"
-        aria-hidden="true"
-      >
-        <g stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
-          {Array.from({ length: 12 }).map((_, i) => {
-            const a = (i * 30 * Math.PI) / 180;
-            const r1 = 3.4;
-            const r2 = i % 2 ? 9 : 7;
-            return (
-              <line
-                key={i}
-                x1={12 + r1 * Math.cos(a)}
-                y1={12 + r1 * Math.sin(a)}
-                x2={12 + r2 * Math.cos(a)}
-                y2={12 + r2 * Math.sin(a)}
-              />
-            );
-          })}
-        </g>
-      </svg>
-    );
-  }
-  // Slowly blooming knot.
+  const src = platform === "claude" ? claudeLogo : chatgptLogo;
+  const anim =
+    platform === "claude"
+      ? "animate-[spin_10s_linear_infinite]"
+      : "animate-[pulse_2.6s_ease-in-out_infinite]";
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="h-3.5 w-3.5 animate-[spin_14s_linear_infinite] motion-reduce:animate-none"
-      aria-hidden="true"
+    <span
+      className={cn(
+        "grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-white p-[2.5px] motion-reduce:animate-none",
+        anim,
+      )}
     >
-      <g fill="currentColor">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <ellipse
-            key={i}
-            cx="12"
-            cy="12"
-            rx="2.4"
-            ry="6.4"
-            opacity="0.5"
-            transform={`rotate(${i * 60} 12 12)`}
-          />
-        ))}
-      </g>
-    </svg>
+      <Image
+        src={src}
+        alt={platform === "claude" ? "Claude" : "ChatGPT"}
+        width={14}
+        height={14}
+        className="h-full w-full object-contain"
+      />
+    </span>
   );
 }
 
