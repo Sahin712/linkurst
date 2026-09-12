@@ -160,31 +160,75 @@ function normTarget(input: string): string {
     .replace(/\/$/, "");
 }
 
-/** Best-effort "last updated" date from page metadata (returns YYYY-MM-DD). */
-function extractDate(html: string): string | null {
-  const patterns = [
+/** Parse a date string into YYYY-MM-DD, rejecting nonsense years. */
+function toIsoDate(raw: string | undefined | null): string | null {
+  if (!raw) return null;
+  const s = raw.trim();
+  const d = new Date(s);
+  if (isNaN(d.getTime()) || d.getFullYear() <= 2000 || d.getFullYear() >= 2100) {
+    return null;
+  }
+  // A bare calendar date (no time component) parses to local midnight; using
+  // toISOString() would shift it a day in timezones behind UTC, so read the
+  // local Y/M/D directly. Timestamps with a time/zone are true instants — keep UTC.
+  if (!/\d{1,2}:\d{2}/.test(s)) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Best-effort "last updated" date for a page. Checks, in priority order:
+ * machine-readable "modified" metadata, then visible "last updated <date>"
+ * text, then "published" metadata, then visible "published <date>" text, then
+ * a bare <time>, and finally the HTTP Last-Modified header. Prefers a
+ * modified/updated date over a published one when both exist.
+ */
+function extractDate(html: string, lastModifiedHeader?: string | null): string | null {
+  // A written month-name or numeric date, e.g. "September 11, 2026" / "Sep 11 2026".
+  const DATE =
+    "(\\d{4}-\\d{2}-\\d{2}[T0-9:.Z+-]*|[A-Z][a-z]{2,8}\\.?\\s+\\d{1,2},?\\s+\\d{4}|\\d{1,2}\\s+[A-Z][a-z]{2,8}\\.?\\s+\\d{4})";
+
+  const modifiedMeta = [
     /"dateModified"\s*:\s*"([^"]+)"/i,
     /property=["']article:modified_time["']\s+content=["']([^"']+)["']/i,
     /property=["']og:updated_time["']\s+content=["']([^"']+)["']/i,
+    /<meta[^>]+itemprop=["']dateModified["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+name=["'](?:last-modified|revised|revision-date)["'][^>]+content=["']([^"']+)["']/i,
+  ];
+  const modifiedText = [
+    new RegExp(`(?:last[\\s-]*)?updated(?:\\s+on)?\\s*[:\\-–]?\\s*${DATE}`, "i"),
+    new RegExp(`last[\\s-]*modified\\s*[:\\-–]?\\s*${DATE}`, "i"),
+  ];
+  const publishedMeta = [
     /"datePublished"\s*:\s*"([^"]+)"/i,
     /property=["']article:published_time["']\s+content=["']([^"']+)["']/i,
-    /<time[^>]+datetime=["']([^"']+)["']/i,
+    /<meta[^>]+itemprop=["']datePublished["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+name=["'](?:date|pubdate|publish-date|publication-date)["'][^>]+content=["']([^"']+)["']/i,
   ];
-  for (const p of patterns) {
-    const m = html.match(p);
-    if (m) {
-      const d = new Date(m[1]);
-      if (!isNaN(d.getTime()) && d.getFullYear() > 2000 && d.getFullYear() < 2100) {
-        return d.toISOString().slice(0, 10);
-      }
+  const publishedText = [
+    new RegExp(`(?:published|posted)(?:\\s+on)?\\s*[:\\-–]?\\s*${DATE}`, "i"),
+    new RegExp(`<time[^>]+datetime=["']([^"']+)["']`, "i"),
+  ];
+
+  for (const group of [modifiedMeta, modifiedText, publishedMeta, publishedText]) {
+    for (const p of group) {
+      const m = html.match(p);
+      const iso = m && toIsoDate(m[1]);
+      if (iso) return iso;
     }
   }
-  return null;
+  // Last resort: the server's own Last-Modified header.
+  return toIsoDate(lastModifiedHeader);
 }
 
-async function fetchText(url: string): Promise<string> {
+async function fetchText(url: string): Promise<{ html: string; lastModified: string | null }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const empty = { html: "", lastModified: null };
   try {
     const res = await fetch(url, {
       signal: controller.signal,
@@ -195,11 +239,12 @@ async function fetchText(url: string): Promise<string> {
         Accept: "text/html,application/xhtml+xml",
       },
     });
-    if (!res.ok) return "";
+    if (!res.ok) return empty;
+    const lastModified = res.headers.get("last-modified");
     const ctype = res.headers.get("content-type") || "";
-    if (!ctype.includes("html") && !ctype.includes("text")) return "";
+    if (!ctype.includes("html") && !ctype.includes("text")) return empty;
     const reader = res.body?.getReader();
-    if (!reader) return (await res.text()).slice(0, MAX_HTML_BYTES);
+    if (!reader) return { html: (await res.text()).slice(0, MAX_HTML_BYTES), lastModified };
     const chunks: Uint8Array[] = [];
     let total = 0;
     for (;;) {
@@ -224,9 +269,9 @@ async function fetchText(url: string): Promise<string> {
       merged.set(c, off);
       off += c.length;
     }
-    return new TextDecoder("utf-8").decode(merged);
+    return { html: new TextDecoder("utf-8").decode(merged), lastModified };
   } catch {
-    return "";
+    return empty;
   } finally {
     clearTimeout(timeout);
   }
@@ -331,9 +376,9 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
     }));
     await Promise.all(
       listicles.map(async (l) => {
-        const html = await fetchText(l.url);
+        const { html, lastModified } = await fetchText(l.url);
         if (!html) return;
-        l.updated = extractDate(html);
+        l.updated = extractDate(html, lastModified);
         const lower = html.toLowerCase();
         if (brandDomain) {
           l.mentionsBrand = brandNeedles.some((n) => n && lower.includes(n));
