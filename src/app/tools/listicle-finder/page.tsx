@@ -11,6 +11,7 @@ import { FaqAccordion } from "@/components/tools/faq-accordion";
 import { AiAnswerDemo } from "@/components/tools/ai-answer-demo";
 import { Reveal } from "@/components/motion/reveal";
 import { Cta } from "@/components/sections/cta";
+import { ToolJsonLd } from "@/components/seo/tool-json-ld";
 
 export const metadata: Metadata = {
   title: "Free Listicle Finder | Get Featured on Listicles AI Cites",
@@ -45,6 +46,21 @@ const faqs = [
 export default function ListicleFinderPage() {
   return (
     <>
+      <ToolJsonLd
+        name="Listicle Finder"
+        description="Find the 'best of' and 'top' listicles ranking for your keyword, score each by authority and freshness, see which already cite your competitors, and flag which ones AI answers cite — so you know exactly where to earn a placement."
+        path="/tools/listicle-finder"
+        faqs={faqs}
+        featureList={[
+          "Find best-of / top listicles ranking for any keyword",
+          "Domain Rating (Ahrefs) and page authority per list",
+          "Estimated monthly traffic and Google rank",
+          "Detects whether your brand is already mentioned",
+          "Flags listicles cited by Google's AI Overview",
+          "Freshness and last-updated detection",
+          "Free .xlsx export",
+        ]}
+      />
       <section className="relative overflow-hidden py-16 sm:py-24">
         <div
           aria-hidden="true"
