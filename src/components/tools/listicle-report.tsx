@@ -344,6 +344,9 @@ export function ListicleReport({
                       </a>
                       <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
                         {l.domain}
+                        {l.author && (
+                          <span className="text-muted"> · by {l.author}</span>
+                        )}
                       </p>
                       {l.competitorsMentioned.length > 0 && (
                         <p className="mt-1 font-[family-name:var(--font-mono)] text-[10px] text-muted">

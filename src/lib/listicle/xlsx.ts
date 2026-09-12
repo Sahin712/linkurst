@@ -42,6 +42,7 @@ export async function downloadListiclesXlsx(
     { key: "traffic", header: "Est. traffic/mo", width: 16, align: "center" },
     { key: "pos", header: "Google rank", width: 13, align: "center" },
     { key: "updated", header: "Updated", width: 14, align: "center" },
+    { key: "author", header: "Author", width: 20, align: "left" },
     { key: "mentions", header: "You featured?", width: 14, align: "center" },
     { key: "comps", header: "Competitors featured", width: 34, align: "left" },
   ];
@@ -79,6 +80,7 @@ export async function downloadListiclesXlsx(
       traffic: l.traffic ?? "",
       pos: l.bestPosition > 0 ? l.bestPosition : "",
       updated: l.updated ?? "",
+      author: l.author ?? "",
       mentions: l.mentionsBrand == null ? "—" : l.mentionsBrand ? "Yes" : "No",
       comps: l.competitorsMentioned.join(", "),
     });

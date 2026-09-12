@@ -16,6 +16,7 @@ export type Listicle = {
   pa: number | null; // page authority-style rank (0–100)
   traffic: number | null; // estimated monthly organic visits to the domain
   updated: string | null; // ISO date (YYYY-MM-DD) the page was last modified
+  author: string | null; // byline / author name, when the page exposes one
   bestPosition: number;
   appearances: number;
   mentionsBrand: boolean | null;
@@ -232,6 +233,27 @@ function extractDate(html: string, lastModifiedHeader?: string | null): string |
   return toIsoDate(lastModifiedHeader);
 }
 
+/** Best-effort author/byline from page metadata (public info the page exposes). */
+function extractAuthor(html: string): string | null {
+  const patterns = [
+    /"author"\s*:\s*\{[^}]*?"name"\s*:\s*"([^"]{2,60})"/i,
+    /"author"\s*:\s*"([^"]{2,60})"/i,
+    /<meta[^>]+name=["']author["'][^>]+content=["']([^"']{2,60})["']/i,
+    /<meta[^>]+property=["']article:author["'][^>]+content=["']([^"']{2,60})["']/i,
+    /<a[^>]+rel=["']author["'][^>]*>([^<]{2,60})<\/a>/i,
+  ];
+  for (const p of patterns) {
+    const m = html.match(p);
+    if (m) {
+      const name = m[1].trim().replace(/\s+/g, " ");
+      // Skip URLs, emails, or obviously non-name values.
+      if (/^https?:|@|\.(com|org|io|ai)\b/i.test(name)) continue;
+      if (/^[\p{L}][\p{L}.'\- ]{1,59}$/u.test(name)) return name;
+    }
+  }
+  return null;
+}
+
 async function fetchText(url: string): Promise<{ html: string; lastModified: string | null }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -331,6 +353,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
           pa: null,
           traffic: null,
           updated: null,
+          author: null,
           bestPosition: it.rank_absolute,
           appearances: 1,
           mentionsBrand: null,
@@ -386,6 +409,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
         const { html, lastModified } = await fetchText(l.url);
         if (!html) return;
         l.updated = extractDate(html, lastModified);
+        l.author = extractAuthor(html);
         const lower = html.toLowerCase();
         if (brandDomain) {
           l.mentionsBrand = brandNeedles.some((n) => n && lower.includes(n));
