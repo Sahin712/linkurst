@@ -17,6 +17,7 @@ import {
   ListChecks,
   Minus,
   BadgeCheck,
+  ShieldCheck,
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -106,7 +107,13 @@ function MentionBadge({ value }: { value: boolean | null }) {
   );
 }
 
-export function ListicleReport({ result }: { result: FindResult }) {
+export function ListicleReport({
+  result,
+  generatedAt,
+}: {
+  result: FindResult;
+  generatedAt?: number;
+}) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [downloading, setDownloading] = useState(false);
   const [placeOpen, setPlaceOpen] = useState(false);
@@ -403,6 +410,9 @@ export function ListicleReport({ result }: { result: FindResult }) {
         </div>
       </div>
 
+      {/* data-source trust strip */}
+      <DataSources daSource={filtered.daSource} generatedAt={generatedAt} />
+
       {/* metrics legend */}
       <MetricsLegend drLabel={drLabel} />
 
@@ -502,6 +512,41 @@ export function ListicleReport({ result }: { result: FindResult }) {
           selectedUrls={selected}
           onClose={() => setPlaceOpen(false)}
         />
+      )}
+    </div>
+  );
+}
+
+function DataSources({
+  daSource,
+  generatedAt,
+}: {
+  daSource: "ahrefs" | "dataforseo";
+  generatedAt?: number;
+}) {
+  const items = [
+    daSource === "ahrefs"
+      ? "Domain Rating via Ahrefs"
+      : "Domain authority via DataForSEO",
+    "Traffic & Google rank via DataForSEO",
+    "Mentions & freshness from a live page crawl",
+  ];
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-[var(--radius-lg)] border border-border bg-surface px-4 py-3">
+      <span className="inline-flex items-center gap-1.5 font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-fog">
+        <ShieldCheck size={13} className="text-coral-600" />
+        Verified data
+      </span>
+      {items.map((t) => (
+        <span key={t} className="inline-flex items-center gap-1.5 text-[11.5px] text-muted">
+          <span className="h-1 w-1 rounded-full bg-coral/60" />
+          {t}
+        </span>
+      ))}
+      {generatedAt && (
+        <span className="ml-auto font-[family-name:var(--font-mono)] text-[10.5px] text-muted">
+          Generated {new Date(generatedAt).toISOString().slice(0, 10)}
+        </span>
       )}
     </div>
   );

@@ -39,7 +39,7 @@ export default async function ReportPage({
           ) : rec.status === "pending" || !rec.result ? (
             <ReportPending token={token} keyword={rec.input.keyword} />
           ) : (
-            <ListicleReport result={rec.result} />
+            <ListicleReport result={rec.result} generatedAt={rec.completedAt} />
           )}
         </div>
       </Container>
