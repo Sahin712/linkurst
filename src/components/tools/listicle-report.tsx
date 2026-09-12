@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/lib/site";
 import type { FindResult, Listicle } from "@/lib/listicle/find";
 import { downloadListiclesXlsx } from "@/lib/listicle/xlsx";
-import { freshness, opportunityScore, tierOf, rankStyle } from "@/lib/listicle/score";
+import { freshness, opportunityScore, rankStyle } from "@/lib/listicle/score";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { ServicesGrid } from "@/components/sections/services";
 import { cn } from "@/lib/utils";
@@ -241,7 +241,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[940px] text-left text-[13px]">
+          <table className="w-full min-w-[860px] text-left text-[13px]">
             <thead>
               <tr className="border-b border-border bg-foreground/[0.02] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
                 <th className="w-10 px-4 py-3.5">
@@ -258,16 +258,13 @@ export function ListicleReport({ result }: { result: FindResult }) {
                 <th className="px-3 py-3.5 text-center font-medium">Traffic</th>
                 <th className="px-3 py-3.5 text-center font-medium">Rank</th>
                 <th className="px-3 py-3.5 text-center font-medium">Mentioned</th>
-                <th className="px-3 py-3.5 font-medium">Freshness</th>
-                <th className="px-4 py-3.5 text-right font-medium">Opportunity</th>
+                <th className="px-4 py-3.5 font-medium">Freshness</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((l) => {
                 const on = selected.has(l.url);
                 const fresh = freshness(l.updated);
-                const score = opportunityScore(l);
-                const tier = tierOf(score);
                 return (
                   <tr
                     key={l.url}
@@ -330,7 +327,7 @@ export function ListicleReport({ result }: { result: FindResult }) {
                     <td className="px-3 py-3.5 align-middle text-center">
                       <MentionBadge value={l.mentionsBrand} />
                     </td>
-                    <td className="px-3 py-3.5 align-middle">
+                    <td className="px-4 py-3.5 align-middle">
                       <span
                         className={cn(
                           "inline-flex items-center gap-1.5 text-[12px] font-medium",
@@ -358,34 +355,6 @@ export function ListicleReport({ result }: { result: FindResult }) {
                           {l.updated}
                         </p>
                       )}
-                    </td>
-                    <td className="px-4 py-3.5 align-middle">
-                      <div className="flex items-center justify-end gap-2.5">
-                        <span
-                          className={cn(
-                            "text-[11px] font-semibold uppercase tracking-wide",
-                            tier === "High"
-                              ? "text-coral-600"
-                              : tier === "Medium"
-                                ? "text-fog"
-                                : "text-muted",
-                          )}
-                        >
-                          {tier}
-                        </span>
-                        <span
-                          className={cn(
-                            "grid h-10 w-10 shrink-0 place-items-center rounded-xl text-[14px] font-bold tabular-nums",
-                            tier === "High"
-                              ? "bg-coral text-white shadow-[0_4px_12px_-4px_rgba(232,85,58,0.6)]"
-                              : tier === "Medium"
-                                ? "bg-coral-wash text-coral-600"
-                                : "border border-border text-muted",
-                          )}
-                        >
-                          {score}
-                        </span>
-                      </div>
                     </td>
                   </tr>
                 );
@@ -506,22 +475,6 @@ const METRICS: {
   visual: React.ReactNode;
   highlight?: boolean;
 }[] = [
-  {
-    icon: Sparkles,
-    title: "Opportunity",
-    highlight: true,
-    visual: (
-      <span className="grid h-9 w-9 place-items-center rounded-lg bg-coral text-[13px] font-bold tabular-nums text-white">
-        87
-      </span>
-    ),
-    body: (
-      <>
-        Our <strong className="font-semibold text-foreground">pitch-priority score</strong> (0–100).
-        Blends authority, freshness, and Google rank so you know which listicles to chase first.
-      </>
-    ),
-  },
   {
     icon: Gauge,
     title: "DR",
