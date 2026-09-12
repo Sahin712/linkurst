@@ -1,11 +1,23 @@
 import { NextResponse, after } from "next/server";
 import { hasDataForSeoCredentials } from "@/lib/listicle/dataforseo";
-import { createReport } from "@/lib/listicle/store";
+import { createReport, bumpCounter } from "@/lib/listicle/store";
 import { processReport, reportPath } from "@/lib/listicle/run";
 import { inngest, hasInngest } from "@/lib/inngest/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Free-tool guardrails: cap runs per email and per IP per day so the tool can't
+// be abused into a large data-API bill.
+const DAY_SECONDS = 60 * 60 * 24;
+const MAX_PER_EMAIL_PER_DAY = 10;
+const MAX_PER_IP_PER_DAY = 30;
+
+function clientIp(request: Request): string {
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  return request.headers.get("x-real-ip") || "unknown";
+}
 
 /**
  * Kicks off a listicle report. Creates a pending report, hands it to the
@@ -40,6 +52,23 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, error: "The tool isn't fully configured yet. Please try again later." },
       { status: 503 },
+    );
+  }
+
+  // Rate-limit before doing any paid work.
+  const day = new Date().toISOString().slice(0, 10);
+  const email = body.email.trim().toLowerCase();
+  const [emailCount, ipCount] = await Promise.all([
+    bumpCounter(`email:${email}:${day}`, DAY_SECONDS),
+    bumpCounter(`ip:${clientIp(request)}:${day}`, DAY_SECONDS),
+  ]);
+  if (emailCount > MAX_PER_EMAIL_PER_DAY || ipCount > MAX_PER_IP_PER_DAY) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "You've hit today's free report limit. Please try again tomorrow, or book a call and we'll run it for you.",
+      },
+      { status: 429 },
     );
   }
 

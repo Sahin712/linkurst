@@ -7,7 +7,13 @@
 
 import { findListicles } from "./find";
 import { dataForSeoErrorMessage } from "./dataforseo";
-import { getReport, saveReport } from "./store";
+import {
+  getReport,
+  saveReport,
+  findSignature,
+  getCachedFind,
+  setCachedFind,
+} from "./store";
 import { sendReportReadyEmail, siteUrl } from "./email";
 
 export function reportPath(id: string): string {
@@ -19,13 +25,20 @@ export async function processReport(reportId: string): Promise<void> {
   if (!rec || rec.status !== "pending") return;
 
   try {
-    const result = await findListicles({
-      keyword: rec.input.keyword,
-      website: rec.input.website,
-      competitors: rec.input.competitors,
-      location: rec.input.location,
-      industry: rec.input.industry,
-    });
+    // Reuse an identical recent search when one exists — a free tool shouldn't
+    // re-pay the data APIs for the same query. Falls through to a live run.
+    const sig = findSignature(rec.input);
+    let result = await getCachedFind(sig);
+    if (!result) {
+      result = await findListicles({
+        keyword: rec.input.keyword,
+        website: rec.input.website,
+        competitors: rec.input.competitors,
+        location: rec.input.location,
+        industry: rec.input.industry,
+      });
+      await setCachedFind(sig, result);
+    }
     await saveReport({ ...rec, status: "done", result, completedAt: Date.now() });
     await sendReportReadyEmail({
       to: rec.input.email,
