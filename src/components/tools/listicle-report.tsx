@@ -550,6 +550,62 @@ const AI_PLATFORMS: { key: "chatgpt" | "claude"; label: string }[] = [
   { key: "claude", label: "Claude" },
 ];
 
+/**
+ * Animated, stylized platform marks (monochrome, inherit color). Swap for the
+ * official logo SVGs when they're added to /public/brand.
+ */
+function PlatformMark({ platform }: { platform: "chatgpt" | "claude" }) {
+  if (platform === "claude") {
+    // Shimmering sunburst.
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-3.5 w-3.5 animate-[spin_9s_linear_infinite] motion-reduce:animate-none"
+        aria-hidden="true"
+      >
+        <g stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+          {Array.from({ length: 12 }).map((_, i) => {
+            const a = (i * 30 * Math.PI) / 180;
+            const r1 = 3.4;
+            const r2 = i % 2 ? 9 : 7;
+            return (
+              <line
+                key={i}
+                x1={12 + r1 * Math.cos(a)}
+                y1={12 + r1 * Math.sin(a)}
+                x2={12 + r2 * Math.cos(a)}
+                y2={12 + r2 * Math.sin(a)}
+              />
+            );
+          })}
+        </g>
+      </svg>
+    );
+  }
+  // Slowly blooming knot.
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-3.5 w-3.5 animate-[spin_14s_linear_infinite] motion-reduce:animate-none"
+      aria-hidden="true"
+    >
+      <g fill="currentColor">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ellipse
+            key={i}
+            cx="12"
+            cy="12"
+            rx="2.4"
+            ry="6.4"
+            opacity="0.5"
+            transform={`rotate(${i * 60} 12 12)`}
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
 function AiCitationTeaser({
   counts,
   keyword,
@@ -591,7 +647,7 @@ function AiCitationTeaser({
                   key={p.key}
                   className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-ivory"
                 >
-                  <span className="h-1.5 w-1.5 rounded-full bg-coral" />
+                  <PlatformMark platform={p.key} />
                   {p.label}
                   <span className="text-ivory/60">· {counts[p.key]}</span>
                 </span>
