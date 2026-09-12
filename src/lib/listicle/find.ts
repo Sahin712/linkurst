@@ -51,8 +51,12 @@ export type FindInput = {
 const LISTICLE_QUERY_TEMPLATES = (k: string) => [
   `best ${k}`,
   `best ${k} tools`,
+  `top ${k}`,
   `top ${k} software`,
+  `best ${k} software`,
   `${k} alternatives`,
+  `${k} comparison`,
+  `best ${k} for small business`,
 ];
 
 const FETCH_TIMEOUT_MS = 6000;
@@ -280,7 +284,7 @@ async function fetchText(url: string): Promise<{ html: string; lastModified: str
 export async function findListicles(input: FindInput): Promise<FindResult> {
   const keyword = input.keyword.trim();
   const location = input.location?.trim() || "United States";
-  const maxResults = input.maxResults ?? 25;
+  const maxResults = input.maxResults ?? 40;
 
   const brandDomain = input.website ? normDomain(input.website) : null;
   const competitors = (input.competitors ?? [])

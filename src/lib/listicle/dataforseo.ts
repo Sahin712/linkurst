@@ -98,7 +98,7 @@ export async function serpOrganic(
   keyword: string,
   locationName = "United States",
   languageCode = "en",
-  depth = 20,
+  depth = 50,
 ): Promise<SerpItem[]> {
   const data = await dfsPost<SerpResponse>(
     "/serp/google/organic/live/advanced",
