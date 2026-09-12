@@ -21,19 +21,19 @@ export function Hero() {
             "radial-gradient(ellipse 90% 70% at 50% 0%, #000 22%, transparent 80%)",
         }}
       />
-      {/* warm coral highlight, top-right */}
+      {/* warm coral highlight, top-right (desktop only — blur is costly on mobile) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-32 h-[460px] w-[560px] rounded-full opacity-25 blur-[120px]"
+        className="pointer-events-none absolute -right-24 -top-32 hidden h-[460px] w-[560px] rounded-full opacity-25 blur-[120px] sm:block"
         style={{
           background:
             "radial-gradient(circle at 60% 40%, rgba(232,85,58,0.7), transparent 65%)",
         }}
       />
-      {/* soft light lift behind the headline */}
+      {/* soft light lift behind the headline (desktop only) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[900px] -translate-x-1/2 rounded-full opacity-70 blur-[100px]"
+        className="pointer-events-none absolute left-1/2 top-0 hidden h-[420px] w-[900px] -translate-x-1/2 rounded-full opacity-70 blur-[100px] sm:block"
         style={{
           background:
             "radial-gradient(circle, rgba(255,252,248,0.9), transparent 70%)",
