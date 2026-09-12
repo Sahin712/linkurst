@@ -48,7 +48,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 px-4 pt-3 sm:pt-4">
       {/* floating pill */}
-      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-1 rounded-full border border-white/50 bg-white/20 py-2 pl-4 pr-2 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3),inset_0_1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-200 md:max-w-fit md:justify-normal md:border-border md:bg-surface/80">
+      <div className="mx-auto flex w-full max-w-md items-center justify-between gap-1 rounded-full border border-white/50 bg-white/20 py-2 pl-4 pr-2 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3),inset_0_1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-200 md:max-w-fit md:justify-normal">
         <LogoMark />
 
         <nav aria-label="Primary" className="hidden items-center md:flex">
@@ -56,7 +56,7 @@ export function SiteHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              className="rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               {item.label}
             </a>
@@ -69,7 +69,7 @@ export function SiteHeader() {
               onClick={() => setToolsOpen((v) => !v)}
               aria-expanded={toolsOpen}
               aria-haspopup="true"
-              className="flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-white/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              className="flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
             >
               Tools
               <ChevronDown
@@ -86,7 +86,7 @@ export function SiteHeader() {
                   onClick={() => setToolsOpen(false)}
                   className="fixed inset-0 z-40 cursor-default"
                 />
-                <div className="absolute left-1/2 top-full z-50 mt-3 w-64 -translate-x-1/2 rounded-2xl border border-border bg-surface p-2 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.35)]">
+                <div className="absolute left-1/2 top-full z-50 mt-3 w-64 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/50 bg-white/25 p-2 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.28),inset_0_1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-200">
                   {tools.map((t) => (
                     <Link
                       key={t.href}
