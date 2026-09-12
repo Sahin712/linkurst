@@ -1,29 +1,80 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { ScoreRing, TrafficMeter } from "@/components/tools/metric-cells";
 import { rankStyle } from "@/lib/listicle/score";
+import { cn } from "@/lib/utils";
 
-/** Compact preview of a real report ("sales engagement platform"). */
-const ROWS = [
-  { title: "Best Sales Engagement Platform | Sales Cloud", domain: "salesforce.com", da: 92, pa: 23, traffic: 1100000, rank: 6, opp: 89, tier: "High" as const },
-  { title: "The 5 Best Sales Engagement Tools for Salesforce", domain: "revenue.io", da: 72, pa: 0, traffic: 2000, rank: 8, opp: 76, tier: "High" as const },
-  { title: "Salesforce Alternatives: Top CRM Competitors", domain: "rox.com", da: 72, pa: 0, traffic: 4000, rank: 16, opp: 66, tier: "Medium" as const },
-  { title: "The 56 Best Sales Engagement Apps for HubSpot", domain: "ecosystem.hubspot.com", da: 93, pa: 0, traffic: 25000, rank: 22, opp: 65, tier: "Medium" as const },
-  { title: "7 Best Sales Engagement Tools in 2026", domain: "sybill.ai", da: 65, pa: 0, traffic: 4000, rank: 8, opp: 61, tier: "Medium" as const },
-  { title: "6 Best Sales Engagement Software in 2026", domain: "salesforge.ai", da: 72, pa: 0, traffic: 17000, rank: 11, opp: 60, tier: "Medium" as const },
-  { title: "10 Best Sales Engagement Platforms to Streamline", domain: "salesmate.io", da: 78, pa: 0, traffic: 4000, rank: 20, opp: 58, tier: "Medium" as const },
-  { title: "The 8 Best Customer Engagement Platforms in 2026", domain: "appcues.com", da: 78, pa: 15, traffic: 3000, rank: 22, opp: 58, tier: "Medium" as const },
-  { title: "Top Sales Engagement Platforms for Enterprise SDRs", domain: "nimitai.com", da: 39, pa: 0, traffic: 9, rank: 20, opp: 50, tier: "Medium" as const },
-  { title: "Top 5 Sales Engagement Tools for Enterprise Sales", domain: "conquer.io", da: 52, pa: 5, traffic: 494, rank: 14, opp: 45, tier: "Low" as const },
+type Fresh = "fresh" | "aging" | "stale";
+type Row = {
+  title: string;
+  domain: string;
+  author?: string;
+  competitors?: string[];
+  da: number;
+  pa: number;
+  traffic: number;
+  rank: number;
+  mentioned: boolean;
+  aiCited?: boolean;
+  fresh: Fresh;
+  age: string;
+};
+
+/** Compact preview mirroring the real report (CRM software example). */
+const ROWS: Row[] = [
+  { title: "12 Best CRM Software, Ranked (2026)", domain: "saasreview.io", author: "Priya Nair", competitors: ["salesforce.com", "hubspot.com"], da: 76, pa: 41, traffic: 184000, rank: 2, mentioned: false, aiCited: true, fresh: "fresh", age: "new" },
+  { title: "The Best CRM Platforms I Tested in 2026", domain: "techtested.com", author: "Marcus Lee", competitors: ["hubspot.com", "zoho.com"], da: 71, pa: 55, traffic: 96000, rank: 4, mentioned: false, aiCited: true, fresh: "fresh", age: "new" },
+  { title: "Top 10 CRM Tools Compared", domain: "comparehub.com", author: "Dana Whitfield", competitors: ["salesforce.com"], da: 59, pa: 44, traffic: 41000, rank: 6, mentioned: false, fresh: "fresh", age: "1mo ago" },
+  { title: "Enterprise CRM Platforms Reviewed", domain: "enterprisetech.com", author: "Sam Okoro", competitors: ["salesforce.com"], da: 73, pa: 52, traffic: 118000, rank: 15, mentioned: false, fresh: "fresh", age: "3mo ago" },
+  { title: "Best CRM Tools for Sales Teams", domain: "salesstack.com", da: 51, pa: 31, traffic: 16000, rank: 12, mentioned: false, fresh: "stale", age: "2y ago" },
+  { title: "Affordable CRM Software Options", domain: "budgetsaas.com", da: 44, pa: 27, traffic: 8400, rank: 14, mentioned: false, fresh: "aging", age: "1.3y ago" },
+  { title: "Best CRM for Startups (SoftwareWorld)", domain: "softwareworld.co", competitors: ["hubspot.com"], da: 62, pa: 35, traffic: 38000, rank: 3, mentioned: true, aiCited: true, fresh: "fresh", age: "new" },
+  { title: "Best CRM Software Compared (2026)", domain: "toolfinder.com", competitors: ["salesforce.com"], da: 69, pa: 47, traffic: 71000, rank: 8, mentioned: true, fresh: "fresh", age: "1mo ago" },
 ];
 const MAX_TRAFFIC = Math.max(...ROWS.map((r) => r.traffic));
 
 const STATS = [
-  { n: "11", l: "Opportunities" },
-  { n: "2", l: "Prime targets", coral: true },
-  { n: "68", l: "Avg DR" },
+  { n: "9", l: "Opportunities", coral: true },
+  { n: "3", l: "Already mentioned" },
+  { n: "61", l: "Avg DR" },
 ];
+
+function FreshnessBars({ tone }: { tone: Fresh }) {
+  const filled = tone === "fresh" ? 3 : tone === "aging" ? 2 : 1;
+  const color = tone === "fresh" ? "bg-coral" : tone === "aging" ? "bg-slate" : "bg-gray";
+  const heights = ["h-2", "h-3", "h-[18px]"];
+  return (
+    <span className="inline-flex items-end gap-[3px]" aria-hidden="true">
+      {heights.map((h, i) => (
+        <span
+          key={i}
+          className={cn("w-[3.5px] rounded-full", h, i < filled ? color : "bg-foreground/[0.1]")}
+        />
+      ))}
+    </span>
+  );
+}
+
+function MentionBadge({ mentioned }: { mentioned: boolean }) {
+  if (mentioned) {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-[11.5px] font-semibold text-white">
+        <Check size={13} strokeWidth={3} />
+        Featured
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral-wash px-3 py-1.5 text-[11.5px] font-semibold text-coral-600">
+      <span className="relative flex h-1.5 w-1.5">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-coral opacity-75 motion-reduce:hidden" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-coral" />
+      </span>
+      Not yet
+    </span>
+  );
+}
 
 export function ReportPreview() {
   return (
@@ -34,7 +85,7 @@ export function ReportPreview() {
         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#FEBC2E" }} />
         <span className="h-3 w-3 rounded-full" style={{ backgroundColor: "#28C840" }} />
         <span className="mx-auto font-[family-name:var(--font-mono)] text-[11px] text-fog">
-          United States · 11 listicles
+          United States · 12 listicles
         </span>
         <span className="text-[12px] font-bold tracking-tight text-coral">Linkurst</span>
       </div>
@@ -55,39 +106,53 @@ export function ReportPreview() {
 
       {/* table */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] text-left text-[13px]">
+        <table className="w-full min-w-[860px] text-left text-[13px]">
           <thead>
             <tr className="border-b border-border bg-foreground/[0.015] font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-wider text-muted">
               <th className="px-4 py-2.5 font-medium">Listicle</th>
-              <th className="px-3 py-2.5 text-center font-medium">DR</th>
-              <th className="px-3 py-2.5 text-center font-medium">PA</th>
+              <th className="px-3 py-2.5 text-center font-medium">DR&nbsp;/&nbsp;PA</th>
               <th className="px-3 py-2.5 text-center font-medium">Traffic</th>
               <th className="px-3 py-2.5 text-center font-medium">Rank</th>
-              <th className="px-4 py-2.5 font-medium">Opportunity</th>
+              <th className="px-3 py-2.5 text-center font-medium">Mentioned</th>
+              <th className="px-4 py-2.5 font-medium">Freshness</th>
             </tr>
           </thead>
           <tbody>
             {ROWS.map((r) => (
               <tr key={r.title} className="border-b border-border last:border-b-0">
-                <td className="px-4 py-2.5">
+                <td className="px-4 py-3 align-top">
                   <span className="inline-flex items-start gap-1 font-semibold text-foreground">
                     {r.title}
                     <ArrowUpRight size={12} className="mt-0.5 shrink-0 text-muted" />
                   </span>
+                  {r.aiCited && (
+                    <span className="ml-1.5 inline-flex items-center gap-1 rounded-full bg-coral px-2 py-0.5 align-[2px] text-[10px] font-semibold text-white">
+                      <Sparkles size={10} />
+                      AI cited
+                    </span>
+                  )}
                   <p className="mt-0.5 font-[family-name:var(--font-mono)] text-[10px] text-muted">
                     {r.domain}
+                    {r.author && <span> · by {r.author}</span>}
                   </p>
+                  {r.competitors && r.competitors.length > 0 && (
+                    <p className="mt-1 font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                      <span className="text-coral-600/80">vs</span> {r.competitors.join(", ")}
+                    </p>
+                  )}
                 </td>
-                <td className="px-3 py-2.5 align-middle">
-                  <ScoreRing value={r.da} tone="coral" />
+                <td className="px-3 py-3 align-middle">
+                  <div className="flex flex-col items-center">
+                    <ScoreRing value={r.da} tone="coral" />
+                    <span className="mt-1 font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                      PA {r.pa}
+                    </span>
+                  </div>
                 </td>
-                <td className="px-3 py-2.5 align-middle">
-                  <ScoreRing value={r.pa} tone="slate" />
-                </td>
-                <td className="px-3 py-2.5 align-middle">
+                <td className="px-3 py-3 align-middle">
                   <TrafficMeter value={r.traffic} max={MAX_TRAFFIC} />
                 </td>
-                <td className="px-3 py-2.5 align-middle text-center">
+                <td className="px-3 py-3 align-middle text-center">
                   <span
                     style={rankStyle(r.rank)}
                     className="inline-block min-w-[42px] rounded-md px-2 py-1 font-[family-name:var(--font-mono)] text-[12px] font-bold text-foreground"
@@ -95,32 +160,29 @@ export function ReportPreview() {
                     #{r.rank}
                   </span>
                 </td>
-                <td className="px-4 py-2.5 align-middle">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={
-                        "grid h-9 w-9 shrink-0 place-items-center rounded-lg text-[13px] font-bold tabular-nums " +
-                        (r.tier === "High"
-                          ? "bg-coral text-white"
-                          : r.tier === "Medium"
-                            ? "bg-coral-wash text-coral-600"
-                            : "border border-border text-muted")
-                      }
-                    >
-                      {r.opp}
-                    </span>
-                    <span
-                      className={
-                        "text-[12px] font-semibold " +
-                        (r.tier === "High"
-                          ? "text-coral-600"
-                          : r.tier === "Medium"
-                            ? "text-foreground"
-                            : "text-muted")
-                      }
-                    >
-                      {r.tier}
-                    </span>
+                <td className="px-3 py-3 align-middle text-center">
+                  <MentionBadge mentioned={r.mentioned} />
+                </td>
+                <td className="px-4 py-3 align-middle">
+                  <div className="flex items-center gap-2.5">
+                    <FreshnessBars tone={r.fresh} />
+                    <div className="leading-tight">
+                      <p
+                        className={cn(
+                          "text-[12px] font-semibold",
+                          r.fresh === "fresh"
+                            ? "text-coral-600"
+                            : r.fresh === "aging"
+                              ? "text-foreground"
+                              : "text-muted",
+                        )}
+                      >
+                        {r.fresh === "fresh" ? "Fresh" : r.fresh === "aging" ? "Aging" : "Stale"}
+                      </p>
+                      <p className="font-[family-name:var(--font-mono)] text-[10px] text-muted">
+                        {r.age}
+                      </p>
+                    </div>
                   </div>
                 </td>
               </tr>
