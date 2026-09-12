@@ -909,15 +909,32 @@ function PlacementModal({
         </button>
 
         {status === "sent" ? (
-          <div className="text-center">
-            <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-coral-wash text-coral-600">
-              <Check size={22} />
-            </span>
-            <h3 className="mt-4 text-xl font-bold tracking-tight text-foreground">Request received</h3>
-            <p className="mt-2 text-[15px] leading-relaxed text-fog">
-              Linkurst will review {chosen.length > 0 ? `these ${chosen.length} listicles` : "your goals"}{" "}
-              and reach out about getting your brand placed.
-            </p>
+          <div>
+            <div className="text-center">
+              <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-coral-wash text-coral-600">
+                <Check size={22} />
+              </span>
+              <h3 className="mt-4 text-xl font-bold tracking-tight text-foreground">Request received</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-fog">
+                We&rsquo;ll map the fastest way to get{" "}
+                {result.brandDomain ? result.brandDomain : "your brand"} onto{" "}
+                {chosen.length > 0 ? `these ${chosen.length} listicles` : "the right listicles"}.
+              </p>
+            </div>
+            <ol className="mt-5 space-y-3 border-t border-border pt-5">
+              {[
+                "We review each list and how its editor adds tools.",
+                "We build the case — the data and angle for your top placements.",
+                "A quick call to prioritize and kick off the outreach.",
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-coral-wash font-[family-name:var(--font-mono)] text-[12px] font-bold text-coral-600">
+                    {i + 1}
+                  </span>
+                  <span className="text-[13.5px] leading-snug text-fog">{step}</span>
+                </li>
+              ))}
+            </ol>
             <Button
               href={siteConfig.bookingUrl}
               size="lg"
@@ -926,9 +943,12 @@ function PlacementModal({
               onClick={() => track("book_call_clicked", { location: "placement_confirmed" })}
               className="mt-6 w-full"
             >
-              Book a call now
+              Book the kickoff call
               <ArrowRight size={18} />
             </Button>
+            <p className="mt-3 text-center text-[11.5px] text-muted">
+              Free 30-minute call · No commitment
+            </p>
           </div>
         ) : (
           <form onSubmit={submit}>
@@ -968,6 +988,9 @@ function PlacementModal({
                 </>
               )}
             </Button>
+            <p className="mt-3 text-center text-[11.5px] text-muted">
+              No commitment · We reply within 1 business day
+            </p>
           </form>
         )}
       </div>
