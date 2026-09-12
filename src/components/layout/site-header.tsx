@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight, ChevronDown } from "lucide-react";
@@ -45,6 +45,22 @@ export function SiteHeader() {
   const [toolsOpen, setToolsOpen] = useState(false);
   const reduce = useReducedMotion();
 
+  // Close the Tools dropdown when the page scrolls or Escape is pressed.
+  useEffect(() => {
+    if (!toolsOpen) return;
+    const close = () => setToolsOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setToolsOpen(false);
+    };
+    // Capture phase so scrolls on any element (not just window) also close it.
+    window.addEventListener("scroll", close, { passive: true, capture: true });
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("scroll", close, { capture: true });
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [toolsOpen]);
+
   return (
     <header className="sticky top-0 z-50 px-4 pt-3 sm:pt-4">
       {/* floating pill */}
@@ -86,7 +102,7 @@ export function SiteHeader() {
                   onClick={() => setToolsOpen(false)}
                   className="fixed inset-0 z-40 cursor-default"
                 />
-                <div className="absolute left-1/2 top-full z-50 mt-3 w-64 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/50 bg-white/25 p-2 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.28),inset_0_1px_0_0_rgba(255,255,255,0.8)] backdrop-blur-xl backdrop-saturate-200">
+                <div className="absolute left-1/2 top-full z-50 mt-3 w-64 -translate-x-1/2 overflow-hidden rounded-2xl border border-border bg-surface p-2 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.28)]">
                   {tools.map((t) => (
                     <Link
                       key={t.href}
