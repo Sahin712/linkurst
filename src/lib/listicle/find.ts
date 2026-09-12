@@ -1,4 +1,10 @@
-import { serpOrganic, bulkRanks, bulkTrafficEstimation, renderPageText } from "./dataforseo";
+import {
+  serpOrganic,
+  bulkRanks,
+  bulkTrafficEstimation,
+  renderPageText,
+  llmCitedUrls,
+} from "./dataforseo";
 import { hasAhrefsCredentials, domainRatings } from "./ahrefs";
 
 /**
@@ -37,6 +43,9 @@ export type FindResult = {
     gaps: number; // mention a competitor but not the brand
     avgDa: number | null;
   };
+  // Aggregate-only: how many of the found listicles each AI assistant cites for
+  // the query. Kept as counts (not per-row) — the "which ones" is the paid teaser.
+  aiCitations?: { chatgpt: number; claude: number };
   listicles: Listicle[];
 };
 
@@ -474,6 +483,29 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
     (l) => l.mentionsBrand === false && l.competitorsMentioned.length > 0,
   ).length;
 
+  // 5. AI-assistant citations (aggregate only). Ask ChatGPT + Claude the query
+  //    with web search on, and count how many found listicles each one cites.
+  //    We store only the counts — "which ones" is the paid teaser. Opt-in
+  //    (LISTICLE_LLM_CITATIONS) because each run spends LLM credits.
+  let aiCitations: FindResult["aiCitations"];
+  if (/^(1|true|yes)$/i.test(process.env.LISTICLE_LLM_CITATIONS ?? "")) {
+    const prompt = `What are the best ${keyword} tools right now? List the top options with links.`;
+    const [gpt, claude] = await Promise.all([
+      llmCitedUrls("chat_gpt", prompt, process.env.LLM_MODEL_CHATGPT || "gpt-4.1-mini").catch(
+        () => [],
+      ),
+      llmCitedUrls("claude", prompt, process.env.LLM_MODEL_CLAUDE || "claude-3-7-sonnet").catch(
+        () => [],
+      ),
+    ]);
+    const gptSet = new Set(gpt.map(normUrl));
+    const claudeSet = new Set(claude.map(normUrl));
+    aiCitations = {
+      chatgpt: listicles.filter((l) => gptSet.has(normUrl(l.url))).length,
+      claude: listicles.filter((l) => claudeSet.has(normUrl(l.url))).length,
+    };
+  }
+
   return {
     keyword,
     location,
@@ -489,6 +521,7 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
         ? Math.round(daValues.reduce((s, d) => s + d, 0) / daValues.length)
         : null,
     },
+    aiCitations,
     listicles,
   };
 }

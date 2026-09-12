@@ -265,6 +265,48 @@ export async function renderPageText(url: string): Promise<string> {
   }
 }
 
+const LLM_TIMEOUT_MS = 25000;
+
+/**
+ * Ask an LLM (via DataForSEO AI Optimization) the query with web search on, and
+ * return every source URL it cited. Best-effort: returns [] on any failure.
+ * `provider` is a DataForSEO slug: "chat_gpt", "claude", "perplexity", "gemini".
+ */
+export async function llmCitedUrls(
+  provider: string,
+  userPrompt: string,
+  modelName: string,
+): Promise<string[]> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
+  try {
+    const res = await fetch(BASE + `/ai_optimization/${provider}/llm_responses/live`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authHeader(),
+      },
+      body: JSON.stringify([
+        { user_prompt: userPrompt, model_name: modelName, web_search: true },
+      ]),
+      signal: controller.signal,
+    });
+    if (!res.ok) return [];
+    const json = (await res.json()) as {
+      tasks?: Array<{ result?: Array<Record<string, unknown> | null> | null }>;
+    };
+    const result = json.tasks?.[0]?.result?.[0];
+    if (!result) return [];
+    const urls = new Set<string>();
+    harvestUrls(result, urls);
+    return [...urls];
+  } catch {
+    return [];
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 // DataForSEO location codes for the locations the form offers (defaults to US).
 const LOCATION_CODES: Record<string, number> = {
   "united states": 2840,

@@ -18,6 +18,7 @@ import {
   Minus,
   BadgeCheck,
   ShieldCheck,
+  Lock,
 } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -431,6 +432,12 @@ export function ListicleReport({
         </div>
       </div>
 
+      {/* AI-assistant citation teaser (aggregate only) */}
+      {filtered.aiCitations &&
+        filtered.aiCitations.chatgpt + filtered.aiCitations.claude > 0 && (
+          <AiCitationTeaser counts={filtered.aiCitations} />
+        )}
+
       {/* data-source trust strip */}
       <DataSources daSource={filtered.daSource} generatedAt={generatedAt} />
 
@@ -534,6 +541,56 @@ export function ListicleReport({
           onClose={() => setPlaceOpen(false)}
         />
       )}
+    </div>
+  );
+}
+
+function AiCitationTeaser({ counts }: { counts: { chatgpt: number; claude: number } }) {
+  const parts = [
+    counts.chatgpt > 0 ? `${counts.chatgpt} by ChatGPT` : null,
+    counts.claude > 0 ? `${counts.claude} by Claude` : null,
+  ].filter(Boolean);
+  return (
+    <div
+      className="relative overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-5 shadow-[0_20px_60px_-30px_rgba(232,85,58,0.35)] sm:p-6"
+      style={{
+        background:
+          "radial-gradient(130% 130% at 0% 0%, rgba(232,85,58,0.16) 0%, #17171b 45%, #0e0e11 100%)",
+      }}
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full opacity-25 blur-[80px]"
+        style={{ background: "var(--color-coral)" }}
+      />
+      <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3.5">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-coral text-white shadow-[var(--shadow-card)]">
+            <Sparkles size={19} />
+          </span>
+          <div>
+            <p className="flex items-center gap-2 text-[15px] font-bold tracking-tight text-ivory">
+              These lists are cited by AI assistants
+              <Lock size={13} className="text-coral" />
+            </p>
+            <p className="mt-1 max-w-xl text-[13.5px] leading-relaxed text-ivory/70">
+              For this query, <span className="font-semibold text-ivory">{parts.join(" and ")}</span>{" "}
+              {parts.length > 1 ? "are" : "is"} cited in a recent AI answer. Book a call and
+              we&rsquo;ll show you exactly which ones — and how to earn a spot in them.
+            </p>
+          </div>
+        </div>
+        <Button
+          href={siteConfig.bookingUrl}
+          size="lg"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full shrink-0 sm:w-auto"
+        >
+          See which ones
+          <ArrowRight size={18} />
+        </Button>
+      </div>
     </div>
   );
 }

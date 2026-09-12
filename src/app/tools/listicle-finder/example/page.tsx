@@ -19,6 +19,7 @@ const EXAMPLE: FindResult = {
   industry: "B2B SaaS",
   daSource: "ahrefs",
   totals: { listicles: 12, featured: 3, gaps: 6, avgDa: 62 },
+  aiCitations: { chatgpt: 3, claude: 2 },
   listicles: [
     { title: "12 Best CRM Software, Ranked (2026)", url: "https://saasreview.io/best-crm-software", domain: "saasreview.io", da: 76, pa: 41, traffic: 184000, updated: "2026-08-22", author: "Priya Nair", citedByAi: true, bestPosition: 2, appearances: 3, mentionsBrand: false, competitorsMentioned: ["salesforce.com", "hubspot.com"] },
     { title: "The Best CRM Platforms I Tested in 2026", url: "https://techtested.com/best-crm", domain: "techtested.com", da: 71, pa: 55, traffic: 96000, updated: "2026-09-01", author: "Marcus Lee", citedByAi: true, bestPosition: 4, appearances: 2, mentionsBrand: false, competitorsMentioned: ["hubspot.com", "zoho.com"] },
