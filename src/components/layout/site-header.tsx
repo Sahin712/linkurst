@@ -120,6 +120,14 @@ export function SiteHeader() {
               </>
             )}
           </div>
+
+          {/* Contact — after Tools (desktop nav only) */}
+          <a
+            href="/contact"
+            className="rounded-full px-3.5 py-2 text-sm font-medium text-fog transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+          >
+            Contact
+          </a>
         </nav>
 
         <a

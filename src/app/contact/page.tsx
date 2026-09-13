@@ -130,7 +130,7 @@ export default function ContactPage() {
                     <ArrowUpRight size={15} className="text-muted group-hover:text-coral-600" />
                   </a>
                   <a
-                    href={siteConfig.socials.linkedin}
+                    href="https://www.linkedin.com/in/sk-sahin/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3 py-3"

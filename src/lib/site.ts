@@ -30,7 +30,6 @@ export const mainNav = [
   { label: "How it works", href: "#methodology" },
   { label: "Services", href: "#services" },
   { label: "90-Day Plan", href: "#plan" },
-  { label: "Contact", href: "/contact" },
 ] as const;
 
 /** Free tools — surfaced in the nav "Tools" dropdown and the footer. */
