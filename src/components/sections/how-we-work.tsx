@@ -14,9 +14,11 @@ import { cn } from "@/lib/utils";
  */
 
 const stagger = { visible: { transition: { staggerChildren: 0.09 } } };
+// Transform-only (no opacity) so content stays visible through hydration and
+// fast/momentum scroll — see src/lib/motion.ts for the rationale.
 const rise = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.45 } },
+  hidden: { y: 14 },
+  visible: { y: 0, transition: { duration: 0.45 } },
 };
 
 function Panel({ children }: { children: React.ReactNode }) {

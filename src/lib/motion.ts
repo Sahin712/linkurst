@@ -9,18 +9,21 @@ import type { Variants, Transition } from "motion/react";
 
 export const easeOut: Transition["ease"] = [0.16, 1, 0.3, 1];
 
+// Transform-only reveal: content is NEVER hidden (no opacity:0), so it stays
+// visible through hydration and fast/momentum scrolling — where the
+// IntersectionObserver behind whileInView is delayed on iOS Safari and used to
+// leave sections blank. The animation is a subtle slide-up instead of a fade.
 export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { y: 22 },
   visible: {
-    opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: easeOut },
   },
 };
 
 export const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.5, ease: easeOut } },
+  hidden: {},
+  visible: { transition: { duration: 0.5, ease: easeOut } },
 };
 
 /** Stagger container — reveals children in editorial sequence. */
