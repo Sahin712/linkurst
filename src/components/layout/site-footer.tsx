@@ -25,6 +25,7 @@ const columns = [
   {
     heading: "Contact",
     links: [
+      { label: "Contact us", href: "/contact" },
       { label: "Book a call", href: siteConfig.bookingUrl, external: true },
       { label: "Sahin@linkurst.com", href: "mailto:Sahin@linkurst.com" },
       {

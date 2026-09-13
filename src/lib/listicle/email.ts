@@ -138,6 +138,40 @@ export async function sendPlacementEmail(m: PlacementRequest): Promise<void> {
   });
 }
 
+type ContactMessage = {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+};
+
+/** A general contact-form submission — delivered to Linkurst, reply-to the sender. */
+export async function sendContactEmail(m: ContactMessage): Promise<void> {
+  const subject = `New contact message from ${m.name}`;
+  const html = `
+  <div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:${COLORS.charcoal};max-width:560px;margin:0 auto;">
+    <h2 style="font-size:18px;">New contact message</h2>
+    <p style="margin:4px 0;"><strong>Name:</strong> ${esc(m.name)}</p>
+    <p style="margin:4px 0;"><strong>Email:</strong> ${esc(m.email)}</p>
+    ${m.company ? `<p style="margin:4px 0;"><strong>Company:</strong> ${esc(m.company)}</p>` : ""}
+    <p style="margin:12px 0;"><strong>Message:</strong><br>${esc(m.message).replace(/\n/g, "<br>")}</p>
+  </div>`;
+
+  if (!hasResend()) {
+    console.info(
+      `[email:dev] contact message → ${TO_LINKURST}\n  from: ${m.name} <${m.email}>${m.company ? ` @ ${m.company}` : ""}\n  message: ${m.message}`,
+    );
+    return;
+  }
+  await resend().emails.send({
+    from: FROM,
+    to: TO_LINKURST,
+    replyTo: m.email,
+    subject,
+    html,
+  });
+}
+
 type PlacementConfirmation = {
   to: string;
   name: string;
