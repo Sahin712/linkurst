@@ -26,10 +26,10 @@ export const siteConfig = {
 } as const;
 
 export const mainNav = [
-  { label: "The System", href: "#approach" },
-  { label: "How it works", href: "#methodology" },
-  { label: "Services", href: "#services" },
-  { label: "90-Day Plan", href: "#plan" },
+  { label: "The System", href: "/#approach" },
+  { label: "How it works", href: "/#methodology" },
+  { label: "Services", href: "/#services" },
+  { label: "90-Day Plan", href: "/#plan" },
 ] as const;
 
 /** Free tools — surfaced in the nav "Tools" dropdown and the footer. */

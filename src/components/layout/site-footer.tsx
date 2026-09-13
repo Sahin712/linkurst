@@ -8,11 +8,11 @@ const columns = [
   {
     heading: "Explore",
     links: [
-      { label: "The System", href: "#approach" },
-      { label: "How it works", href: "#methodology" },
-      { label: "Services", href: "#services" },
-      { label: "90-Day Plan", href: "#plan" },
-      { label: "FAQ", href: "#faq" },
+      { label: "The System", href: "/#approach" },
+      { label: "How it works", href: "/#methodology" },
+      { label: "Services", href: "/#services" },
+      { label: "90-Day Plan", href: "/#plan" },
+      { label: "FAQ", href: "/#faq" },
     ],
   },
   {
