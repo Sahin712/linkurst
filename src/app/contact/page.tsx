@@ -68,8 +68,8 @@ export default function ContactPage() {
           </div>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
-            {/* Left — ways to reach us */}
-            <div className="flex flex-col gap-4">
+            {/* Left — ways to reach us (below the form on mobile) */}
+            <div className="order-2 flex flex-col gap-4 lg:order-1">
               {/* Book a call — primary */}
               <a
                 href={siteConfig.bookingUrl}
@@ -183,8 +183,10 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Right — the form */}
-            <ContactForm />
+            {/* Right — the form (first on mobile) */}
+            <div className="order-1 lg:order-2">
+              <ContactForm />
+            </div>
           </div>
         </div>
       </Section>
