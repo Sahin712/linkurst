@@ -95,6 +95,41 @@ function isListicleTitle(title: string): boolean {
   return /(^|[^a-z])(\d{1,3})\+?\s+\S|\b(best|top)\b/i.test(title);
 }
 
+// Generic words that carry no topic meaning — dropped when deciding relevance
+// so we match on the distinctive part of the keyword (e.g. "link", "building").
+const RELEVANCE_STOPWORDS = new Set([
+  "best", "top", "the", "for", "and", "with", "your", "vs", "of", "to", "in", "on",
+  "a", "an", "tool", "tools", "software", "service", "services", "app", "apps",
+  "platform", "platforms", "company", "companies", "solution", "solutions",
+  "alternative", "alternatives", "comparison", "compared", "guide", "review",
+  "reviews", "list", "free", "online", "system", "systems",
+]);
+
+/** Distinctive keyword stems (≥3 chars, non-generic, truncated for loose matching). */
+function keywordStems(keyword: string): string[] {
+  return [
+    ...new Set(
+      keyword
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((w) => w.length >= 3 && !RELEVANCE_STOPWORDS.has(w))
+        .map((w) => w.slice(0, 5)), // "agencies"→"agenc", "building"→"build"
+    ),
+  ];
+}
+
+/**
+ * Keep only results actually about the keyword. A "best of" title alone isn't
+ * enough — "Best Chocolate Chip Cookies" matches `best` but not the topic. We
+ * require at least one distinctive keyword stem in the title or URL. When the
+ * keyword has no distinctive words, we don't filter (fail open).
+ */
+function isRelevant(title: string, url: string, stems: string[]): boolean {
+  if (stems.length === 0) return true;
+  const hay = `${title} ${url}`.toLowerCase();
+  return stems.some((s) => hay.includes(s));
+}
+
 /**
  * Domains that aren't placement-worthy listicles: social/community/video sites
  * (results, not roundups you can pitch), and major general news / digital-PR
@@ -143,6 +178,13 @@ const EXCLUDED_DOMAINS = new Set<string>([
   "time.com",
   "fool.com",
   "yahoo.com",
+  // Reference / encyclopedia / dictionary — never placement-worthy listicles.
+  "wikipedia.org",
+  "wiktionary.org",
+  "merriam-webster.com",
+  "dictionary.com",
+  "britannica.com",
+  "thesaurus.com",
   // Self-service review directories — a client lists their own product here, so
   // there's no outreach/placement opportunity for an agency to build.
   "g2.com",
@@ -360,10 +402,12 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
   }
 
   // 2. Aggregate + dedupe by URL, keeping best rank and appearance count.
+  const stems = keywordStems(keyword);
   const byUrl = new Map<string, Listicle>();
   for (const pq of perQuery) {
     for (const it of pq.items) {
       if (!isListicleTitle(it.title)) continue;
+      if (!isRelevant(it.title, it.url, stems)) continue; // must be about the keyword, not just "best …"
       const dom = normDomain(it.domain);
       if (brandDomain && dom === brandDomain) continue; // skip the user's own page
       if (isExcludedDomain(dom)) continue; // skip social/news/PR — not placement-worthy listicles
