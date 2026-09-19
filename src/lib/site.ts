@@ -20,6 +20,9 @@ export const siteConfig = {
   // Analytics & verification (public values — safe to commit).
   // GA4 Measurement ID, e.g. "G-XXXXXXXXXX". Leave empty to disable.
   gaId: "G-381ZHE0ER3",
+  // Microsoft Clarity project ID (from clarity.microsoft.com → Settings →
+  // Overview). Leave empty to disable.
+  clarityId: "",
   // Google Search Console "HTML tag" verification code (the content value
   // of the google-site-verification meta tag). Leave empty to disable.
   googleSiteVerification: "_xc57L7bGSLuwgDG0QnhxMq_DFm_dqwLunKLqB6na5U",

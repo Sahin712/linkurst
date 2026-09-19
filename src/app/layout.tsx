@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { DeferredBackdrop } from "@/components/layout/deferred-backdrop";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { MicrosoftClarity } from "@/components/analytics/microsoft-clarity";
 import { siteConfig } from "@/lib/site";
 
 // Variable fonts: omit `weight` so next/font loads one variable file covering
@@ -88,6 +89,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteFooter />
         </div>
         <GoogleAnalytics gaId={siteConfig.gaId} />
+        <MicrosoftClarity projectId={siteConfig.clarityId} />
       </body>
     </html>
   );
