@@ -45,7 +45,7 @@ export type FindResult = {
   };
   // Aggregate-only: how many of the found listicles each AI assistant cites for
   // the query. Kept as counts (not per-row) — the "which ones" is the paid teaser.
-  aiCitations?: { chatgpt: number; claude: number };
+  aiCitations?: { chatgpt: number; claude: number; perplexity: number; gemini: number };
   listicles: Listicle[];
 };
 
@@ -534,19 +534,24 @@ export async function findListicles(input: FindInput): Promise<FindResult> {
   let aiCitations: FindResult["aiCitations"];
   if (/^(1|true|yes)$/i.test(process.env.LISTICLE_LLM_CITATIONS ?? "")) {
     const prompt = `What are the best ${keyword} tools right now? List the top options with links.`;
-    const [gpt, claude] = await Promise.all([
-      llmCitedUrls("chat_gpt", prompt, process.env.LLM_MODEL_CHATGPT || "gpt-4.1-mini").catch(
-        () => [],
-      ),
-      llmCitedUrls("claude", prompt, process.env.LLM_MODEL_CLAUDE || "claude-3-7-sonnet").catch(
-        () => [],
-      ),
-    ]);
-    const gptSet = new Set(gpt.map(normUrl));
-    const claudeSet = new Set(claude.map(normUrl));
+    const engines = [
+      { id: "chatgpt", provider: "chat_gpt", model: process.env.LLM_MODEL_CHATGPT || "gpt-4.1-mini" },
+      { id: "claude", provider: "claude", model: process.env.LLM_MODEL_CLAUDE || "claude-3-7-sonnet" },
+      { id: "perplexity", provider: "perplexity", model: process.env.LLM_MODEL_PERPLEXITY || "sonar" },
+      { id: "gemini", provider: "gemini", model: process.env.LLM_MODEL_GEMINI || "gemini-2.0-flash" },
+    ] as const;
+    const results = await Promise.all(
+      engines.map((e) => llmCitedUrls(e.provider, prompt, e.model).catch(() => [])),
+    );
+    const count = (urls: string[]) => {
+      const set = new Set(urls.map(normUrl));
+      return listicles.filter((l) => set.has(normUrl(l.url))).length;
+    };
     aiCitations = {
-      chatgpt: listicles.filter((l) => gptSet.has(normUrl(l.url))).length,
-      claude: listicles.filter((l) => claudeSet.has(normUrl(l.url))).length,
+      chatgpt: count(results[0]),
+      claude: count(results[1]),
+      perplexity: count(results[2]),
+      gemini: count(results[3]),
     };
   }
 

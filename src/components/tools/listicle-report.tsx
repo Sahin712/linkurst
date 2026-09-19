@@ -21,7 +21,7 @@ import {
   Lock,
 } from "lucide-react";
 import { motion } from "motion/react";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import brandMark from "../../../public/brand/Linkurst_Logo_V10-removebg-preview.png";
 import chatgptLogo from "../../../public/brand/chatgpt.png";
 import claudeLogo from "../../../public/brand/claude.png";
@@ -176,6 +176,18 @@ export function ListicleReport({
     () => filtered.listicles.filter((l) => l.citedByAi).length,
     [filtered],
   );
+  // Every AI engine that cites at least one listicle, for the banner cluster.
+  const citedEngines = useMemo(() => {
+    const list: { label: string; logo: StaticImageData | string; n: number }[] = [
+      { label: "Google AI", logo: "/tools/google.svg", n: aiCitedCount },
+      ...AI_ENGINES.map((e) => ({
+        label: e.label,
+        logo: e.logo,
+        n: filtered.aiCitations?.[e.key] ?? 0,
+      })),
+    ];
+    return list.filter((e) => e.n > 0);
+  }, [aiCitedCount, filtered.aiCitations]);
 
   const drLabel = filtered.daSource === "ahrefs" ? "DR" : "DA";
   const allSelected = selected.size === rows.length && rows.length > 0;
@@ -286,10 +298,21 @@ export function ListicleReport({
               <Check size={13} />
               {filtered.opportunities} ready to pitch
             </div>
-            {aiCitedCount > 0 && (
-              <div className="hidden items-center gap-1.5 rounded-full bg-coral px-3 py-1.5 font-[family-name:var(--font-mono)] text-[11px] font-medium text-white sm:inline-flex">
-                <Sparkles size={12} />
-                {aiCitedCount} cited by Google AI
+            {citedEngines.length > 0 && (
+              <div className="hidden items-center gap-2 rounded-full bg-coral px-3 py-1.5 sm:inline-flex">
+                <span className="font-[family-name:var(--font-mono)] text-[10px] font-medium uppercase tracking-wide text-white/80">
+                  Cited by AI
+                </span>
+                {citedEngines.map((e) => (
+                  <span
+                    key={e.label}
+                    title={`${e.n} cited by ${e.label}`}
+                    className="inline-flex items-center gap-1 font-[family-name:var(--font-mono)] text-[11px] font-bold text-white"
+                  >
+                    <EngineLogo logo={e.logo} label={e.label} size={16} />
+                    {e.n}
+                  </span>
+                ))}
               </div>
             )}
           </div>
@@ -447,9 +470,11 @@ export function ListicleReport({
 
       {/* AI-assistant citation teaser (aggregate only) */}
       {filtered.aiCitations &&
-        filtered.aiCitations.chatgpt + filtered.aiCitations.claude > 0 && (
-          <AiCitationTeaser counts={filtered.aiCitations} keyword={result.keyword} />
-        )}
+        filtered.aiCitations.chatgpt +
+          filtered.aiCitations.claude +
+          filtered.aiCitations.perplexity +
+          filtered.aiCitations.gemini >
+          0 && <AiCitationTeaser counts={filtered.aiCitations} keyword={result.keyword} />}
 
       {/* data-source trust strip */}
       <DataSources daSource={filtered.daSource} generatedAt={generatedAt} />
@@ -562,31 +587,36 @@ export function ListicleReport({
   );
 }
 
-const AI_PLATFORMS: { key: "chatgpt" | "claude"; label: string }[] = [
-  { key: "chatgpt", label: "ChatGPT" },
-  { key: "claude", label: "Claude" },
+type EngineKey = "chatgpt" | "claude" | "perplexity" | "gemini";
+const AI_ENGINES: { key: EngineKey; label: string; logo: StaticImageData | string }[] = [
+  { key: "chatgpt", label: "ChatGPT", logo: chatgptLogo },
+  { key: "claude", label: "Claude", logo: claudeLogo },
+  { key: "perplexity", label: "Perplexity", logo: "/tools/perplexity.svg" },
+  { key: "gemini", label: "Gemini", logo: "/tools/gemini.svg" },
 ];
 
-/** Official platform logo in a white badge, with a gentle animation. */
-function PlatformMark({ platform }: { platform: "chatgpt" | "claude" }) {
-  const src = platform === "claude" ? claudeLogo : chatgptLogo;
-  const anim =
-    platform === "claude"
-      ? "animate-[spin_10s_linear_infinite]"
-      : "animate-[pulse_2.6s_ease-in-out_infinite]";
+/** Engine logo in a white circular badge. */
+function EngineLogo({
+  logo,
+  label,
+  size = 18,
+}: {
+  logo: StaticImageData | string;
+  label: string;
+  size?: number;
+}) {
   return (
     <span
-      className={cn(
-        "grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-white p-[2.5px] motion-reduce:animate-none",
-        anim,
-      )}
+      className="grid shrink-0 place-items-center rounded-full bg-white p-[2.5px]"
+      style={{ width: size, height: size }}
     >
       <Image
-        src={src}
-        alt={platform === "claude" ? "Claude" : "ChatGPT"}
-        width={14}
-        height={14}
+        src={logo}
+        alt={label}
+        width={size - 5}
+        height={size - 5}
         className="h-full w-full object-contain"
+        aria-hidden="true"
       />
     </span>
   );
@@ -596,67 +626,96 @@ function AiCitationTeaser({
   counts,
   keyword,
 }: {
-  counts: { chatgpt: number; claude: number };
+  counts: { chatgpt: number; claude: number; perplexity: number; gemini: number };
   keyword: string;
 }) {
-  const active = AI_PLATFORMS.filter((p) => counts[p.key] > 0);
-  const names = active.map((p) => p.label);
+  const active = AI_ENGINES.filter((e) => counts[e.key] > 0);
+  const dormant = AI_ENGINES.filter((e) => counts[e.key] === 0);
+  const names = active.map((e) => e.label);
   const nameList =
-    names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0];
+    names.length > 1
+      ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`
+      : names[0] ?? "AI assistants";
+
   return (
     <div
-      className="relative overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-5 shadow-[0_20px_60px_-30px_rgba(232,85,58,0.35)] sm:p-6"
+      className="relative overflow-hidden rounded-[var(--radius-xl)] border border-coral/25 p-6 shadow-[0_24px_70px_-30px_rgba(232,85,58,0.4)] sm:p-7"
       style={{
         background:
-          "radial-gradient(130% 130% at 0% 0%, rgba(232,85,58,0.16) 0%, #17171b 45%, #0e0e11 100%)",
+          "radial-gradient(130% 130% at 0% 0%, rgba(232,85,58,0.18) 0%, #17171b 42%, #0d0d10 100%)",
       }}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -top-12 h-40 w-40 rounded-full opacity-25 blur-[80px]"
+        className="pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full opacity-30 blur-[80px]"
         style={{ background: "var(--color-coral)" }}
       />
-      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative">
         <div className="flex items-start gap-3.5">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-coral text-white shadow-[var(--shadow-card)]">
             <Sparkles size={19} />
           </span>
           <div>
-            <p className="flex items-center gap-2 text-[15px] font-bold tracking-tight text-ivory">
-              Some of these lists are cited by AI assistants
-              <Lock size={13} className="text-coral" />
+            <p className="font-[family-name:var(--font-mono)] text-[10.5px] uppercase tracking-wider text-coral">
+              Generative-engine visibility
             </p>
-            {/* platform chips (swap for official logos when added to /public/brand) */}
-            <div className="mt-2.5 flex flex-wrap gap-2">
-              {active.map((p) => (
-                <span
-                  key={p.key}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[12px] font-semibold text-ivory"
-                >
-                  <PlatformMark platform={p.key} />
-                  {p.label}
-                  <span className="text-ivory/60">· {counts[p.key]}</span>
-                </span>
-              ))}
-            </div>
-            <p className="mt-3 max-w-xl text-[13.5px] leading-relaxed text-ivory/70">
-              Book a call to find out which of these listicles {nameList} recommend for{" "}
-              <span className="font-semibold text-ivory">&ldquo;{keyword}&rdquo;</span> — and exactly
-              how we get your brand placed on them.
+            <p className="mt-1 flex items-center gap-2 text-[17px] font-bold tracking-tight text-ivory sm:text-lg">
+              Cited by {active.length} AI {active.length === 1 ? "assistant" : "assistants"}
+              <Lock size={14} className="text-coral" />
             </p>
           </div>
         </div>
-        <Button
-          href={siteConfig.bookingUrl}
-          size="lg"
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => track("book_call_clicked", { location: "ai_teaser" })}
-          className="w-full shrink-0 sm:w-auto"
-        >
-          Book a call
-          <ArrowRight size={18} />
-        </Button>
+
+        {/* Per-engine cards */}
+        <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          {active.map((e) => (
+            <div
+              key={e.key}
+              className="flex items-center gap-2.5 rounded-xl border border-coral/25 bg-white/[0.06] px-3 py-2.5"
+            >
+              <EngineLogo logo={e.logo} label={e.label} size={26} />
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold leading-tight text-ivory">{e.label}</p>
+                <p className="font-[family-name:var(--font-mono)] text-[11px] text-coral">
+                  {counts[e.key]} cited
+                </p>
+              </div>
+            </div>
+          ))}
+          {dormant.map((e) => (
+            <div
+              key={e.key}
+              className="flex items-center gap-2.5 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5 opacity-45"
+            >
+              <EngineLogo logo={e.logo} label={e.label} size={26} />
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold leading-tight text-ivory">{e.label}</p>
+                <p className="font-[family-name:var(--font-mono)] text-[11px] text-ivory/50">
+                  scanned
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-xl text-[13.5px] leading-relaxed text-ivory/70">
+            Book a call to see exactly which listicles {nameList} recommend for{" "}
+            <span className="font-semibold text-ivory">&ldquo;{keyword}&rdquo;</span> — and how we get
+            your brand placed on them.
+          </p>
+          <Button
+            href={siteConfig.bookingUrl}
+            size="lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("book_call_clicked", { location: "ai_teaser" })}
+            className="w-full shrink-0 sm:w-auto"
+          >
+            Unlock the list
+            <ArrowRight size={18} />
+          </Button>
+        </div>
       </div>
     </div>
   );
